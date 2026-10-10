@@ -31,9 +31,12 @@ Keep your approved Luma QR code ready for entry, and bring your laptop and charg
 Use Node.js **22.12 or newer**. From the repository root:
 
 ```sh
+nvm use               # Select the project's Node 24 runtime; nvm install if missing
 npm ci
 npm run dev
 ```
+
+If `nvm` is installed but unavailable in this terminal, run `source "$HOME/.nvm/nvm.sh"` first. The `.nvmrc` selects Node 24; other version managers can use any compatible Node version (22.12 or newer).
 
 Open **http://127.0.0.1:5173/** or the development **/lab** entry. No API key is needed. `npm run check` checks TypeScript; `npm run build` produces `dashboard/dist`; `npm run preview` serves it at port 4173. `npm test`, `npm run test:browser`, and `npm run perf` verify the animation layer. See [dashboard/README.md](dashboard/README.md) for demo controls, backend handoff, and verification limits. Official event colours and source attribution are documented in [brand-sources.md](docs/reference/brand-sources.md).
 

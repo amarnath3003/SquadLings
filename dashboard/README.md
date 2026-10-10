@@ -5,6 +5,7 @@ Local frontend for the character/animation brief in `docs/Rough/characters-anima
 From the repository root, with **Node.js 22.12 or newer**:
 
 ```sh
+nvm use               # Reads the root .nvmrc; nvm install if missing
 npm ci
 npm run dev
 ```
@@ -36,7 +37,7 @@ npm run preview        # Serve the production build at http://127.0.0.1:4173
 npm run perf           # 20-second synthetic load measurement; needs a running server
 ```
 
-Use Node 22 for both installation and commands. Node 18 can skip Vite's native optional dependency and cannot run the current toolchain. If this happens, switch Node versions and run `npm install --include=optional`.
+Use a compatible Node version for both installation and commands. The root `.nvmrc` selects Node 24. If `nvm` is installed but unavailable, run `source "$HOME/.nvm/nvm.sh"`, then `nvm use` from the repository root. A `node:util` / `styleText` export error on `npm run dev` means the terminal is still using Node 18; switching versions fixes it. Node 18 can also skip Vite's native optional dependency during installation. If a native dependency is missing after switching, run `npm install --include=optional`.
 
 ## How the characters stay alive
 

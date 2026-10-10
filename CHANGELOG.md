@@ -4,6 +4,13 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T00:17:40+05:30 — Fix the terminal's development runtime selection
+
+- Changed: Added a root `.nvmrc` selecting Node 24 and documented `nvm use` and shell initialization in both READMEs.
+- Why: The latest npm log showed `npm run dev` failing. Reproducing it under Node 18.18.0 revealed Vite's missing `node:util` `styleText` export. The installed Node 24.14.1 supplies the required API.
+- Validation: Sourced the existing nvm installation, selected the project runtime, and reran `npm run dev` successfully; the studio returned HTTP 200. TypeScript and production build passed under Node 24.14.1. Diff whitespace passed.
+- Limitations: `.nvmrc` requires `nvm use` in existing terminals; it does not change their active Node process or the user's global default. The verification server was stopped after checking. No application dependencies changed.
+
 ## 2026-10-11T00:11:13+05:30 — Give the characters a continuous life of their own
 
 - Changed: Added a layered ambient rig, nine gesture sequences, personality-specific habits, breathing/shadows, single/double blinks, pointer attention, subtle highlights, springy press/release boops, blush/hearts, and optional reaction sounds. The new living room adds greetings, dancing, passing a spark, surprises, naps/wake-up, bounded spring-return dragging, and prewritten conversations with partner glances.
