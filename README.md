@@ -1,6 +1,6 @@
 # DevDay Exchange Community Hackathon: Kochi
 
-A small, interactive test for one OpenAI Agents API Computer Use agent, built from scratch during the 10–11 October 2026 hackathon.
+SquadLings: a living team of five browser-agent characters, built from scratch during the 10–11 October 2026 hackathon. The character frontend runs independently while the backend is developed.
 
 **[Event and registration on Luma](https://luma.com/z10nz8gp)** · **[Event rules](RULES.md)** · **[Agent instructions](AGENTS.md)**
 
@@ -21,20 +21,30 @@ Keep your approved Luma QR code ready for entry, and bring your laptop and charg
 
 # Project overview
 
-- **Project name:** One-agent Computer Use test
-- **Short description:** An interactive, read-only browser-task runner for one OpenAI Agents API agent. Enter a task, approve each requested website origin, and receive the agent's result.
-- **Working demo:** Run the local walkthrough in [test/README.md](test/README.md).
-- **Technology stack:** Node.js, the official `openai` JavaScript SDK, and the OpenAI Agents API.
+- **Project name:** SquadLings
+- **Short description:** Five expressive, event-driven SVG teammates with a squad builder, animation playground, shared board, and simulated browser dashboard. The independent one-agent API test remains in `test/`.
+- **Working demo:** Follow [dashboard/README.md](dashboard/README.md) for the zero-cost character demo. The separate API spike is documented in [test/README.md](test/README.md).
+- **Technology stack:** React 18, TypeScript, Vite, Motion, Zustand, SVG, and Canvas. The separate API spike uses the official `openai` JavaScript SDK.
 
-## Run the project
+## Run the character studio
 
-1. Install Node.js 22 or newer.
-2. Follow the install, API-key, and start steps in [test/README.md](test/README.md).
-3. Run `cd test && npm run check` for a no-network syntax check.
+Use Node.js **22.12 or newer**. From the repository root:
+
+```sh
+npm ci
+npm run dev
+```
+
+Open **http://127.0.0.1:5173/** or the development **/lab** entry. No API key is needed. `npm run check` checks TypeScript; `npm run build` produces `dashboard/dist`. See [dashboard/README.md](dashboard/README.md) for demo controls, backend handoff, and verification limits. Official event colours and source attribution are documented in [brand-sources.md](docs/reference/brand-sources.md).
+
+The independent one-agent API test keeps its own install and commands in [test/README.md](test/README.md).
 
 ## Current status
 
-- Working features: Prompt entry, session creation, website-origin approval, streamed task output, error reporting, and completed-session cleanup are implemented in [test/computer-use-agent.mjs](test/computer-use-agent.mjs).
+- Character frontend: Studio, squad slider, all ten expressions, character motion, simulated events, browser tiles, reporting flights, board, approvals, particles, sound, and reduced motion are implemented. Backend transport and real browser actions are not connected.
+- Frontend validation: TypeScript and production build passed under Node 22.23.3; Playwright rendered the local studio in installed Chrome without page errors. Further interaction/logic verification is ongoing.
+
+- Independent API spike: Prompt entry, session creation, website-origin approval, streamed task output, error reporting, and completed-session cleanup are implemented in [test/computer-use-agent.mjs](test/computer-use-agent.mjs).
 - Known limitations: A live test requires Node.js 22 or newer, a permitted, billed OpenAI application API key, and an interactive terminal. The repository check does not make a live API call.
 - Libraries and APIs: [OpenAI Agents API Computer Use guide](https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use) and the official `openai` JavaScript SDK.
 

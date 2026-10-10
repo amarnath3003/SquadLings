@@ -4,6 +4,15 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-10T23:12:31+05:30 — Build the independent character studio
+
+- Changed: Added the npm workspace, `dashboard/`, minimal shared contracts in `packages/shared/`, colour/source documentation, and a correctly located copy of the supplied sticker reference. Preserved the independent `test/` spike and the original rough brief/photo.
+- Why: Build the animation and UI layer independently while the team develops the backend. Used four official DevDay event colour tokens fetched from its stylesheet; Sky remains a local extension.
+- Features: Five SVG characters, ten faces, deterministic mood/emote logic, Motion actors, squad slider, simulated run, tile overlays, shared board, Master roster, report flights, bounded particles, optional synthesized sound, and reduced motion.
+- Validation: Node 22.23.3 TypeScript check and Vite production build passed. Local `/lab` returned HTTP 200; Playwright opened installed Google Chrome, captured `dashboard/artifacts/studio.png`, and reported no page errors. Installation audit reported zero vulnerabilities.
+- Corrections: Initial Node 18 installation skipped the native bundler dependency; reinstalling with Node 22 and optional dependencies resolved it. The first type check revealed a generic event-union mismatch, which was corrected. Bundled Chromium does not support this host's macOS 12; installed Chrome works.
+- Limitations: This checkpoint is frontend-only. Logic/browser interaction tests, remaining launch choreography, and performance validation are still in progress. No real browsing, API calls, deployment, or 60 fps certification is claimed.
+
 ## 2026-10-10T22:08:58+05:30 — Accept a browser task from the terminal
 
 - Changed: Updated `test/computer-use-agent.mjs` to accept a task entered at the terminal or passed after `npm start --`; updated the test and project documentation.
