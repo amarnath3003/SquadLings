@@ -1,3 +1,5 @@
+![SquadLink — One squad. Many minds.](docs/assets/squadlink-github-banner.png)
+
 # DevDay Exchange Community Hackathon: Kochi
 
 SquadLings: a living team of five browser-agent characters, built from scratch during the 10–11 October 2026 hackathon. The character frontend runs independently while the backend is developed.

@@ -4,6 +4,13 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T04:37:39+05:30 — Add the SquadLink GitHub banner
+
+- Changed: Added `docs/assets/squadlink-github-banner.png`, a 2172 × 724 banner with six circular characters, the requested SquadLink wordmark, and “One squad. Many minds.” Embedded it in the root README and recorded sources/prompts in `docs/reference/`.
+- Why: Provide a GitHub banner based on the user's reference and the project's black-background character theme.
+- Validation: Visually inspected both generated versions; corrected a stray accent above the tagline. Confirmed final PNG dimensions and 3:1 aspect ratio, local documentation links, and diff whitespace. No application code changed; application tests were not run.
+- Limitations: Human design review pending; raster palette values are not certified exact tokens. Existing application naming remains SquadLings. No remote publication claimed.
+
 ## 2026-10-11T03:45:01+05:30 — Give the orchestrator an original charcoal character
 
 - Changed: Replaced the OpenAI logo with Onyx, “the calm conductor,” in assembly, workflow, and the nine-state gallery. Shared paired glyphs render white on a flat `#262626` circle; the resting face is `^ ^` with no mouth. Active report, approval, completion, and failure reactions can add details, following the user’s clarification.

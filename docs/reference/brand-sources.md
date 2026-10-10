@@ -28,6 +28,10 @@ The user's later supplied reference shows a charcoal circle with paired white ca
 
 SquadLings is the hackathon team's project. OpenAI names and artwork belong to OpenAI; no endorsement is implied.
 
+## GitHub banner
+
+The [SquadLink banner](../assets/squadlink-github-banner.png) is a 2172 × 724 PNG generated with Codex's built-in image generation tool from the user's supplied circular-character reference and the repository's existing theme. The requested banner wordmark is **SquadLink** with the tagline **One squad. Many minds.**; the existing application/project name remains SquadLings. The banner includes the five colored teammates and charcoal Onyx, without the OpenAI logo. Generated raster colors are illustrative rather than verified exact palette tokens. The [generation prompts](squadlink-banner-prompt.md) record the creation and lettering correction. Human design review is pending.
+
 ## Libraries
 
-The dashboard was implemented from scratch in this repository. Dependencies are pinned in the root lockfile: [React](https://react.dev/), [Vite](https://vite.dev/), [Motion](https://motion.dev/docs/react-animation), [Zustand](https://zustand.docs.pmnd.rs/), [TypeScript](https://www.typescriptlang.org/), [Vitest](https://vitest.dev/), and [Playwright](https://playwright.dev/). No generated raster art, third-party character assets, datasets, or pre-built application were imported. Sound is synthesized with Web Audio.
+The dashboard was implemented from scratch in this repository. Dependencies are pinned in the root lockfile: [React](https://react.dev/), [Vite](https://vite.dev/), [Motion](https://motion.dev/docs/react-animation), [Zustand](https://zustand.docs.pmnd.rs/), [TypeScript](https://www.typescriptlang.org/), [Vitest](https://vitest.dev/), and [Playwright](https://playwright.dev/). The README banner is generated raster art; dashboard characters remain code-authored SVG. No third-party character assets, datasets, or pre-built application were imported. Sound is synthesized with Web Audio.
