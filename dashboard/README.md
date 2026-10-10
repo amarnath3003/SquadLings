@@ -52,7 +52,7 @@ Ambient activity stops when a character leaves the viewport, the document is hid
 
 - `packages/shared/src/types.ts` matches the supplied master spec §26. `events.ts` implements §18's complete catalogue, with `SwarmEvent` and `SquadLingsEvent` as equivalent names.
 - `store/reducer.ts` and `mood/*` are pure functions taking explicit event time. Zustand selectors isolate bot slices. Frames are excluded from the store.
-- Pass validated `SwarmEvent` objects to `consumeEvent(event, { reduced, speed })` in `src/ingest.ts`. Both the Lab and future transport/replay adapters use this entry point. It sends JPEG frames directly to `FrameCanvas`, and other events to the director and pure reducer.
+- Pass validated `SwarmEvent` objects to `consumeEvent(event, { reduced, speed })` in `src/ingest.ts`. Both the Lab and future transport/replay adapters use this entry point. It sends JPEG frames directly to `FrameCanvas`, and other events to audio mapping, the director, and the pure reducer.
 - `director/director.ts` routes cursor events to registered actors, queues events received before a tile mounts, and cancels pending effects on reset. `cursor.move`, `cursor.click`, and `cursor.scroll` do not replace bot view state or re-render other tiles.
 - The Vite development proxy reserves `/api` and `/ws` for `127.0.0.1:8787`. It does not connect automatically. Backend transport, snapshot hydration, real approval actions, and replay recording are separate work.
 - Preserve event coordinates in original viewport pixels. The overlay maps to its own inner canvas using `ResizeObserver`, including mobile.
@@ -60,14 +60,15 @@ Ambient activity stops when a character leaves the viewport, the document is hid
 
 ## Verification
 
-Verified using Node 22.23.3 and installed Google Chrome 150 on this host:
+Verified using Node 24.14.1 and installed Google Chrome 150 on this host:
 
 - TypeScript and production build pass.
-- 36 Vitest checks cover priority, expiry, minimum holds, permanent moods, emote queues, deterministic playback, state isolation, actual step counts, benches, input limits, and desktop/mobile coordinate mapping.
-- 14 Playwright checks cover slider keyboard/rapid scrubbing, expression selection, 50-face gallery, full five-bot completion, OS reduced motion, phone overflow, approvals/reset, pointer and ripple placement within 2 px, bench/focus behaviour, and per-bot render isolation. The five living-room checks additionally cover breathing/gaze, group reactions, repeated boops, naps/wake-up, reduced motion/offscreen suspension, conversations, drag return, and blink geometry. Development counters confirm one bot's event does not execute another tile component.
-- Production measurements at 1440 × 1000, each over 20 seconds after startup: the living room with continuous pointer tracking, dance, and a spark pass measured **58.9 fps average / 16.8 ms p95**; the five-stream run measured **60.0 fps / 16.7 ms p95**. Both reported **zero long tasks over 50 ms and zero page errors**. The run uses five synthetic 8 fps canvases and includes finish/confetti effects.
-- The first run with full ambient gestures on cursor-sized bots measured 53.7 fps / 33.3 ms p95 and 12 long tasks. Limiting autonomous gestures to portraits while retaining cursor breathing/blinking and event-driven movement produced the final run measurement above. These are samples, not guaranteed frame rates.
-- This synthetic, headless measurement is not a certification for five live browser sessions or the event projector. Repeat the rehearsal on the demo laptop with real backend frames.
+- 48 Vitest checks cover the existing mood/emote/store/geometry contracts plus audio event ownership, lifecycle cue coverage, priorities, cooldowns, speed filtering, preferences, and the rolling start budget.
+- All 24 Playwright checks pass: the existing studio, animation, full-run, mobile, reduced-motion, pointer/ripple accuracy, dialog-focus, and render-isolation checks, plus ten audio checks for muted startup, settings, control feedback, queue/concurrency/cancellation, all-five greetings, urgent interruption, failed startup/retry, stale requests, unique completion, and offline rendering.
+- All 195 voice variants and 40 effects render finite, non-silent output with controlled peaks (maximum 0.215), durations no longer than 0.730 seconds, and silent tails. See the ignored audio report and audition WAV described in [sound-design.md](../docs/reference/sound-design.md).
+- Final sound-enabled production samples at 1440 × 1000 over 20 seconds: studio with pointer tracking, dance, and spark measured **55.9 fps / 33.3 ms p95**, with **zero long tasks over 50 ms**; five synthetic 8 fps streams including finishes measured **58.7 fps / 16.8 ms p95**, with **two long tasks (maximum 128 ms)**. Both observed speech and reported **zero page errors**.
+- An earlier sound-enabled studio sample measured 51.6 fps with five long tasks. Speaking-state updates now affect only the halo; each utterance reuses one vocal tract across syllables. Samples vary with host load and are not guaranteed frame rates.
+- Human speaker/headphone listening review remains pending. Headless measurements do not certify actual audio hardware, five live browser sessions, or the event projector. Repeat the rehearsal with real backend frames.
 
 The test config uses installed Chrome automatically on macOS when available; set `PLAYWRIGHT_CHANNEL=chrome` explicitly if desired. On supported systems, install bundled Chromium with `npx playwright install chromium`. The current bundled browser does not support this host's macOS 12.
 

@@ -4,6 +4,14 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T01:01:47+05:30 — Verify and tune sound playback
+
+- Changed: Isolated speaking-state updates to the halo and reused one vocal tract across syllables, reducing character render work and audio-node creation. Split squad effects from cancellable voice sequences so disabling voices cannot leave future utterances. Added stale-queue, voice-disable, resume-retry, full sound-enabled completion, and desktop/mobile sound-settings checks; updated the demo and verification documentation.
+- Validation: TypeScript/build and 48 logic tests passed; all 24 browser checks passed in the final full run. All 235 offline recipes/variants produced finite, non-silent samples, peak <=0.215, durations <=0.730 seconds, and silent tails. Desktop/mobile settings screenshots were inspected, with no horizontal overflow. Existing pointer accuracy, reduced motion, dialog focus, and tile-isolation checks passed. Local documentation links and diff whitespace passed.
+- Performance: Sound-enabled production Chrome 150, 1440 × 1000, 20 seconds: studio 55.9 fps / 33.3 ms p95, zero long tasks over 50 ms; five synthetic 8 fps streams 58.7 fps / 16.8 ms p95, two long tasks (maximum 128 ms). Both observed bot speech and reported zero page errors. The initial studio sample measured 51.6 fps and five long tasks before tuning.
+- Corrections: Fixed the overly exact Speed selector in a new test. The first preview invocation forwarded a port argument as a root directory and returned HTTP 404; restarting with the documented default preview command resolved it before sampling.
+- Limitations: Automated checks do not establish perceived voice quality or actual speaker/headphone behaviour. Human listening review remains pending; an ignored audition WAV and in-app voice bank are provided. Synthetic performance samples do not certify a live backend or projector. No deployment or remote push is claimed.
+
 ## 2026-10-11T00:49:22+05:30 — Add sound effects and five character voices
 
 - Changed: Replaced four blips with forty local Web Audio effects and thirteen voice reaction families, each with three variants across five personality-specific voices. Added a bounded priority scheduler, cancellation, separate mix controls, persistent preferences with muted startup, a voice audition bank, and speaking halos. Ordinary controls, squad changes, living-room play, workflow events, approvals/errors, and results now provide appropriate feedback.

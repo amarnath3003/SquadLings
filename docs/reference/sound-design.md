@@ -42,7 +42,7 @@ Hover, focus, pointer motion, frames, usage updates, unchanged options, disabled
 - Maximum: one bot voice, four effects, eight starts per rolling second. Urgent voices interrupt lower priorities. Queued touch/milestone voices are capped at two and expire after 800 ms. Routine voices have a four-second per-bot cooldown. Idle voices require fifteen seconds between starts and three seconds without foreground audio.
 - Authored group sequences stagger voices by 700 ms. New group actions cancel the old sequence; urgent workflow cues cancel room/preview audio. Routine effects thin at 2x, and routine audio is suppressed at 4x; voice pitch/duration remain natural.
 - Mute and tab hiding cancel active/scheduled audio. Reset/stop cancels workflow audio; room unmount/offscreen suspension cancels room audio. Returning to a tab does not replay missed events. Initialization/suspension failures leave muted controls and a retry message.
-- Separate effects/voice gains feed master gain and a compressor. Envelopes and short cancellation fades avoid hard waveform cuts; finished nodes are disconnected. The context starts/resumes from explicit user activation.
+- Each utterance reuses one vocal tract across its syllables. Speaking-state updates are isolated to the halo, avoiding SVG/actor re-renders. Separate effects/voice gains feed master gain and a compressor. Envelopes and short cancellation fades avoid hard waveform cuts; finished nodes are disconnected. The context starts/resumes from explicit user activation.
 
 ## Verification and listening review
 
@@ -58,7 +58,7 @@ PREVIEW_URL=http://127.0.0.1:4173 PERF_AUDIO=1 PERF_SCENE=studio npm run perf
 PREVIEW_URL=http://127.0.0.1:4173 PERF_AUDIO=1 PERF_SCENE=run npm run perf
 ```
 
-Reports: `dashboard/artifacts/performance-studio-audio.json` and `performance-run-audio.json`. Headless synthetic samples do not certify actual audio hardware, perceived voice quality, or live backend performance.
+Reports: `dashboard/artifacts/performance-studio-audio.json` and `performance-run-audio.json`. On Node 24.14.1 / Chrome 150, at 1440 × 1000 over 20 seconds with sound enabled, the final studio sample measured 55.9 fps / 33.3 ms p95, zero long tasks over 50 ms, and zero page errors; the five-stream sample measured 58.7 fps / 16.8 ms p95, two long tasks (maximum 128 ms), and zero page errors. Speech was observed during both samples. Headless synthetic samples do not certify actual audio hardware, perceived voice quality, or live backend performance.
 
 Human listening review is pending. Audition on laptop speakers and headphones, then check a full workflow for distinct personalities, comfortable volume, clear alerts, repetitive patterns, and clean endings. Automated rendering cannot establish these qualities.
 

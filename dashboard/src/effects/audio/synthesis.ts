@@ -118,19 +118,47 @@ export function renderVoice(
     start = context.currentTime + 0.005;
   const vibrato = context.createOscillator(),
     depth = context.createGain();
+  const oscillator = context.createOscillator(),
+    envelope = context.createGain();
+  const breath = context.createBufferSource(),
+    air = context.createBiquadFilter(),
+    airGain = context.createGain();
+  oscillator.type = dna.shape;
+  breath.buffer = breathBuffer(context);
+  air.type = "highpass";
+  air.frequency.value = 1800;
+  breath.connect(air);
+  air.connect(airGain);
+  airGain.connect(s.output);
+  envelope.connect(s.output);
+  // Reuse one vocal tract for the whole utterance, avoiding a graph per syllable.
+  const filters = vowels[pattern[0]].map((_, band) => {
+    const filter = context.createBiquadFilter(),
+      level = context.createGain();
+    filter.type = "bandpass";
+    filter.Q.value = band ? 4 : 3;
+    level.gain.value = band ? 0.55 : 1;
+    oscillator.connect(filter);
+    filter.connect(level);
+    level.connect(envelope);
+    s.nodes.push(filter, level);
+    return filter;
+  });
   vibrato.frequency.value = reaction === "laughter" ? 12 : 6;
   depth.gain.value = dna.vibrato;
   vibrato.connect(depth);
+  depth.connect(oscillator.frequency);
   vibrato.start(start);
   vibrato.stop(start + duration);
-  s.nodes.push(vibrato, depth);
-  s.sources.push(vibrato);
+  oscillator.start(start);
+  oscillator.stop(start + duration);
+  breath.start(start);
+  breath.stop(start + duration);
+  s.nodes.push(vibrato, depth, oscillator, envelope, breath, air, airGain);
+  s.sources.push(vibrato, oscillator, breath);
   pattern.forEach((vowel, index) => {
     const t = start + index * step,
       end = t + step * 0.86;
-    const oscillator = context.createOscillator(),
-      envelope = context.createGain();
-    oscillator.type = dna.shape;
     const contour =
       reaction === "question"
         ? 0.85 + index * 0.15
@@ -145,48 +173,21 @@ export function renderVoice(
       frequency * (reaction === "frustration" ? 0.8 : 1.08),
       end,
     );
-    depth.connect(oscillator.frequency);
     envelope.gain.setValueAtTime(0.0001, t);
     envelope.gain.exponentialRampToValueAtTime(0.26, t + 0.012);
     envelope.gain.exponentialRampToValueAtTime(0.0001, end);
     // Two resonances move between vowels, giving a small vocal tract rather than a beep.
     vowels[vowel].forEach((formant, band) => {
-      const filter = context.createBiquadFilter(),
-        level = context.createGain();
-      filter.type = "bandpass";
-      filter.Q.value = band ? 4 : 3;
+      const filter = filters[band];
       filter.frequency.setValueAtTime(formant * dna.formant, t);
       filter.frequency.linearRampToValueAtTime(
         vowels[pattern[(index + 1) % pattern.length]][band] * dna.formant,
         end,
       );
-      level.gain.value = band ? 0.55 : 1;
-      oscillator.connect(filter);
-      filter.connect(level);
-      level.connect(envelope);
-      s.nodes.push(filter, level);
     });
-    envelope.connect(s.output);
-    oscillator.start(t);
-    oscillator.stop(end + 0.01);
-    s.nodes.push(oscillator, envelope);
-    s.sources.push(oscillator);
-    const breath = context.createBufferSource(),
-      air = context.createBiquadFilter(),
-      airGain = context.createGain();
-    breath.buffer = breathBuffer(context);
-    air.type = "highpass";
-    air.frequency.value = 1800;
     airGain.gain.setValueAtTime(0.0001, t);
     airGain.gain.linearRampToValueAtTime(dna.breath, t + 0.01);
     airGain.gain.exponentialRampToValueAtTime(0.0001, end);
-    breath.connect(air);
-    air.connect(airGain);
-    airGain.connect(s.output);
-    breath.start(t, index * 0.1);
-    breath.stop(end);
-    s.nodes.push(breath, air, airGain);
-    s.sources.push(breath);
   });
   return s.finish(duration);
 }

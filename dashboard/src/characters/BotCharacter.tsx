@@ -45,6 +45,17 @@ export const BotCharacter = memo(function BotCharacter(props: CharacterProps) {
     <IndependentCharacter {...props} />
   );
 });
+// A voice starts/ends frequently; keep its subscription outside the SVG/actor rig.
+function SpeakingHalo({ id, reduced }: { id: BotId; reduced: boolean }) {
+  const speaking = useAudio((s) => s.speaking?.id === id);
+  return speaking ? (
+    <span
+      data-speaking="true"
+      className={`speaking-halo ${reduced ? "speaking-still" : ""}`}
+      aria-hidden="true"
+    />
+  ) : null;
+}
 function CharacterRig({
   id,
   mood,
@@ -65,7 +76,6 @@ function CharacterRig({
 }: CharacterProps & { actor: Actor }) {
   const cast = castFor(id),
     dna = PERSONALITY[id];
-  const speaking = useAudio((s) => s.speaking?.id === id);
   const [displayMood, setDisplayMood] = useState(mood),
     [booped, setBooped] = useState(0);
   const root = useRef<HTMLDivElement>(null),
@@ -129,7 +139,6 @@ function CharacterRig({
         } as CSSProperties
       }
       data-character={id}
-      data-speaking={speaking || undefined}
       data-life={
         reduced
           ? "reduced"
@@ -162,12 +171,7 @@ function CharacterRig({
         className="character-seat"
         style={{ left: pointer ? 10 : 0, top: pointer ? 10 : 0 }}
       >
-        {speaking && (
-          <span
-            className={`speaking-halo ${reduced ? "speaking-still" : ""}`}
-            aria-hidden="true"
-          />
-        )}
+        <SpeakingHalo id={id} reduced={reduced} />
         <svg
           viewBox="0 0 64 68"
           width={size}

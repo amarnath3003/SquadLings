@@ -1,4 +1,9 @@
-import { playUi, playVoice, stopAudio, scheduleAudio } from "../effects/sound";
+import {
+  playUi,
+  voiceSequence,
+  stopAudio,
+  scheduleAudio,
+} from "../effects/sound";
 import { useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useIsPresent } from "motion/react";
 import { CAST } from "@swarm/shared/cast";
@@ -78,13 +83,15 @@ export function SquadSlider({
       scheduleAudio(
         () => {
           playUi(added ? "join" : "leave", { botId: bot.id, scope: "preview" });
-          playVoice(bot.id, added ? "greeting" : "frustration", {
-            scope: "preview",
-          });
         },
         i * 700,
         "preview",
       ),
+    );
+    voiceSequence(
+      changed.map((bot) => bot.id),
+      added ? "greeting" : "frustration",
+      "preview",
     );
     onChange(next);
   };

@@ -58,6 +58,19 @@ test("muted startup, keyboard enable, accessible settings and saved mix", async 
   await expect(
     page.getByRole("checkbox", { name: "Bot voices" }),
   ).not.toBeChecked();
+  await page.screenshot({ path: "artifacts/sound-settings-desktop.png" });
+  await page.setViewportSize({ width: 390, height: 844 });
+  const box = await page
+    .getByRole("dialog", { name: "Sound settings" })
+    .boundingBox();
+  expect(box!.x).toBeGreaterThanOrEqual(0);
+  expect(box!.x + box!.width).toBeLessThanOrEqual(390);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.screenshot({ path: "artifacts/sound-settings-mobile.png" });
 });
 
 test("standard controls emit once; reselect, text typing and hover stay silent", async ({
@@ -255,6 +268,89 @@ test("failed audio initialization leaves controls muted with a useful retry mess
     page.getByRole("button", { name: "Turn sound on", exact: true }),
   ).toHaveAttribute("aria-pressed", "false");
   expect((await diagnostics(page)).activeVoices).toBe(0);
+});
+
+test("stale queued voices expire and disabling voices cancels future utterances", async ({
+  page,
+}) => {
+  await enable(page);
+  await page.waitForTimeout(300);
+  const before = (await diagnostics(page)).voices;
+  await page.evaluate(async () => {
+    const audio = await import("/src/effects/sound.ts");
+    audio.stopAudio();
+    audio.playVoice("bot3", "sleep", { scope: "preview" });
+    audio.playVoice("bot1", "sleep", { scope: "preview" });
+    audio.playVoice("bot5", "greeting", { scope: "preview" });
+  });
+  await page.waitForTimeout(1300);
+  expect((await diagnostics(page)).voices - before).toBe(2);
+  const cancelled = await page.evaluate(async () => {
+    const audio = await import("/src/effects/sound.ts");
+    audio.voiceSequence(
+      ["bot1", "bot2", "bot3", "bot4", "bot5"],
+      "success",
+      "room",
+    );
+    audio.setAudioPreferences({ voices: false });
+    audio.setAudioPreferences({ voices: true });
+    return audio.getAudioDiagnostics();
+  });
+  expect(cancelled).toMatchObject({ activeVoices: 0, scheduled: 0, queued: 0 });
+  await page.waitForTimeout(900);
+  expect((await diagnostics(page)).voices).toBe(cancelled.voices);
+});
+
+test("a rejected browser resume can be retried without a false enabled state", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const resume = AudioContext.prototype.resume;
+    let first = true;
+    AudioContext.prototype.resume = function () {
+      if (first) {
+        first = false;
+        return Promise.reject(new Error("Suspended"));
+      }
+      return resume.call(this);
+    };
+  });
+  await page.reload();
+  await page
+    .getByRole("button", { name: "Turn sound on", exact: true })
+    .click();
+  await expect(page.getByRole("alert")).toContainText("Audio could not start");
+  await enable(page);
+  await expect(page.getByRole("alert")).toHaveCount(0);
+  expect((await diagnostics(page)).contextState).toBe("running");
+});
+
+test("a complete sound-enabled workflow keeps the final flourish unique", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await enable(page);
+  await page
+    .getByRole("button", { name: "Squad in action", exact: true })
+    .click();
+  await page.getByLabel("Speed").selectOption("4");
+  await page
+    .getByRole("button", { name: "Play sample run", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toBeVisible({ timeout: 20000 });
+  await page.waitForTimeout(3400);
+  const audio = await diagnostics(page);
+  expect(
+    audio.trace.filter(
+      (r: { label: string; channel: string }) =>
+        r.label === "complete" && r.channel === "effect",
+    ),
+  ).toHaveLength(1);
+  expect(audio.maxVoices).toBe(1);
+  expect(audio.maxEffects).toBeLessThanOrEqual(4);
+  expect(audio.voices).toBeGreaterThan(5);
+  expect(errors).toEqual([]);
 });
 
 test("all synthesized variants render finite, bounded, audible audio with silent tails", async ({
