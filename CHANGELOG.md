@@ -4,6 +4,12 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T02:52:29+05:30 — Verify and wrap the circle-slider checkpoint
+
+- Changed: Recorded final selector verification and labelled prior performance samples accurately. The slider implementation was saved in `56ef644`; a parallel workspace commit saved the documentation and separate activity work. No history was rewritten.
+- Validation: All seven slider checks passed, including continuous pointer alignment within 2 px, staged greetings, mute/hide/unmount cancellation, mobile/static reduced motion, and selected-size launch. All 48 logic tests passed. TypeScript/production builds passed in the workspace and in an isolated snapshot containing only the selector change. The broader browser run passed 30 of 31 checks; its remaining living-room speaking-halo check passed separately in the isolated snapshot. All 235 offline audio renders passed. Desktop/mobile screenshots, local documentation links, and diff whitespace were checked.
+- Limits: The first broader run occurred during concurrent activity edits; those changes have their own verification scope. No new production performance sample or human listening/visual approval is claimed. The user requested a quick wrap, so earlier audio performance figures are explicitly marked as preceding the redesigned fire. Verification servers were stopped; the user's development server was preserved.
+
 ## 2026-10-11T02:48:05+05:30 — Rebuild the squad selector around the character circles
 
 - Changed: Replaced the long seat/range layout with a compact 0–5 circle slider, starting empty. The active character moves continuously as the drag thumb on a visible rail; release snaps to its detent. Grey circles wake in place, stagger after larger jumps, and exchange neighbor waves/glances. All five gain focused faces, flowing canvas flames, warm light, and embers. Zero-agent launch redirects to assembly; selected team size controls the sample run.
