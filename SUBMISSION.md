@@ -5,7 +5,7 @@ Complete this file during the hackathon and use it to prepare your submission th
 ## Project
 
 - **Project name:** One-agent Computer Use test
-- **Short description:** A minimal, interactive, read-only smoke test for one OpenAI Agents API browser agent. It finds the official Agents API quickstart and reports its title and URL.
+- **Short description:** A minimal, interactive, read-only task runner for one OpenAI Agents API browser agent. The user enters a task, approves website origins, and receives the agent's result.
 - **Code repository URL:** TODO
 - **Final submitted implementation commit SHA:** TODO
 - **Working demo URL or local demo steps:** Follow [test/README.md](test/README.md) to install dependencies, export `OPENAI_API_KEY`, and run `npm start` from `test/`.
@@ -25,9 +25,9 @@ Participate solo or in a team of up to 4. Remove unused rows.
 - **Install command:** `cd test && npm install`
 - **Required environment variable names:** `OPENAI_API_KEY`; optionally `OPENAI_AGENT_MODEL`. Export values in the terminal; no `.env` file is required.
 - **Start command:** `cd test && npm start`
-- **Demo walkthrough:** Approve the requested `https://developers.openai.com` browser origin, then observe the agent’s answer containing the Agents API quickstart title and URL.
+- **Demo walkthrough:** Start the runner, enter a browser-based task, approve each requested website origin, then observe the agent’s result and URLs.
 - **Checks performed and results:** `cd test && npm install` installed `openai@7.32.0` with no reported vulnerabilities; `cd test && npm run check` passed. The SDK was imported successfully. A live call was not made because it needs a participant API key and Node.js 22 or newer, while the workspace has Node.js 18.18.0.
-- **Known limitations or incomplete features:** The test supports a public, read-only task only. It cancels browser sign-in requests and does not exercise mutations, private sites, screenshots, or recovery actions.
+- **Known limitations or incomplete features:** The runner supports public, read-only browser tasks only. It cancels browser sign-in requests and does not exercise mutations, private sites, screenshots, or recovery actions.
 - **Libraries, APIs, and public datasets used:** [OpenAI Agents API Computer Use guide](https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use) and the official `openai` JavaScript SDK. No datasets are used.
 - **AI usage record:** [AI_USAGE.md](AI_USAGE.md)
 - **Development change log:** [CHANGELOG.md](CHANGELOG.md)

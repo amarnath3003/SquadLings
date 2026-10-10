@@ -6,6 +6,7 @@ Use Codex during the hackathon and briefly document its actual contribution here
 
 | Date and time with timezone | Tool / model, if known | Task | Assistance and affected files | Human review / corrections | Validation and result |
 | --- | --- | --- | --- | --- | --- |
+| 2026-10-10T22:08:58+05:30 | Codex | Make the Computer Use test prompt-driven | Updated the Node.js runner to accept an interactive or command-line task and documented the read-only safety limits in `test/README.md` and root project files. | Pending human review | `npm run check` and the required SDK API-surface check passed. No API key or live request used. |
 | 2026-10-10T22:03:32+05:30 | Codex | Create a single-agent Agents API Computer Use test | Researched the official OpenAI Computer Use and Agents API documentation, then added the interactive Node.js test and setup documentation in `test/` plus README instructions. | Pending human review | Installed `openai@7.32.0`, ran the syntax check and required SDK API-surface check successfully. No API key or live request was used; the installed SDK requires Node.js 22 while the workspace has Node.js 18.18.0. |
 
 ## Template preparation

@@ -22,7 +22,7 @@ Keep your approved Luma QR code ready for entry, and bring your laptop and charg
 # Project overview
 
 - **Project name:** One-agent Computer Use test
-- **Short description:** An interactive, read-only smoke test for one OpenAI Agents API agent using an OpenAI-hosted browser. It finds the Agents API quickstart and reports its title and URL.
+- **Short description:** An interactive, read-only browser-task runner for one OpenAI Agents API agent. Enter a task, approve each requested website origin, and receive the agent's result.
 - **Working demo:** Run the local walkthrough in [test/README.md](test/README.md).
 - **Technology stack:** Node.js, the official `openai` JavaScript SDK, and the OpenAI Agents API.
 
@@ -34,7 +34,7 @@ Keep your approved Luma QR code ready for entry, and bring your laptop and charg
 
 ## Current status
 
-- Working features: Session creation, public-site origin approval, streamed task output, error reporting, and completed-session cleanup are implemented in [test/computer-use-agent.mjs](test/computer-use-agent.mjs).
+- Working features: Prompt entry, session creation, website-origin approval, streamed task output, error reporting, and completed-session cleanup are implemented in [test/computer-use-agent.mjs](test/computer-use-agent.mjs).
 - Known limitations: A live test requires Node.js 22 or newer, a permitted, billed OpenAI application API key, and an interactive terminal. The repository check does not make a live API call.
 - Libraries and APIs: [OpenAI Agents API Computer Use guide](https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use) and the official `openai` JavaScript SDK.
 
