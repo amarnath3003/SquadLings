@@ -21,14 +21,12 @@ export function EventControls({
 }) {
   const fire = lab.fire;
   const ensure = () => lab.spawn(id, template, mobile);
-  const call = (
-    tool: "click" | "type" | "scroll" | "read_text" | "wait",
-  ) => {
+  const call = (tool: "click" | "type" | "scroll" | "read_text" | "wait") => {
     ensure();
     const key = `manual-${Date.now()}`,
       viewport = useDashboard.getState().state.bots[id]!.viewport;
-    const x = viewport.width * 0.45,
-      y = viewport.height * 0.42;
+    const x = viewport.width * (tool === "read_text" ? 0.25 : 0.45),
+      y = viewport.height * (tool === "read_text" ? 0.3 : 0.42);
     fire("tool.called", { botId: id, callId: key, tool, args: {} }, id);
     if (tool === "click" || tool === "read_text") {
       fire(
@@ -37,12 +35,18 @@ export function EventControls({
           botId: id,
           x,
           y,
-          box: { x: x - 30, y: y - 20, width: 60, height: 40 },
+          box: {
+            x: x - 30,
+            y: y - 20,
+            width: tool === "read_text" ? 160 : 60,
+            height: 40,
+          },
           durationMs: 350,
         },
         id,
       );
-      if (tool === "click") lab.schedule(350, "cursor.click", { botId: id, x, y }, id);
+      if (tool === "click")
+        lab.schedule(350, "cursor.click", { botId: id, x, y }, id);
     }
     if (tool === "type")
       fire("cursor.type", { botId: id, x, y, length: 12, masked: true }, id);
@@ -127,10 +131,21 @@ export function EventControls({
           [
             ["pointer", "Click", () => call("click")],
             ["keyboard", "Type", () => call("type")],
-            ["note", "Output", () => {
-              ensure();
-              fire("bot.caption", { botId: id, text: "Composing an example update for the squad." }, id);
-            }],
+            [
+              "note",
+              "Output",
+              () => {
+                ensure();
+                fire(
+                  "bot.caption",
+                  {
+                    botId: id,
+                    text: "Composing an example update for the squad.",
+                  },
+                  id,
+                );
+              },
+            ],
             ["scroll", "Scroll", () => call("scroll")],
             ["eye", "Read", () => call("read_text")],
             ["clock", "Wait", () => call("wait")],

@@ -3,22 +3,41 @@
 .activity-animated .activity-hand-right {
   animation: activity-tap var(--action-cycle) ease-in-out infinite;
 }
-.activity-animated .activity-hand-right { animation-delay: calc(var(--action-cycle) * -0.5); }
-.activity-animated .activity-key { animation: activity-key var(--action-cycle) steps(1) infinite; }
+.activity-animated .activity-hand-right {
+  animation-delay: calc(var(--action-cycle) * -0.5);
+}
+.activity-animated .activity-key {
+  animation: activity-key var(--action-cycle) steps(1) infinite;
+}
 .activity-animated .activity-output-line {
   stroke-dasharray: 16;
   animation: activity-write calc(var(--action-cycle) * 2) ease-in-out infinite;
 }
-.activity-animated .activity-line-1 { animation-delay: calc(var(--action-cycle) * -0.7); }
-.activity-animated .activity-line-2 { animation-delay: calc(var(--action-cycle) * -1.4); }
-.activity-animated .activity-caret { animation: activity-key var(--action-cycle) steps(1) infinite; }
-.activity-animated .activity-writing-hand { animation: activity-write-hand var(--action-cycle) ease-in-out infinite; }
-.activity-animated .activity-scroll-lines { animation: activity-scroll var(--action-cycle) ease-in-out infinite; }
-.activity-animated .activity-pupil { animation: activity-read calc(var(--action-cycle) * 2) ease-in-out infinite; }
-.activity-animated .activity-scan { animation: activity-scan calc(var(--action-cycle) * 2) ease-in-out infinite; }
+.activity-animated .activity-line-1 {
+  animation-delay: calc(var(--action-cycle) * -0.7);
+}
+.activity-animated .activity-line-2 {
+  animation-delay: calc(var(--action-cycle) * -1.4);
+}
+.activity-animated .activity-caret {
+  animation: activity-key var(--action-cycle) steps(1) infinite;
+}
+.activity-animated .activity-writing-hand {
+  animation: activity-write-hand var(--action-cycle) ease-in-out infinite;
+}
+.activity-animated .activity-scroll-lines {
+  animation: activity-scroll var(--action-cycle) ease-in-out infinite;
+}
+.activity-animated .activity-pupil {
+  animation: activity-read calc(var(--action-cycle) * 2) ease-in-out infinite;
+}
+.activity-animated .activity-scan {
+  animation: activity-scan calc(var(--action-cycle) * 2) ease-in-out infinite;
+}
 .activity-animated .activity-question {
   transform-origin: 64px 12px;
-  animation: activity-question calc(var(--action-cycle) * 2) ease-in-out infinite;
+  animation: activity-question calc(var(--action-cycle) * 2) ease-in-out
+    infinite;
 }
 .activity-animated .activity-idea {
   transform-origin: 32px 0;
@@ -28,18 +47,136 @@
   transform-origin: 32px 54px;
   animation: activity-medal calc(var(--action-cycle) * 1.5) ease-out both;
 }
-.activity-animated .activity-victory-sparks { animation: activity-spark calc(var(--action-cycle) * 2) ease-in-out infinite; }
-@keyframes activity-tap { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
-@keyframes activity-key { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .2; } }
-@keyframes activity-write { 0% { stroke-dashoffset: 16; opacity: .3; } 70%, 100% { stroke-dashoffset: 0; opacity: 1; } }
-@keyframes activity-write-hand { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(5px, -2px); } }
-@keyframes activity-scroll { 0% { transform: translateY(calc(var(--scroll-step) * -0.5)); opacity: .2; } 45% { opacity: 1; } 100% { transform: translateY(calc(var(--scroll-step) * 0.5)); opacity: .2; } }
-@keyframes activity-read { 0%, 100% { transform: translateX(-3px); } 70% { transform: translateX(3px); } }
-@keyframes activity-scan { 0% { transform: translate(0, 0); } 45% { transform: translate(25px, 0); } 50% { transform: translate(0, 5px); } 95% { transform: translate(20px, 5px); } 100% { transform: translate(0, 0); } }
-@keyframes activity-question { 0%, 100% { transform: translateY(0) rotate(-8deg); } 50% { transform: translateY(-4px) rotate(8deg); } }
-@keyframes activity-eureka { 0% { opacity: 0; transform: scale(.3) translateY(8px); } 65% { opacity: 1; transform: scale(1.15) translateY(-3px); } 100% { opacity: 1; transform: scale(1); } }
-@keyframes activity-medal { 0% { opacity: 0; transform: scale(.4) rotate(-20deg); } 65% { opacity: 1; transform: scale(1.15) rotate(8deg); } 100% { opacity: 1; transform: scale(1) rotate(0deg); } }
-@keyframes activity-spark { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
+.activity-animated .activity-victory-sparks {
+  animation: activity-spark calc(var(--action-cycle) * 2) ease-in-out infinite;
+}
+@keyframes activity-tap {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(7px);
+  }
+}
+@keyframes activity-key {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.2;
+  }
+}
+@keyframes activity-write {
+  0% {
+    stroke-dashoffset: 16;
+    opacity: 0.3;
+  }
+  70%,
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+@keyframes activity-write-hand {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(5px, -2px);
+  }
+}
+@keyframes activity-scroll {
+  0% {
+    transform: translateY(calc(var(--scroll-step) * -0.5));
+    opacity: 0.2;
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(calc(var(--scroll-step) * 0.5));
+    opacity: 0.2;
+  }
+}
+@keyframes activity-read {
+  0%,
+  100% {
+    transform: translateX(-3px);
+  }
+  70% {
+    transform: translateX(3px);
+  }
+}
+@keyframes activity-scan {
+  0% {
+    transform: translate(0, 0);
+  }
+  45% {
+    transform: translate(25px, 0);
+  }
+  50% {
+    transform: translate(0, 5px);
+  }
+  95% {
+    transform: translate(20px, 5px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+@keyframes activity-question {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-8deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(8deg);
+  }
+}
+@keyframes activity-eureka {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(8px);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.15) translateY(-3px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes activity-medal {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) rotate(-20deg);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.15) rotate(8deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+@keyframes activity-spark {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  [data-activity-prop] *, [data-activity-face] * { animation: none !important; }
+  [data-activity-prop] *,
+  [data-activity-face] * {
+    animation: none !important;
+  }
 }

@@ -4,6 +4,17 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T02:57:24+05:30 — Give every SquadLing clear activity animations
+
+- Changed: Added original SVG activity faces and props, separate output composition and textbox keyboarding, directional scroll motion, reading with one magnified eye and a scanning hover, a lightbulb discovery, a curious ask, and a happy completion with raised hands and a check medal. Added Output preview and moved the Read preview over the synthetic page's text.
+- Why: Several activities had no director mapping; typing ignored field coordinates and scrolling only bounced slightly. The activity rig now works across all five characters while keeping the cursor hotspot accurate.
+- Lifecycle: Tool and approval cues stay active until completion or interruption. Matching call IDs prevent stale results from cancelling a newer action. Click, navigation, pause/stop, reset, hiding, and unmount clear activity motion. Reduced motion preserves readable static faces/props; typed content is not included in the artwork.
+- Affected: `dashboard/src/characters/Activity.tsx`, `BotCharacter.tsx`, `useBotActor.ts`, `director/director.ts`, `lab/CharacterLab.tsx`, `styles/activity.css`, activity/studio browser checks, and both READMEs. The initial artwork and routing were included in the existing `animation refine` checkpoint; this milestone completes their lifecycle, formatting, and verification. No dependencies, backend contracts, or external image assets were added.
+- Validation: Node 24.14.1 TypeScript and production build passed; all 48 logic tests passed. All 42 browser checks are verified: the full run passed 41/42, then the corrected placement check passed; a final focused rerun passed placement and render isolation. Eleven activity checks cover all 35 character/activity combinations, body/prop motion, desktop/mobile textbox coordinates, asymmetric eyes, repeat/interruption, long calls, stale results, signed/zero scrolling, empty typing, and reduced motion. Inspected screenshots for all seven activities.
+- Performance: A muted production Chrome 150 sample at 1440 × 1000, five synthetic 8 fps streams over 20 seconds including finishes/confetti, measured 60.0 fps / 16.7 ms p95, zero long tasks over 50 ms, and zero page errors.
+- Corrections: Fixed the activity hook's callback typing. Scoped reduced-motion assertions to the new body/props, excluding the existing bubble entrance. Changed placement verification to wait for the tile entrance to settle and isolation verification to await actual read completion. The earlier preview server had stopped; restarting the documented preview command resolved the initial performance connection failure.
+- Limitations: Human visual review remains pending; browser pages and event controls remain simulated. Live frames/events need the backend adapter. The muted synthetic performance sample does not certify live browser sessions or event hardware.
+
 ## 2026-10-11T02:52:29+05:30 — Verify and wrap the circle-slider checkpoint
 
 - Changed: Recorded final selector verification and labelled prior performance samples accurately. The slider implementation was saved in `56ef644`; a parallel workspace commit saved the documentation and separate activity work. No history was rewritten.

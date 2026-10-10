@@ -4,8 +4,15 @@ import type { BotId, Mood } from "@swarm/shared/types";
 import { PERSONALITY } from "./personality";
 import { lookOffset, type Point } from "../mood/attention";
 export type ActivityName =
-  | "output" | "type" | "scroll" | "read" | "ask"
-  | "found" | "finish" | "error" | "retry";
+  | "output"
+  | "type"
+  | "scroll"
+  | "read"
+  | "ask"
+  | "found"
+  | "finish"
+  | "error"
+  | "retry";
 export interface ActivityCue {
   kind: ActivityName;
   sequence: number;
@@ -28,7 +35,10 @@ export interface Actor {
   glide: (point: Point, duration: number) => void;
   click: (point: Point) => void;
   hop: () => void;
-  flourish: (kind: ActivityName, options?: { direction?: number; hold?: boolean }) => void;
+  flourish: (
+    kind: ActivityName,
+    options?: { direction?: number; hold?: boolean },
+  ) => void;
   clearActivity: (kind?: ActivityName) => void;
   look: (point?: Point) => void;
   stop: () => void;
@@ -210,15 +220,37 @@ export function useBotActor(
       },
       flourish: (kind, { direction = 1, hold } = {}) => {
         // Cursor details refine a tool cue without shortening its lifetime.
-        const held = hold ?? (activity.get()?.kind === kind && activity.get()?.held) ?? false;
+        const held =
+          hold ??
+          (activity.get()?.kind === kind && activity.get()?.held) ??
+          false;
         clearActivity();
-        const cue = { kind, sequence: ++sequence, direction: direction < 0 ? -1 : 1, held } as const;
+        const cue = {
+          kind,
+          sequence: ++sequence,
+          direction: direction < 0 ? -1 : 1,
+          held,
+        } as const;
         activity.set(cue);
-        const duration = { output: 1600, type: 1800, scroll: 1300, read: 2400,
-          ask: 2200, found: 1700, finish: 2400, error: 1200, retry: 900 }[kind];
-        if (!held) activityTimer = setTimeout(() => clearActivity(), duration / speed);
+        const duration = {
+          output: 1600,
+          type: 1800,
+          scroll: 1300,
+          read: 2400,
+          ask: 2200,
+          found: 1700,
+          finish: 2400,
+          error: 1200,
+          retry: 900,
+        }[kind];
+        if (!held)
+          activityTimer = setTimeout(() => clearActivity(), duration / speed);
         if (reduced) return;
-        const options = { duration: time(duration), ease: "easeInOut" as const, repeat: held ? Infinity : 0 };
+        const options = {
+          duration: time(duration),
+          ease: "easeInOut" as const,
+          repeat: held ? Infinity : 0,
+        };
         if (kind === "finish") {
           animate(hopY, [0, 3, -17, 0, -10, 0, -4, 0, 0], options);
           animate(tilt, [0, -7, 7, -5, 5, -2, 0, 0, 0], options);
@@ -247,7 +279,11 @@ export function useBotActor(
         }
         if (kind === "scroll") {
           const sign = cue.direction;
-          animate(hopY, [0, -7 * sign, 4 * sign, -7 * sign, 4 * sign, 0], options);
+          animate(
+            hopY,
+            [0, -7 * sign, 4 * sign, -7 * sign, 4 * sign, 0],
+            options,
+          );
           animate(tilt, [0, -6, 4, -6, 4, 0], options);
         }
         if (kind === "read") {

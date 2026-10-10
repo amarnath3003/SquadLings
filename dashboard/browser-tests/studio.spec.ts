@@ -182,7 +182,9 @@ test("one bot event does not render another bot tile", async ({ page }) => {
     await page.getByLabel("Send an event to").selectOption(id);
     await page.getByRole("button", { name: "Read", exact: true }).click();
   }
-  await page.waitForTimeout(1100);
+  await expect(
+    page.locator('[data-actor="bot2"] [data-character]'),
+  ).toHaveAttribute("data-activity", "idle");
   await page.getByLabel("Send an event to").selectOption("bot1");
   const before = {
     bot1: Number(

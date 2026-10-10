@@ -126,10 +126,18 @@ function CharacterRig({
   const shownMood = booped && !pointer ? "happy" : displayMood;
   const living = life.active && mood !== "failed";
   const cueActivity = useActorActivity(actor);
-  const activity = !paused && !resting && mood !== "failed" &&
-    (mood !== "worried" || cueActivity?.kind === "ask") ? cueActivity : null;
-  const expressiveActivity = activity &&
-    ["read", "ask", "found", "finish", "type", "output"].includes(activity.kind);
+  const activity =
+    !paused &&
+    !resting &&
+    mood !== "failed" &&
+    (mood !== "worried" || cueActivity?.kind === "ask")
+      ? cueActivity
+      : null;
+  const expressiveActivity =
+    activity &&
+    ["read", "ask", "found", "finish", "type", "output"].includes(
+      activity.kind,
+    );
   return (
     <div
       ref={root}
@@ -185,7 +193,7 @@ function CharacterRig({
           width={size}
           height={(size * 68) / 64}
           role="img"
-          aria-label={`${cast.name}, ${resting ? "resting" : booped && !pointer ? "happy" : activity?.kind ?? mood}`}
+          aria-label={`${cast.name}, ${resting ? "resting" : booped && !pointer ? "happy" : (activity?.kind ?? mood)}`}
         >
           <ellipse
             className="life-shadow"
