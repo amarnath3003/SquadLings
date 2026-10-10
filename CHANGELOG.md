@@ -4,6 +4,16 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T03:45:01+05:30 — Give the orchestrator an original charcoal character
+
+- Changed: Replaced the OpenAI logo with Onyx, “the calm conductor,” in assembly, workflow, and the nine-state gallery. Shared paired glyphs render white on a flat `#262626` circle; the resting face is `^ ^` with no mouth. Active report, approval, completion, and failure reactions can add details, following the user’s clarification.
+- Personality: Measured thinking tilts, watchful glances, report nods, and state-specific lines. Ambient motion stops hidden/offscreen; reduced motion preserves static expressions. Approval and terminal states take priority over report reception, and reset clears reception history.
+- Affected: Shared cast/glyph colour, original `MasterCharacter.tsx`, coordinator card/copy, launch/merge targeting, gallery, lifecycle browser checks, READMEs, submission description, spec, and source attribution. Removed the former logo component/asset; backend `master` identity and five browser-agent slots remain unchanged. No dependencies or external art added.
+- Validation: Build/TypeScript and all 48 logic tests passed in an isolated Onyx snapshot. Both new lifecycle browser checks passed in the workspace; the full 44-check browser suite passed in the isolated Onyx snapshot, including activities, audio, living room, reports/approvals, slider, workflow, mobile, and reduced motion. Separate Chrome inspection verified exact charcoal/white resting symbols, no resting mouth or shadows/filters, all nine states, five-agent completion, 390 px layout without overflow, and zero page errors. Resting/gallery/completion/phone screenshots inspected.
+- Corrections: Refined the initial detailed idle face to match the supplied symbol-only base; the user clarified that active mouths/details are welcome. Corrected test setup to select a worker before report delivery and scroll the character fully offscreen. A build initially caught missing Motion imports in concurrent selector edits; those imports were restored before the successful build.
+- Checkpoint: Implementation was included in the shared workspace commit `32322fb` (“onyx UI integration”); this follow-up records Onyx’s contribution and verification without rewriting that checkpoint.
+- Limitations: Human visual review pending; workflow/browser pages remain simulated. No new performance measurement, deployment, or remote push is claimed.
+
 ## 2026-10-11T03:40:15+05:30 — Replace the agent slider with a growing character stack
 
 - Changed: Removed the range input, draggable character thumb, rail, and extra count choices. Fixed − on the left and + on the right of a centred, overlapping character stack; arrivals pop in and departures tuck away. Added a live count, selected names, next-teammate hint, empty state, 44 px minimum buttons, keyboard activation, and responsive portrait sizing. Preserved greetings, full-squad flames, reduced motion, launch limits and cancellation.

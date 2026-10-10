@@ -94,6 +94,7 @@ Run `npm run test:browser --workspace dashboard -- activity.spec.ts` for the act
 
 Verified using Node 24.14.1 and installed Google Chrome 150 on this host:
 
+- Onyx checkpoint: isolated build/TypeScript and 48 logic tests passed; both new orchestrator lifecycle browser checks passed in the workspace, and all 44 browser checks passed in the isolated Onyx snapshot. A separate Chrome inspection verified the charcoal/white symbol-only resting face, nine states, five-agent completion, 390 px layout without overflow, and zero page errors. Inspected screenshots are `artifacts/onyx-*.png`; details are in `onyx-check.json`. Human visual review remains pending.
 - Stack selector update: TypeScript/build and 48 logic tests passed. Six selector checks plus the blink check passed in an isolated development copy; all nine studio and ten audio checks passed in the shared working tree. Desktop and 390/320 px selector screenshots were inspected. At 320 px the selector fits, while surrounding page chrome retains an existing 20 px horizontal overflow. Concurrent character work was excluded from the isolated build.
 
 - TypeScript and production build pass.
