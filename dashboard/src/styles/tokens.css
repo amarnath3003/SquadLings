@@ -1,17 +1,23 @@
-/* Official --event-* values: https://devday.openai.com/, fetched 2026-10-10. See docs/reference/brand-sources.md. */
+/* main.tsx installs official --event-* values from the shared DEVDAY_COLORS palette. */
 :root {
-  --event-purple: #924ff7;
-  --event-green: #04b84c;
-  --event-orange: #ff8549;
-  --event-blue: #006aff;
+  color-scheme: dark;
   --sky: #a6d8f5;
-  --ink: #111111;
+  /* DevDay dark mode: black background, white foreground. */
+  --ink: #ffffff;
   --master: #0d0d0d;
-  --paper: #f8f8f5;
-  --surface: #ffffff;
-  --line: #e5e5df;
-  --muted: #6b6b65;
-  --soft: #efefe9;
+  --paper: #000000;
+  --surface: #0d0d0d;
+  --line: #333333;
+  --line-strong: #707070;
+  --muted: #999999;
+  --soft: #1f1f1f;
+  --surface-hover: #242424;
+  --accent-soft: color-mix(in srgb, var(--event-purple) 14%, var(--surface));
+  --warm-soft: color-mix(in srgb, var(--event-orange) 12%, var(--surface));
+  --warning-ink: #ffbf8f;
+  --danger-soft: #2b1515;
+  --danger-ink: #ffa898;
+  --night-surface: #11111a;
   font-family: Arial, Helvetica, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -30,6 +36,11 @@ button,
 input,
 select {
   font: inherit;
+}
+input,
+select {
+  color: var(--ink);
+  background: var(--surface);
 }
 button,
 a,
@@ -75,8 +86,8 @@ button svg {
   pointer-events: none;
 }
 ::selection {
-  background: #924ff733;
+  background: color-mix(in srgb, var(--event-purple) 20%, transparent);
 }
 input[type="checkbox"] {
-  accent-color: #111;
+  accent-color: var(--event-blue);
 }

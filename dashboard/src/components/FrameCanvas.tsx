@@ -29,17 +29,25 @@ export function FrameCanvas({
       h = phone ? 844 : 800;
     canvas.width = w;
     canvas.height = h;
+    const styles = getComputedStyle(canvas);
+    const theme = (name: string) => styles.getPropertyValue(name).trim();
+    const paper = theme("--paper"),
+      surface = theme("--surface"),
+      ink = theme("--ink"),
+      muted = theme("--muted"),
+      line = theme("--line"),
+      soft = theme("--soft");
     const draw = () => {
       if (document.hidden) return;
       frame++;
-      ctx.fillStyle = "#fafaf8";
+      ctx.fillStyle = paper;
       ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = surface;
       ctx.fillRect(0, 0, w, 100);
-      ctx.fillStyle = "#191919";
+      ctx.fillStyle = ink;
       ctx.font = `500 ${phone ? 18 : 24}px Arial`;
       ctx.fillText("Example workspace", phone ? 24 : 55, 58);
-      ctx.fillStyle = "#8b8b87";
+      ctx.fillStyle = muted;
       ctx.font = `${phone ? 12 : 17}px Arial`;
       ctx.fillText(
         "Synthetic page · no website connected",
@@ -53,27 +61,23 @@ export function FrameCanvas({
       for (let i = 0; i < (phone ? 3 : 4); i++) {
         const x = pad + (i % cols) * (cw + gap),
           y = 140 + Math.floor(i / cols) * 250;
-        ctx.fillStyle = "#fff";
+        ctx.fillStyle = surface;
         ctx.fillRect(x, y, cw, 215);
-        ctx.strokeStyle = "#e7e7e2";
+        ctx.strokeStyle = line;
         ctx.strokeRect(x, y, cw, 215);
         ctx.fillStyle = color + "24";
         ctx.fillRect(x + 20, y + 20, 54, 54);
-        ctx.fillStyle = "#b8b8b0";
+        ctx.fillStyle = muted;
         ctx.fillRect(x + 20, y + 100, cw * 0.6, 8);
-        ctx.fillStyle = "#e4e4de";
+        ctx.fillStyle = soft;
         ctx.fillRect(x + 20, y + 124, cw * 0.8, 7);
         ctx.fillRect(x + 20, y + 145, cw * 0.5, 7);
         ctx.fillStyle = color;
         ctx.fillRect(x + 20, y + 172, 90, 24);
       }
       if (load) {
-        const gradient = ctx.createLinearGradient(0, 0, w, h);
-        gradient.addColorStop(0, color + "10");
-        gradient.addColorStop(0.5 + Math.sin(frame / 14) * 0.3, color + "45");
-        gradient.addColorStop(1, "#ffffff00");
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 100, w, h - 100);
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 97, ((frame % 80) / 80) * w, 3);
       }
     };
     draw();

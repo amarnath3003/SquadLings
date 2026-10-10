@@ -47,10 +47,6 @@ function Flame({ className = "" }: { className?: string }) {
         d="M13 1C16 9 7 10 10 17c-4-2-4-5-4-5S0 18 2 24c3 11 22 10 21-2-1-7-5-10-5-10s1 8-3 9C20 11 13 1 13 1Z"
         fill="currentColor"
       />
-      <path
-        d="M12 18c1 5-5 5-3 10 2 4 9 2 8-2 0-3-3-5-3-5s1 4-2 5c2-4 0-8 0-8Z"
-        fill="#FFE9A3"
-      />
     </svg>
   );
 }

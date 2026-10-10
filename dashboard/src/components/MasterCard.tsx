@@ -34,7 +34,7 @@ export function MasterCard({
           tick={tick}
           shared
           ringColor={
-            lastBot ? CAST.find((bot) => bot.id === lastBot)!.color : "#111"
+            lastBot ? CAST.find((bot) => bot.id === lastBot)!.color : "var(--ink)"
           }
         />
         <div>

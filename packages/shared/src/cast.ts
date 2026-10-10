@@ -1,10 +1,18 @@
 import type { BotId, Mood } from "./types";
-// Four event tokens fetched from devday.openai.com. Sky remains a local sticker token.
+// Exact live :root tokens from devday.openai.com, verified 2026-10-11 (IST).
+// See docs/reference/brand-sources.md. Sky is a local sticker colour.
+export const DEVDAY_COLORS = {
+  purple: "#924FF7",
+  green: "#04B84C",
+  orange: "#FF8549",
+  blue: "#006AFF",
+} as const;
+
 export const CAST = [
   {
     id: "bot1",
     name: "Plum",
-    color: "#924FF7",
+    color: DEVDAY_COLORS.purple,
     stickerColor: "#5B30A6",
     signature: "suspicious",
     personality: "The skeptic",
@@ -13,7 +21,7 @@ export const CAST = [
   {
     id: "bot2",
     name: "Lime",
-    color: "#04B84C",
+    color: DEVDAY_COLORS.green,
     stickerColor: "#58A81A",
     signature: "found",
     personality: "The finder",
@@ -22,7 +30,7 @@ export const CAST = [
   {
     id: "bot3",
     name: "Tango",
-    color: "#FF8549",
+    color: DEVDAY_COLORS.orange,
     stickerColor: "#DE5A26",
     signature: "bored",
     personality: "The patient one",
@@ -31,7 +39,7 @@ export const CAST = [
   {
     id: "bot4",
     name: "Blu",
-    color: "#006AFF",
+    color: DEVDAY_COLORS.blue,
     stickerColor: "#2E61C8",
     signature: "focused",
     personality: "The doer",

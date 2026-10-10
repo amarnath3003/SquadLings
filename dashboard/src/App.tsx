@@ -158,7 +158,7 @@ export default function App() {
                 <path
                   d="M18 33l5-7 5 7M36 33l5-7 5 7"
                   fill="none"
-                  stroke="white"
+                  stroke="var(--paper)"
                   strokeWidth="4"
                   strokeLinecap="round"
                 />

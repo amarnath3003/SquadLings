@@ -195,15 +195,6 @@ function CharacterRig({
           role="img"
           aria-label={`${cast.name}, ${resting ? "resting" : booped && !pointer ? "happy" : (activity?.kind ?? mood)}`}
         >
-          <ellipse
-            className="life-shadow"
-            cx="32"
-            cy="64"
-            rx="20"
-            ry="2.8"
-            fill="#111"
-            opacity=".11"
-          />
           <motion.g
             data-action-body
             style={{
@@ -231,24 +222,7 @@ function CharacterRig({
             >
               <g className={living ? "idle-float" : ""}>
                 <g className="life-breath">
-                  <circle cx="32" cy="32" r="32" fill="white" />
                   <circle cx="32" cy="32" r="30" fill={cast.color} />
-                  <path
-                    d="M12 24A22 22 0 0 1 34 10"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="2"
-                    opacity=".2"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M17 53A25 25 0 0 0 53 40"
-                    fill="none"
-                    stroke="#111"
-                    strokeWidth="1.3"
-                    opacity=".07"
-                    strokeLinecap="round"
-                  />
                   <motion.g style={{ x: actor.eyeX, y: actor.eyeY }}>
                     <motion.g
                       data-gaze
@@ -286,12 +260,6 @@ function CharacterRig({
                           )}
                         </motion.g>
                       </motion.g>
-                      {booped > 0 && !pointer && (
-                        <g fill="#fff" opacity=".35">
-                          <ellipse cx="16" cy="39" rx="4" ry="2" />
-                          <ellipse cx="48" cy="39" rx="4" ry="2" />
-                        </g>
-                      )}
                     </motion.g>
                   </motion.g>
                   {activity && <ActivityProps cue={activity} />}

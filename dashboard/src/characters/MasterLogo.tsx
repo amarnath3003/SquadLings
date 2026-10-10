@@ -8,7 +8,7 @@ export const MasterLogo = memo(function MasterLogo({
   size = 48,
   tick = 0,
   shared = false,
-  ringColor = "#111",
+  ringColor = "var(--ink)",
 }: {
   state?: string;
   reduced?: boolean;

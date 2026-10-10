@@ -29,7 +29,6 @@ export function ActivityFace({ cue }: { cue: ActivityCue }) {
             cy="30"
             r="9"
             fill="white"
-            fillOpacity=".85"
             {...{ stroke: "#171717", strokeWidth: 2.8 }}
           />
           <circle
@@ -38,12 +37,6 @@ export function ActivityFace({ cue }: { cue: ActivityCue }) {
             cy="30"
             r="4"
             fill="#171717"
-          />
-          <path
-            d="M15 24l3-2"
-            stroke="white"
-            strokeWidth="2"
-            strokeLinecap="round"
           />
           <circle cx="43" cy="31" r="2.8" fill="#171717" />
           <path d="M28 37l6 6M39 23q5-3 9 0" {...ink} />
@@ -79,10 +72,6 @@ export function ActivityFace({ cue }: { cue: ActivityCue }) {
             strokeWidth="2.5"
             strokeLinecap="round"
           />
-          <g fill="white" opacity=".4">
-            <ellipse cx="15" cy="38" rx="4" ry="2" />
-            <ellipse cx="49" cy="38" rx="4" ry="2" />
-          </g>
         </g>
       );
     case "type":

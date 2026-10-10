@@ -24,6 +24,9 @@ export function SquadFire({
       rowLeft = 0;
     let centers: { x: number; y: number; radius: number }[] = [];
     const started = performance.now();
+    const flameColor = getComputedStyle(parent)
+      .getPropertyValue("--event-orange")
+      .trim();
     const measure = () => {
       const bounds = element.getBoundingClientRect();
       const row = parent.getBoundingClientRect();
@@ -143,44 +146,8 @@ export function SquadFire({
           radius *
           (3.0 + Math.sin(t * 3.2 + phase) * 0.45) *
           (0.4 + ignition * 0.6);
-        const glow = ctx.createRadialGradient(
-          x,
-          y,
-          radius * 0.6,
-          x,
-          y,
-          radius * 1.9,
-        );
-        glow.addColorStop(0, "#ffb13d50");
-        glow.addColorStop(1, "#ff9a2900");
-        ctx.fillStyle = glow;
-        ctx.fillRect(x - radius * 2, y - radius * 2, radius * 4, radius * 4);
-        const outer = ctx.createLinearGradient(x, base - tall, x, base);
-        outer.addColorStop(0, "#ffb94b00");
-        outer.addColorStop(0.12, "#ffbc46dd");
-        outer.addColorStop(0.55, "#ff752bf0");
-        outer.addColorStop(1, "#ff5122aa");
-        ctx.fillStyle = outer;
-        ctx.filter = "blur(1px)";
+        ctx.fillStyle = flameColor;
         plume(x, base, radius * 1.08, tall, t, phase);
-        ctx.fill();
-        ctx.filter = "none";
-        const inner = ctx.createLinearGradient(x, base - tall * 0.84, x, base);
-        inner.addColorStop(0, "#ffe17b00");
-        inner.addColorStop(0.22, "#ffe285f0");
-        inner.addColorStop(1, "#fff1a8e0");
-        ctx.fillStyle = inner;
-        plume(
-          x + Math.sin(t * 4 + phase) * 2,
-          base - 1,
-          radius * 0.86,
-          tall * 0.83,
-          t + 0.22,
-          phase,
-        );
-        ctx.fill();
-        ctx.fillStyle = "#fff4c0a0";
-        plume(x, base - 1, radius * 0.63, tall * 0.61, t + 0.5, phase + 1);
         ctx.fill();
         // Three rising embers per bot, with a gentle fade and no particle allocations.
         if (!reduced)
@@ -190,7 +157,7 @@ export function SquadFire({
               x + Math.sin(i * 7 + n * 3) * radius + Math.sin(t * 2 + n) * 4;
             const ey = base - tall * 0.4 - progress * tall * 0.8;
             ctx.globalAlpha = Math.sin(progress * Math.PI) * 0.6 * ignition;
-            ctx.fillStyle = n % 2 ? "#ff9c30" : "#ffd377";
+            ctx.fillStyle = flameColor;
             ctx.beginPath();
             ctx.ellipse(ex, ey, 1, 1.8, 0.3, 0, Math.PI * 2);
             ctx.fill();

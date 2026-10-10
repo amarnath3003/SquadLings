@@ -4,6 +4,16 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T03:18:36+05:30 — Match the live DevDay palette and default to a flat dark theme
+
+- Changed: Fetched the current DevDay website and its linked stylesheet directly; verified exact purple `#924FF7`, green `#04B84C`, orange `#FF8549`, blue `#006AFF`, and dark-mode black/white primitives. Centralized the four event colours in `DEVDAY_COLORS`, shared by character fills and CSS. The existing four hex values already matched the live website; Sky remains the local sticker-derived `#A6D8F5`.
+- Why: The user requested web-verified exact colours, simple opaque fills without reflections/shadows/highlights, and then a dark default like the current DevDay website.
+- Appearance: Removed white body rims, reflection/highlight strokes, blush overlays, ground shadows, colour filters, card/control shadows, and glows. Flames retain motion as single event-orange silhouettes. Added black page/white text, charcoal panels, readable muted labels, dark controls and browser metadata across studio, gallery, sound settings, workflow, and results. Synthetic pages use the same flat theme and an animated load stripe; real streamed frames retain their content. Official Master artwork stays unmodified.
+- Affected: Shared cast, dashboard startup/metadata, character/activity/logo rendering, squad flames, preview canvas, all theme styles, source attribution, project spec, READMEs, and AI usage record. No dependencies, backend contracts, or external image assets added.
+- Validation: Node 24.14.1 production build/TypeScript and all 48 logic tests passed. All 42 browser checks passed during the flat-palette update; all 16 studio/slider checks passed again after the final dark-theme changes. A separate browser inspection with a light OS preference checked 60 exact body fills, one circle per body without shading or inherited filters/shadows, completed workflow, sound settings, and mobile layout without overflow; zero page errors. Inspected desktop, gallery, workflow/results, settings, and mobile screenshots. Live CSS-to-code comparison and diff whitespace passed.
+- Corrections: Fixed the temporary visual inspection's overly strict Speed label selector after a timeout; the corrected inspection passed. Retained distinct foreground/background colours for primary buttons, toggles, and the brand face under the dark theme.
+- Limitations: Human visual review pending. The official website publishes four event tokens, not an official Sky token. Supporting charcoal/status colours are local choices. Performance has not been remeasured after this styling change; prior samples predate it. Demo remains simulated; no deployment or remote push is claimed.
+
 ## 2026-10-11T02:57:24+05:30 — Give every SquadLing clear activity animations
 
 - Changed: Added original SVG activity faces and props, separate output composition and textbox keyboarding, directional scroll motion, reading with one magnified eye and a scanning hover, a lightbulb discovery, a curious ask, and a happy completion with raised hands and a check medal. Added Output preview and moved the Read preview over the synthetic page's text.

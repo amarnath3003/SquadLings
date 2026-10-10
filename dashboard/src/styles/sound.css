@@ -11,10 +11,9 @@
   top: calc(100% + 14px);
   width: min(310px, calc(100vw - 24px));
   padding: 22px;
-  background: var(--surface, #fff);
-  border: 1px solid var(--border, #deded8);
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: 20px;
-  box-shadow: 0 16px 55px #1112;
 }
 .sound-settings-title {
   display: flex;
@@ -24,7 +23,7 @@
 }
 .sound-settings-title span {
   font-size: 12px;
-  color: #72746b;
+  color: var(--muted);
 }
 .sound-settings label {
   display: flex;
@@ -36,21 +35,21 @@
 .sound-settings input[type="range"] {
   width: 100%;
   margin: 14px 0 18px;
-  accent-color: #111;
+  accent-color: var(--ink);
 }
 .sound-switch {
   padding: 12px 0;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--line);
 }
 .sound-switch input {
-  accent-color: #111;
+  accent-color: var(--ink);
   width: 17px;
   height: 17px;
 }
 .sound-settings p {
   font-size: 12px;
   line-height: 1.6;
-  color: #72746b;
+  color: var(--muted);
   margin: 14px 0;
 }
 .sound-error {
@@ -60,9 +59,8 @@
   width: 280px;
   padding: 14px;
   border-radius: 12px;
-  background: #fff2e8;
-  color: #82330c;
-  box-shadow: 0 10px 30px #1111;
+  background: var(--warm-soft);
+  color: var(--warning-ink);
   z-index: 95;
   font-size: 13px;
 }
@@ -88,7 +86,7 @@
 }
 .voice-bank p {
   font-size: 13px;
-  color: #72746b;
+  color: var(--muted);
   margin: 12px 0;
 }
 .voice-bank label {
@@ -113,11 +111,11 @@ button.matrix-face {
   color: inherit;
 }
 button.matrix-face:hover {
-  background: #11100008;
+  background: var(--soft);
   border-radius: 12px;
 }
 button.matrix-face:focus-visible {
-  outline: 2px solid #111;
+  outline: 2px solid var(--ink);
   outline-offset: -2px;
   border-radius: 12px;
 }

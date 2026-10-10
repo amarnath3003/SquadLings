@@ -2,6 +2,10 @@
 
 Local frontend for the character/animation brief in `docs/Rough/characters-animation-prompt.md`. No backend, key, or paid API is needed.
 
+The default theme uses the current DevDay website's black `#000000` background and white `#FFFFFF` foreground, with local charcoal panels, muted grey labels, dark native controls, and a matching browser theme colour. It stays dark with either OS colour preference. Studio, gallery, workflow, sound settings, results, and synthetic page previews share the theme; actual streamed website frames retain their original content.
+
+Characters use single opaque fills, black expression glyphs, and no reflections, highlights, blush overlays, body rims, shadows, or glows. The live DevDay website's exact purple `#924FF7`, green `#04B84C`, orange `#FF8549`, and blue `#006AFF` are shared by the cast and interface through `DEVDAY_COLORS` in `packages/shared/src/cast.ts`. Sky `#A6D8F5` remains a local sticker colour; the website publishes no fifth event token. Full-squad flames are solid orange silhouettes. See [brand-sources.md](../docs/reference/brand-sources.md) for the fetched stylesheet and verification notes.
+
 From the repository root, with **Node.js 22.12 or newer**:
 
 ```sh
@@ -16,7 +20,7 @@ Open **http://127.0.0.1:5173/** for the studio or **http://127.0.0.1:5173/lab** 
 
 1. Meet Plum, Lime, Tango, Blu, and Sky in their living room. Move the pointer nearby and watch their gaze follow. Each bot breathes, blinks, shifts its weight, and has its own gestures.
 2. Try **Say hello**, **Dance break**, **Pass a spark**, **Surprise them**, or **Nap time / Wake up**. Drag a character and release it to spring home. They also exchange short, prewritten remarks; **Chatter** switches those off.
-3. Select a character and preview expressions. Press and release a boop target for squash, a happy reaction, blush, hearts, and optional sound. Enter/Space also works.
+3. Select a character and preview expressions. Press and release a boop target for squash, a happy reaction, hearts, and optional sound. Enter/Space also works.
 4. The squad starts empty. Drag across the compact row of circles, or use arrow keys, Home/End, PageUp/PageDown, or +/−. Grey circles wake in place and greet their neighbor. At five, every bot has a determined face and its own flames. Drag back to **None** to clear the team. Pick Trip Planner, QA Swarm, or Auto.
 5. Wake at least one teammate, then play a sample run. Watch the tiles, shared board, and reports to the Master. An empty run screen links back to the focused squad control.
 6. Use event buttons to try a particular reaction. Approval controls act only on this simulated run.
@@ -44,7 +48,7 @@ See [sound-design.md](../docs/reference/sound-design.md) for sound coverage, bac
 
 ## How the characters stay alive
 
-`characters/useCharacterLife.ts` owns ambient body/gaze/blink values independently from the event-driven cursor rig. Nine gesture sequences include anticipation, movement, and a soft settle. Each character has a different habit mix and tempo in `characters/life.ts`; breathing and shadows use CSS transforms. A single shared pointer listener updates motion values without frame-by-frame React renders. Portraits get autonomous gestures and wandering glances; small cursor bots combine continuous breathing/blinking with their event-driven action gestures to keep the five-stream view smooth.
+`characters/useCharacterLife.ts` owns ambient body/gaze/blink values independently from the event-driven cursor rig. Nine gesture sequences include anticipation, movement, and a soft settle. Each character has a different habit mix and tempo in `characters/life.ts`; breathing uses CSS transforms. A single shared pointer listener updates motion values without frame-by-frame React renders. Portraits get autonomous gestures and wandering glances; small cursor bots combine continuous breathing/blinking with their event-driven action gestures to keep the five-stream view smooth.
 
 Ambient activity stops when a character leaves the viewport, the document is hidden, or the character is paused. Reduced motion retains expressions and readable reactions while disabling breathing, gestures, dragging, and particles. Task errors and approvals retain their event-driven faces. The studio's chatter and social scenes are local, prewritten entertainment; no model calls, conversation memory, or autonomous backend work is involved.
 
@@ -90,9 +94,10 @@ Verified using Node 24.14.1 and installed Google Chrome 150 on this host:
 
 - TypeScript and production build pass.
 - 48 Vitest checks cover the existing mood/emote/store/geometry contracts plus audio event ownership, lifecycle cue coverage, priorities, cooldowns, speed filtering, preferences, and the rolling start budget.
-- All 42 browser checks are verified, including 11 activity checks, seven slider checks, the existing living-room, audio, full-run, mobile, reduced-motion, cursor/ripple accuracy, dialog-focus, and render-isolation checks. The full run passed 41 of 42; the textbox check measured during the tile's entrance scale. After making that check wait for settled geometry, it passed a focused rerun. A final focused run passed both textbox placement and render isolation; the latter now waits for the actual read completion rather than a fixed delay.
+- The full 42-check browser suite passed during the flat-palette update, covering activities, slider, living room, audio, workflow, mobile, reduced motion, cursor/ripple accuracy, dialog focus, and render isolation. After the dark theme and synthetic preview changes were finished, all 16 studio/slider checks passed again.
+- A separate browser inspection with a light OS preference verified the default dark theme, 60 exact character fills (five living-room portraits, five powered selector portraits, and all 50 gallery faces), one opaque circle per body, no body shading or inherited shadow/filter effects, a completed workflow, sound settings, mobile layout without overflow, and zero page errors. Screenshots are in ignored `dashboard/artifacts/dark-*.png`; the inspection report is `flat-theme-check.json`. The temporary inspection initially used an overly strict Speed label; correcting the selector resolved that timeout.
 - All 195 voice variants and 40 effects render finite, non-silent output with controlled peaks (maximum 0.215), durations no longer than 0.730 seconds, and silent tails. See the ignored audio report and audition WAV described in [sound-design.md](../docs/reference/sound-design.md).
-- Current activity checkpoint: a muted production Chrome sample at 1440 × 1000 over 20 seconds, with five synthetic 8 fps streams including completion reactions, measured **60.0 fps / 16.7 ms p95**, **zero long tasks over 50 ms**, and **zero page errors**. The report is generated at `dashboard/artifacts/performance.json`; synthetic headless results vary with host load.
+- Earlier activity checkpoint, before the flat-fill/dark-theme update: a muted production Chrome sample at 1440 × 1000 over 20 seconds, with five synthetic 8 fps streams including completion reactions, measured **60.0 fps / 16.7 ms p95**, **zero long tasks over 50 ms**, and **zero page errors**. The report is generated at `dashboard/artifacts/performance.json`; synthetic headless results vary with host load.
 - Earlier audio-checkpoint production samples at 1440 × 1000 over 20 seconds (before this circle/fire redesign): studio with pointer tracking, dance, and spark measured **55.9 fps / 33.3 ms p95**, with **zero long tasks over 50 ms**; five synthetic 8 fps streams including finishes measured **58.7 fps / 16.8 ms p95**, with **two long tasks (maximum 128 ms)**. Both observed speech and reported **zero page errors**.
 - An earlier sound-enabled studio sample measured 51.6 fps with five long tasks. Speaking-state updates now affect only the halo; each utterance reuses one vocal tract across syllables. Samples vary with host load and are not guaranteed frame rates.
 - Human speaker/headphone listening review remains pending. Headless measurements do not certify actual audio hardware, five live browser sessions, or the event projector. Repeat the rehearsal with real backend frames.
@@ -106,6 +111,6 @@ PREVIEW_URL=http://127.0.0.1:4173 npm run perf
 PERF_SCENE=studio PREVIEW_URL=http://127.0.0.1:4173 npm run perf
 ```
 
-Performance has not been remeasured after the circle/fire redesign. The performance script explicitly wakes all five agents before measuring. The studio sample includes the fully powered circle slider. The default performance scene measures the five-stream sample run. `PERF_SCENE=studio` measures the living room with continuous synthetic pointer movement, a dance, and a spark pass.
+Performance has not been remeasured after the flat-fill/dark-theme update. The performance script explicitly wakes all five agents before measuring. The studio sample includes the fully powered circle slider. The default performance scene measures the five-stream sample run. `PERF_SCENE=studio` measures the living room with continuous synthetic pointer movement, a dance, and a spark pass.
 
 Screenshots and the measured JSON reports are generated under `dashboard/artifacts/` (ignored by Git). The official Master artwork is the unmodified DevDay SVG, with opacity/state rings used instead of drawing a modified outline logo. Real transport, recorded replay, snapshot hydration, browser takeover, and backend approvals remain backend integration work. No live API or hosted deployment is claimed.

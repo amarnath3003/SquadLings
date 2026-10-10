@@ -235,10 +235,10 @@ Each use case is a **template**: configuration, not code. See [§20](#20-templat
 
 ### 6.1 Visual language
 
-- **Look:** the DevDay sticker look. A white canvas, black ink, round shapes, lots of whitespace, and the five sticker colors as the only accents.
+- **Look:** flat DevDay characters on a black canvas, white interface text, round shapes, generous spacing, and the five character colors as accents. Character face ink remains black.
 - **Fonts:** Inter (or the system UI font) for the interface; JetBrains Mono for captions, URLs and logs.
-- **Shapes:** cards have a 16 px corner radius and a soft shadow; pills are fully rounded.
-- **Theme:** light only in the core build, since it matches the stickers. A dark theme is ⏭ later.
+- **Shapes:** cards have a 16 px corner radius and a flat fill with a border; pills are fully rounded. No shadows or lighting effects.
+- **Theme:** dark by default, following the current DevDay website. Charcoal surfaces and subtle borders separate panels; native controls stay dark under either OS preference.
 
 ### 6.2 A run, as the user sees it
 
@@ -372,7 +372,7 @@ The character frontend synthesizes forty UI/workflow effects and five original c
 
 ### 7.1 Cast and colors
 
-The original measured values below come from the supplied sticker brief (measurement methodology was not independently verified). At the user’s request, the UI now uses four published event colour tokens fetched from the [official DevDay website](https://devday.openai.com/) on 10 October 2026. Sky remains a local sticker-inspired extension; see [source notes](reference/brand-sources.md).
+The original measured values below come from the supplied sticker brief (measurement methodology was not independently verified). At the user’s request, the UI uses four published event colour tokens fetched from the [official DevDay website](https://devday.openai.com/) on 10 October 2026 and verified against its live stylesheet on 11 October 2026 (IST). `DEVDAY_COLORS` in the shared cast module supplies both character fills and CSS tokens. Sky remains a local sticker-inspired extension; see [source notes](reference/brand-sources.md).
 
 | Slot | Character | Sticker | Measured | UI token | Signature face | Personality |
 |---|---|---|---|---|---|---|
@@ -384,6 +384,7 @@ The original measured values below come from the supplied sticker brief (measure
 | bot5 | Sky | Sky blue | `#A2E1FF` (clipped) | `#A6D8F5` | `^ ^` | The cheerful one |
 
 - **Face ink:** `#111111` on every body color.
+- **Theme:** default DevDay dark mode: black `#000000` page, white `#FFFFFF` text, charcoal panels and dark native controls. Supporting neutrals/status fills are local choices. Character faces retain black ink on their coloured bodies. Synthetic page previews use the theme; real streamed images retain their content.
 - **Fixed slots:** the plan's first assignment goes to bot1, the second to bot2, and so on. Tiles show "Name · Role", for example "Plum · Flights".
 
 ### 7.2 Geometry
@@ -394,7 +395,7 @@ The original measured values below come from the supplied sticker brief (measure
   - Its SVG path is `M0 0 L14 5 L5 14 Z`.
 - **Placement:** the body sits 10 px right and 10 px down from the hotspot, so it never covers the element being clicked.
 - **Name pill:** below and to the right of the body. It shows the role in 11 px text, on a white fill with a border in the bot's color.
-- **Shadow:** a soft ellipse under the body that shrinks when the character hops.
+- **Rendering:** one opaque body circle with black face glyphs. No white body rim, reflection, highlight, blush overlay, ground shadow, colour filter, or glow. Full-squad flames use flat event-orange fills; breathing and gestures retain their existing motion.
 
 ### 7.3 Faces
 
@@ -492,7 +493,7 @@ export function currentMood(conds: Condition[], now: number): Mood {
 
 - `dashboard/` implements a local character studio and development `/lab` entry independently of backend work. All sample runs are labelled simulated.
 - The launch control starts empty and uses the five character circles themselves as a compact slider (maximum 360 px), with a None detent and keyboard-accessible 0–5 selection. Grey circles wake in place, exchange neighbor glances/greetings, and gain flowing canvas fire and motivated focused faces when all five are selected. Role labels, the planner, and a labelled planning estimate remain. Zero is an assembly state; launch requires at least one agent. Reduced motion selects immediately with static flames.
-- The living room adds greetings, distinct dance tempos, a passing spark, surprise reactions, naps/wake-up, spring-return dragging, gaze that follows the visitor, and short prewritten conversations. Press/release boops add squash, blush, hearts, and optional sound. `characters/useCharacterLife.ts` layers ambient animation separately from the action rig; `characters/life.ts` records each character’s habits.
+- The living room adds greetings, distinct dance tempos, a passing spark, surprise reactions, naps/wake-up, spring-return dragging, gaze that follows the visitor, and short prewritten conversations. Press/release boops add squash, hearts, and optional sound. `characters/useCharacterLife.ts` layers ambient animation separately from the action rig; `characters/life.ts` records each character’s habits.
 - Personality parameters live in `characters/personality.ts`: distinct glide curves, click squish, float, blink cadence, flourishes, and pentatonic sound pitches.
 - Pure mood, attention, and emote layers take explicit time. Priority is unchanged; one active bubble and at most two queued bubbles per bot. Actor motion values are independent; viewport frames stay outside React state.
 - The Master roster shows fixed assignments, actual event-driven steps, latest reports, and statuses. Report objects travel to their own row; the result preview shows a team lineup.

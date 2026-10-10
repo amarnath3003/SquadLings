@@ -1,6 +1,6 @@
 # Character colours and design sources
 
-Fetched on **10 October 2026 (IST)** from first-party OpenAI sites.
+Originally fetched on **10 October 2026 (IST)**; the live website palette was fetched again and verified on **11 October 2026 (IST)**. The user selected the **current DevDay website** as the colour reference.
 
 | Source | Use |
 | --- | --- |
@@ -10,7 +10,20 @@ Fetched on **10 October 2026 (IST)** from first-party OpenAI sites.
 | [OpenAI design guidelines](https://openai.com/brand/) | Brand attribution and logo guidance. The fuller brand portal redirected to an authentication page; no private brand materials were accessed. |
 | [User-supplied sticker photo](devday-stickers.jpg) | Circular character geometry, black expression glyphs, and the local Sky blue extension. |
 
-The user requested official colours after web research. These four **event website tokens** replace the photo-derived screen colours in the supplied brief. They are not claimed to be a universal OpenAI corporate palette. Sky `#A6D8F5`, paper `#F8F8F5`, and other supporting neutrals are local design choices. Original sticker values remain in `packages/shared/src/cast.ts` for reference.
+The user requested official colours after web research. These four **event website tokens** replace the photo-derived screen colours in the supplied brief. They are not claimed to be a universal OpenAI corporate palette. Sky `#A6D8F5` and supporting panel/status colours are local design choices. Original sticker values remain in `packages/shared/src/cast.ts` for reference.
+
+The current website links the stylesheet above (with a deployment query parameter). Its exact declarations are:
+
+```css
+--event-blue: #006aff;
+--event-green: #04b84c;
+--event-purple: #924ff7;
+--event-orange: #ff8549;
+```
+
+These values already matched the previous character fills; no different official hex values were found in the live website. `DEVDAY_COLORS` in `packages/shared/src/cast.ts` now supplies both the cast and, through `dashboard/src/main.tsx`, the CSS event tokens. Character bodies use a single opaque fill with black expression glyphs. Reflections, highlight strokes, blush overlays, white body rims, ground shadows, colour filters, and glows are removed. Full-squad flames retain their motion as solid event-orange silhouettes. Cards and controls use borders without shadows; day/night room surfaces use solid backgrounds. Gallery/grid patterns remain for background contrast previews.
+
+The same stylesheet's dark theme declares `--color-background: #000` and `--color-primary-100: #fff`. These exact black/white values define the app's default page and text colours. Local charcoal surfaces, grey borders/labels, and darker status fills complete the interface. `color-scheme: dark` and page metadata keep native controls and browser chrome consistent, including under a light OS preference. The official Master SVG stays unmodified and uses its embedded dark-mode styling. Synthetic page previews share the theme; real streamed images are not recoloured.
 
 SquadLings is the hackathon team's project. OpenAI names and artwork belong to OpenAI; no endorsement is implied.
 
