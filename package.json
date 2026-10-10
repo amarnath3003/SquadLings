@@ -13,6 +13,7 @@
     "test": "npm run test --workspace dashboard",
     "test:browser": "npm run test:browser --workspace dashboard",
     "perf": "npm run perf --workspace dashboard",
+    "film:record": "npm run film:record --workspace dashboard",
     "preview": "npm run preview --workspace dashboard"
   },
   "engines": {

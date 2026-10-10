@@ -45,12 +45,14 @@ export const MasterCharacter = memo(function MasterCharacter({
   size = 48,
   tick = 0,
   shared = false,
+  resting = false,
 }: {
   state?: string;
   reduced?: boolean;
   size?: number;
   tick?: number;
   shared?: boolean;
+  resting?: boolean;
 }) {
   const root = useRef<HTMLDivElement>(null);
   const lastTick = useRef(tick);
@@ -92,7 +94,8 @@ export const MasterCharacter = memo(function MasterCharacter({
       layoutId={shared && !reduced ? "master-character" : undefined}
       className="master-character"
       data-state={face}
-      data-active={awake && !reduced}
+      data-active={awake && !reduced && !resting}
+      data-resting={resting}
       style={{ width: size, height: size }}
       title={`${ORCHESTRATOR.name} · ${ORCHESTRATOR.personality}. ${MASTER_LINES[face] ?? ORCHESTRATOR.line}`}
     >
@@ -100,7 +103,7 @@ export const MasterCharacter = memo(function MasterCharacter({
         className="onyx-art"
         viewBox="0 0 64 64"
         role="img"
-        aria-label={`${ORCHESTRATOR.name}, ${face}`}
+        aria-label={`${ORCHESTRATOR.name}, ${resting ? "resting" : face}`}
       >
         <g
           className="onyx-body"
@@ -114,7 +117,19 @@ export const MasterCharacter = memo(function MasterCharacter({
             fill={ORCHESTRATOR.color}
           />
           <g className="onyx-face">
-            <g className="onyx-symbols">{FACES[MOODS[face] ?? "happy"]}</g>
+            <g className="onyx-symbols">
+              {resting ? (
+                <path
+                  d="M17 31q5 4 10 0M37 31q5 4 10 0"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                />
+              ) : (
+                FACES[MOODS[face] ?? "happy"]
+              )}
+            </g>
             <g
               data-onyx-reaction
               fill="none"
@@ -122,7 +137,7 @@ export const MasterCharacter = memo(function MasterCharacter({
               strokeWidth="2.5"
               strokeLinecap="round"
             >
-              <ReactionDetail state={face} />
+              {!resting && <ReactionDetail state={face} />}
             </g>
           </g>
         </g>

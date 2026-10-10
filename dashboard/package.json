@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:browser": "playwright test",
     "perf": "node scripts/measure-performance.mjs",
+    "film:record": "node scripts/record-film.mjs",
     "preview": "vite preview --host 127.0.0.1"
   },
   "dependencies": {

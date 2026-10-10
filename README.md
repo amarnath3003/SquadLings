@@ -56,6 +56,10 @@ Enable the toolbar speaker for UI/workflow effects and five original synthesized
 
 Activity previews in **Squad in action** now include separate **Output** and textbox **Type** gestures, directional scrolling, a reading scan with one magnified eye, an illuminated discovery reaction, a curious question, and a joyful completion with a medal. These react to the existing event stream; see [activity mappings and demo steps](dashboard/README.md#activity-reactions).
 
+## Launch film
+
+The [SquadLink launch film](docs/video/squadlink-intro.mp4) tells the scripted task-to-sleep story in 48 seconds with character close-ups, full-screen circle transitions, coordinated work, results, and subtle sound effects. Open **http://127.0.0.1:5173/film** after `npm run dev` to play the web animation. See the [storyboard and recording instructions](docs/video/storyboard.md) for timing, references, `npm run film:record`, and simulation/recording limits.
+
 ## Current status
 
 - Character frontend: A living room with continuous personality animation, pointer attention, draggable characters, social chatter, group play, naps/wake-up, and expressive boops; a compact 0–5 character stack with side −/+ buttons, animated arrivals/departures, and a fiery full-squad state, all ten expressions, character motion, simulated events, browser tiles, reporting flights, board, approvals, particles, sound, and reduced motion are implemented. Backend transport and real browser actions are not connected.

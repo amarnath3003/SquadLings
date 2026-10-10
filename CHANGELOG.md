@@ -4,6 +4,16 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T05:09:56+05:30 — Create the cinematic SquadLink launch film
+
+- Changed: Added `/film`, a 48-second landscape story from typed task and animated squad selection through circle swarms, character close-ups, parallel tasks, Onyx coordination, assembled results, and a sleeping six-character lineup. Reused the existing selector/flames, SVG actors, activity gestures, and sound recipes; added an optional resting pose to Onyx.
+- Direction: Inspected the first 15 seconds of the user's exact DevDay 2026 reference in Chrome. Authored original giant-face pullbacks, curved swarm paths, black circular wipes, and sparse typography after the user requested a more cinematic introduction. No reference footage, external music, or OpenAI logo is included.
+- Affected: `dashboard/src/film/`, `main.tsx`, `MasterCharacter.tsx`, the recording script and package commands, film browser checks, README/source documentation, and `docs/video/` storyboard/media.
+- Validation: TypeScript/production build and 48 logic tests passed. Three film browser checks cover story states, 1080p containment, phone letterboxing, playback/restart, six sleeping characters, and a 48-second bounded soundtrack with a silent tail. Both existing Onyx lifecycle checks passed. Local documentation links and diff whitespace passed.
+- Corrections: Playwright's FFmpeg installer does not support this macOS 12 host; used a local ignored imageio-ffmpeg tool installation. Real-time capture had a 3.4-second gap, so the recorder now advances JS/CSS animation in fixed 1/30-second steps and captures every frame. Export inspection caught the inherited `main` width cap; removed it for the film and added a 1920 px regression check.
+- Export: Saved `docs/video/squadlink-intro.mp4` (4,151,372 bytes) and a nine-frame storyboard preview. The production capture produced all 1,440 frames at fixed 1/30-second intervals with zero browser errors. FFmpeg decoded the complete 48-second, 1920 × 1080 H.264/AAC file; black transition intervals were detected around 12.8–14.03 and 40.8–41.2 seconds. Inspected the final contact sheet: full-width composition, selection flames, activities, complete task cards, results, and all six sleepers. AAC decoded without clipping; human listening review remains pending.
+- Limitations: The workflow and itinerary are scripted; no backend/browser work is represented as live. Human pacing/listening review remains pending. Ambient motion can vary across exports, and pausing/scrubbing the web timeline keeps character ambience active. No deployment or remote push is claimed.
+
 ## 2026-10-11T04:54:28+05:30 — Add an independent animated effort slider
 
 - Changed: Added a separate effort card below the squad-count control with five stacked character previews, none/low/med/high/xhigh steps, native keyboard controls, clickable labels, and increasing bounce speed, height, tilt, and squash. Updated `dashboard/src/App.tsx`, new `components/EffortSlider.tsx` and `styles/effort.css`, and both READMEs.

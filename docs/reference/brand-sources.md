@@ -34,4 +34,6 @@ The [SquadLink banner](../assets/squadlink-github-banner.png) is a 2172 × 724 P
 
 ## Libraries
 
+The SquadLink launch film reuses the dashboard's SVG cast and sound synthesis. Its motion direction was informed by the user-selected [first 15 seconds of DevDay 2026](https://www.youtube.com/watch?v=Fls_onRviPM), inspected in Chrome. The paths, compositions, typography, and soundtrack assembly are original project code; no reference footage/audio or OpenAI logo is included. See the [storyboard](../video/storyboard.md) for timing and recording-tool sources.
+
 The dashboard was implemented from scratch in this repository. Dependencies are pinned in the root lockfile: [React](https://react.dev/), [Vite](https://vite.dev/), [Motion](https://motion.dev/docs/react-animation), [Zustand](https://zustand.docs.pmnd.rs/), [TypeScript](https://www.typescriptlang.org/), [Vitest](https://vitest.dev/), and [Playwright](https://playwright.dev/). The README banner is generated raster art; dashboard characters remain code-authored SVG. No third-party character assets, datasets, or pre-built application were imported. Sound is synthesized with Web Audio.
