@@ -5,6 +5,7 @@ import type { BotId, Mood } from "@swarm/shared/types";
 import { BotCharacter } from "./characters/BotCharacter";
 import { Icon } from "./characters/icons";
 import { SquadSlider } from "./launch/SquadSlider";
+import { EffortSlider } from "./components/EffortSlider";
 import { MasterCard } from "./components/MasterCard";
 import { BotTile } from "./components/BotTile";
 import { Gallery } from "./lab/Gallery";
@@ -314,6 +315,7 @@ export default function App() {
                       disabled={lab.playing || launching}
                       launching={launching}
                     />
+                    <EffortSlider reduced={reduced} />
                     <div className="launch-toolbar">
                       <div className="template-options" aria-label="Scenario">
                         {(

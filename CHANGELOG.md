@@ -4,6 +4,14 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T04:54:28+05:30 — Add an independent animated effort slider
+
+- Changed: Added a separate effort card below the squad-count control with five stacked character previews, none/low/med/high/xhigh steps, native keyboard controls, clickable labels, and increasing bounce speed, height, tilt, and squash. Updated `dashboard/src/App.tsx`, new `components/EffortSlider.tsx` and `styles/effort.css`, and both READMEs.
+- Why: Preview effort through enthusiastic dots while keeping the main room and agent-count control independent, as clarified by the user. No new dependencies or external assets.
+- Validation: Production build/TypeScript and all six existing squad browser checks passed. A focused Chrome check verified all five levels, keyboard/preset input, moving preview dots, main-room/count isolation, app/OS reduced motion, offscreen pause, 390/320 px card fit, and zero page errors. Desktop/mobile screenshots inspected; diff whitespace passed.
+- Corrections: Removed the initial main-room animation wiring after user feedback. Fixed narrow-phone preset overflow; the final room component has no changes.
+- Limitations: Visual preview only; no backend effort configuration. Defaults to med and resets when the studio remounts. Human animation review pending; no new performance measurement. Concurrent film/orchestrator work is excluded from this commit.
+
 ## 2026-10-11T04:37:39+05:30 — Add the SquadLink GitHub banner
 
 - Changed: Added `docs/assets/squadlink-github-banner.png`, a 2172 × 724 banner with six circular characters, the requested SquadLink wordmark, and “One squad. Many minds.” Embedded it in the root README and recorded sources/prompts in `docs/reference/`.

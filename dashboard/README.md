@@ -31,6 +31,8 @@ Open **http://127.0.0.1:5173/** for the studio or **http://127.0.0.1:5173/lab** 
 9. In Squad in action, choose 1×/2×/4× speed, a deterministic seed, 8 fps synthetic load streams, or mobile Tango for the next run. In `/lab`, try leaving the last bot on the bench.
 10. Open More reactions & states to preview safety blocks, gates, loading, login requests, pause/resume, deliveries, bugs, or a terminal failure. Pause/resume only previews the UI; browser takeover is not connected.
 
+The separate **Effort** card below the squad-count control has its own five stacked character dots. Drag its slider, use arrow/Home/End keys, or click **none / low / med / high / xhigh**. Higher effort gives only these preview dots faster, higher, springier bounces and more eager faces; the main room and selected crew are unaffected. It defaults to med; none is still. Reduced motion keeps static expressions, and hidden/offscreen previews pause. This local visual setting resets when the studio remounts and does not configure backend reasoning.
+
 Browser pages and findings are synthetic and labelled **SIMULATED**. The estimate in the squad builder is the supplied spec's real-run planning estimate, not measured cost. The Lab makes no API calls.
 
 ## Commands

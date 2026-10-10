@@ -50,6 +50,8 @@ The independent one-agent API test keeps its own install and commands in [test/R
 
 Build a squad with **− on the left and + on the right** of the character stack. It starts empty; + adds a teammate and − removes the last one. The stack expands and contracts around its centre, with a live count and a hint for who joins next. All five gain motivated faces and flames at full strength. Select at least one to launch the simulated run.
 
+Try the separate **Effort** card below the squad-count control: **none · low · med · high · xhigh**. Its own five stacked dots bounce faster and higher as effort rises, with expressions to match. The main characters and squad count stay independent. It starts at med, respects reduced motion, and pauses offscreen; this is a local visual preview, not backend reasoning configuration.
+
 Enable the toolbar speaker for UI/workflow effects and five original synthesized cartoon voices. **Sound settings** controls volume, effects, voices, and idle chatter; the mix is remembered while fresh page loads stay muted. Try **Face gallery → Voice reaction → Listen to…** to audition the cast. See [sound-design.md](docs/reference/sound-design.md) for coverage, integration, verification, and listening-review limits.
 
 Activity previews in **Squad in action** now include separate **Output** and textbox **Type** gestures, directional scrolling, a reading scan with one magnified eye, an illuminated discovery reaction, a curious question, and a joyful completion with a medal. These react to the existing event stream; see [activity mappings and demo steps](dashboard/README.md#activity-reactions).
