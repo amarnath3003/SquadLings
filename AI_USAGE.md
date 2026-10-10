@@ -4,11 +4,9 @@ Use Codex during the hackathon and briefly document its actual contribution here
 
 ## Event build log
 
-No participant AI usage has been recorded yet. Replace the placeholder row as you build. Mark human review as pending until someone has reviewed the contribution.
-
 | Date and time with timezone | Tool / model, if known | Task | Assistance and affected files | Human review / corrections | Validation and result |
 | --- | --- | --- | --- | --- | --- |
-| TODO | Codex | TODO | TODO | Pending | TODO |
+| 2026-10-10T22:03:32+05:30 | Codex | Create a single-agent Agents API Computer Use test | Researched the official OpenAI Computer Use and Agents API documentation, then added the interactive Node.js test and setup documentation in `test/` plus README instructions. | Pending human review | Installed `openai@7.32.0`, ran the syntax check and required SDK API-surface check successfully. No API key or live request was used; the installed SDK requires Node.js 22 while the workspace has Node.js 18.18.0. |
 
 ## Template preparation
 
