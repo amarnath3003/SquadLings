@@ -3,10 +3,21 @@ import { animate, useMotionValue, type MotionValue } from "motion/react";
 import type { BotId, Mood } from "@swarm/shared/types";
 import { PERSONALITY } from "./personality";
 import { lookOffset, type Point } from "../mood/attention";
+export type ActivityName =
+  | "output" | "type" | "scroll" | "read" | "ask"
+  | "found" | "finish" | "error" | "retry";
+export interface ActivityCue {
+  kind: ActivityName;
+  sequence: number;
+  direction: -1 | 1;
+  held: boolean;
+}
 export interface Actor {
   x: MotionValue<number>;
   y: MotionValue<number>;
   hopY: MotionValue<number>;
+  leanX: MotionValue<number>;
+  activity: MotionValue<ActivityCue | null>;
   tilt: MotionValue<number>;
   scaleX: MotionValue<number>;
   scaleY: MotionValue<number>;
@@ -17,9 +28,8 @@ export interface Actor {
   glide: (point: Point, duration: number) => void;
   click: (point: Point) => void;
   hop: () => void;
-  flourish: (
-    kind: "found" | "finish" | "error" | "retry" | "scroll" | "type",
-  ) => void;
+  flourish: (kind: ActivityName, options?: { direction?: number; hold?: boolean }) => void;
+  clearActivity: (kind?: ActivityName) => void;
   look: (point?: Point) => void;
   stop: () => void;
   isGliding: () => boolean;
@@ -34,6 +44,8 @@ export function useBotActor(
   const x = useMotionValue(0),
     y = useMotionValue(0),
     hopY = useMotionValue(0),
+    leanX = useMotionValue(0),
+    activity = useMotionValue<ActivityCue | null>(null),
     tilt = useMotionValue(0),
     scaleX = useMotionValue(1),
     scaleY = useMotionValue(1),
@@ -45,8 +57,22 @@ export function useBotActor(
     const dna = PERSONALITY[id];
     let gliding = false;
     let generation = 0;
+    let sequence = 0;
+    let activityTimer: ReturnType<typeof setTimeout> | undefined;
     const time = (ms: number) => Math.max(0.06, ms / 1000 / speed);
+    const clearActivity = (kind?: ActivityName) => {
+      if (kind && activity.get()?.kind !== kind) return;
+      clearTimeout(activityTimer);
+      activity.set(null);
+      for (const value of [leanX, hopY, tilt, scaleX, scaleY]) value.stop();
+      leanX.set(0);
+      hopY.set(0);
+      tilt.set(0);
+      scaleX.set(1);
+      scaleY.set(1);
+    };
     const stop = () => {
+      clearActivity();
       generation++;
       gliding = false;
       for (const value of [
@@ -68,6 +94,8 @@ export function useBotActor(
       scaleY.set(1);
       blink.set(1);
       opacity.set(1);
+      eyeX.set(0);
+      eyeY.set(0);
     };
     const hop = () => {
       if (!reduced)
@@ -82,6 +110,8 @@ export function useBotActor(
       x,
       y,
       hopY,
+      leanX,
+      activity,
       tilt,
       scaleX,
       scaleY,
@@ -90,6 +120,7 @@ export function useBotActor(
       blink,
       opacity,
       stop,
+      clearActivity,
       hop,
       isGliding: () => gliding,
       look: (point) => {
@@ -177,25 +208,28 @@ export function useBotActor(
         y.set(point.y);
         squish();
       },
-      flourish: (kind) => {
+      flourish: (kind, { direction = 1, hold } = {}) => {
+        // Cursor details refine a tool cue without shortening its lifetime.
+        const held = hold ?? (activity.get()?.kind === kind && activity.get()?.held) ?? false;
+        clearActivity();
+        const cue = { kind, sequence: ++sequence, direction: direction < 0 ? -1 : 1, held } as const;
+        activity.set(cue);
+        const duration = { output: 1600, type: 1800, scroll: 1300, read: 2400,
+          ask: 2200, found: 1700, finish: 2400, error: 1200, retry: 900 }[kind];
+        if (!held) activityTimer = setTimeout(() => clearActivity(), duration / speed);
         if (reduced) return;
+        const options = { duration: time(duration), ease: "easeInOut" as const, repeat: held ? Infinity : 0 };
         if (kind === "finish") {
-          animate(
-            hopY,
-            id === "bot5" ? [0, -10, 0, -8, 0, -6, 0] : [0, -9, 0, -6, 0],
-            { duration: time(id === "bot3" ? 900 : 650) },
-          );
+          animate(hopY, [0, 3, -17, 0, -10, 0, -4, 0, 0], options);
+          animate(tilt, [0, -7, 7, -5, 5, -2, 0, 0, 0], options);
+          animate(scaleX, [1, 1.16, 0.9, 1.12, 0.95, 1.05, 1, 1, 1], options);
+          animate(scaleY, [1, 0.86, 1.12, 0.9, 1.06, 0.96, 1, 1, 1], options);
         }
         if (kind === "found") {
-          if (id === "bot2" || id === "bot5")
-            animate(tilt, [0, 360], {
-              duration: time(400),
-              onComplete: () => tilt.set(0),
-            });
-          else {
-            animate(scaleX, [1, 1.15, 1], { duration: time(350) });
-            hop();
-          }
+          animate(hopY, [0, 3, -13, -7, -7, 0], options);
+          animate(tilt, [0, -8, 5, -3, 2, 0], options);
+          animate(scaleX, [1, 1.12, 0.91, 1.04, 1.04, 1], options);
+          animate(scaleY, [1, 0.9, 1.12, 1.02, 1.02, 1], options);
         }
         if (kind === "error")
           animate(tilt, [0, -6, 6, -6, 6, 0], { duration: time(300) });
@@ -203,10 +237,29 @@ export function useBotActor(
           animate(scaleX, [0.7, 1.1, 1], { duration: time(300) });
           animate(scaleY, [0.7, 1.1, 1], { duration: time(300) });
         }
-        if (kind === "type")
-          animate(tilt, [0, -1, 1, -1, 1, 0], { duration: time(300) });
-        if (kind === "scroll")
-          animate(hopY, [0, -4, 0], { duration: time(300) });
+        if (kind === "type") {
+          animate(tilt, [0, -4, 4, -4, 4, -3, 3, 0], options);
+          animate(hopY, [0, 2, 0, 2, 0, 2, 0, 0], options);
+        }
+        if (kind === "output") {
+          animate(tilt, [0, -6, -3, -6, -3, 2, 0], options);
+          animate(scaleY, [1, 1.04, 1, 1.04, 1, 1.02, 1], options);
+        }
+        if (kind === "scroll") {
+          const sign = cue.direction;
+          animate(hopY, [0, -7 * sign, 4 * sign, -7 * sign, 4 * sign, 0], options);
+          animate(tilt, [0, -6, 4, -6, 4, 0], options);
+        }
+        if (kind === "read") {
+          animate(leanX, [0, -7, 7, -7, 7, 0], options);
+          animate(hopY, [0, -5, -5, -2, -2, 0], options);
+          animate(tilt, [0, -5, 4, -5, 4, 0], options);
+        }
+        if (kind === "ask") {
+          animate(tilt, [0, -14, -14, 9, 9, -5, 0], options);
+          animate(hopY, [0, -3, -3, 0, -2, -2, 0], options);
+          animate(scaleY, [1, 1.06, 1.06, 1, 1.03, 1.03, 1], options);
+        }
       },
     };
   }, [
@@ -216,6 +269,8 @@ export function useBotActor(
     x,
     y,
     hopY,
+    leanX,
+    activity,
     tilt,
     scaleX,
     scaleY,

@@ -17,8 +17,8 @@ Open **http://127.0.0.1:5173/** for the studio or **http://127.0.0.1:5173/lab** 
 1. Meet Plum, Lime, Tango, Blu, and Sky in their living room. Move the pointer nearby and watch their gaze follow. Each bot breathes, blinks, shifts its weight, and has its own gestures.
 2. Try **Say hello**, **Dance break**, **Pass a spark**, **Surprise them**, or **Nap time / Wake up**. Drag a character and release it to spring home. They also exchange short, prewritten remarks; **Chatter** switches those off.
 3. Select a character and preview expressions. Press and release a boop target for squash, a happy reaction, blush, hearts, and optional sound. Enter/Space also works.
-4. Change squad size with the slider, arrow keys, Home/End, or PageUp/PageDown. Pick Trip Planner, QA Swarm, or Auto.
-5. Play a sample run. Watch the tiles, shared board, and reports to the Master.
+4. The squad starts empty. Drag across the compact row of circles, or use arrow keys, Home/End, PageUp/PageDown, or +/−. Grey circles wake in place and greet their neighbor. At five, every bot has a determined face and its own flames. Drag back to **None** to clear the team. Pick Trip Planner, QA Swarm, or Auto.
+5. Wake at least one teammate, then play a sample run. Watch the tiles, shared board, and reports to the Master. An empty run screen links back to the focused squad control.
 6. Use event buttons to try a particular reaction. Approval controls act only on this simulated run.
 7. Inspect all 50 expressions, the emote set, activity icons, and Master states in Face gallery.
 8. Enable the toolbar speaker for UI/workflow effects and five original cartoon gibberish voices. **Sound settings** offers master volume (35% initially) and separate effects, voices, and idle chatter switches. The mix is saved; each page load starts muted. Face gallery has a voice audition bank and playable expressions. Reduced motion keeps audio and makes the speaking halo static.
@@ -47,6 +47,32 @@ See [sound-design.md](../docs/reference/sound-design.md) for sound coverage, bac
 `characters/useCharacterLife.ts` owns ambient body/gaze/blink values independently from the event-driven cursor rig. Nine gesture sequences include anticipation, movement, and a soft settle. Each character has a different habit mix and tempo in `characters/life.ts`; breathing and shadows use CSS transforms. A single shared pointer listener updates motion values without frame-by-frame React renders. Portraits get autonomous gestures and wandering glances; small cursor bots combine continuous breathing/blinking with their event-driven action gestures to keep the five-stream view smooth.
 
 Ambient activity stops when a character leaves the viewport, the document is hidden, or the character is paused. Reduced motion retains expressions and readable reactions while disabling breathing, gestures, dragging, and particles. Task errors and approvals retain their event-driven faces. The studio's chatter and social scenes are local, prewritten entertainment; no model calls, conversation memory, or autonomous backend work is involved.
+
+## The circle slider
+
+`launch/SquadSlider.tsx` keeps a native 0–5 range input aligned with six visible positions: **None**, then the five characters. A thin rail runs through the circles, and the active bot itself moves as the thumb while dragging; releasing settles it onto a detent. The row is capped at 360 px and shrinks on phones. All keyboard range controls work, and the selected count is announced. The planner and real-run estimate sit below it.
+
+Wake-ups stagger by 700 ms after a jump to a larger team. New arrivals and their neighbors exchange a wave, nod, and held glance. Scrubbing cancels old sequences; hiding or leaving finishes the visual selection silently and cancels pending greetings. Full strength adds flowing fire, a warm glow, rising embers, and focused faces. `launch/SquadFire.tsx` draws all five plumes with one canvas and one frame callback; it stops offscreen and draws a still frame for reduced motion. Reduced motion selects immediately and uses static flames while audio retains natural timing. Zero is an assembly state only; launch requires 1–5 agents. The living room remains a separate character playground.
+
+## Activity reactions
+
+In **Squad in action**, select any character under **Send an event to** and try **Output**, **Type**, **Scroll**, **Read**, **Found**, **Ask**, and **Finish**. All five share the activity gestures while retaining their colours and ambient personalities.
+
+| Activity | Visible reaction | Event source |
+| --- | --- | --- |
+| Output | Composes lines on a small sheet with a moving writing hand | `bot.caption`, when no tool or approval cue is held |
+| Type | Alternating hands tap a keyboard with a highlighted key; the cursor lands at the textbox coordinates | `tool.called: type` and `cursor.type` |
+| Scroll | Moves with the scroll direction beside a moving scroll control | `tool.called: scroll` and signed `cursor.scroll.dy` |
+| Read | One enlarged lens eye, a scanning pupil and line highlight, and a gentle sideways hover | `read_text`, `list_elements`, `look`, `screenshot`, or `read_board` tools |
+| Found | Anticipation, a delighted lift, star eyes, raised hands, and a lightbulb | `board.posted` or `qa.bug` |
+| Ask | Uneven curious eyes, a questioning head tilt, a hand at the chin, and a floating question mark | `ask_user`, `wait_for_user`, or `approval.requested` |
+| Finish | Squash, celebratory jumps, smiling eyes, raised hands, sparkles, and a check medal | `bot.result` |
+
+Tool cues stay active until their matching result or another action interrupts them. Approval cues clear on resolution; stale tool results cannot cancel a newer call. Standalone cursor reactions and discoveries settle after a bounded duration. Pausing, stopping, navigation, reset, hiding the document, and unmounting clear activity motion. Reduced motion retains the faces and props without their loops or body gestures. Empty typing and zero-distance scrolling do not start a new cursor reaction. Typed content is never rendered in the keyboard artwork.
+
+`characters/useBotActor.ts` owns activity lifetime and body transforms; `characters/Activity.tsx` and `styles/activity.css` draw the original SVG faces/props and short loops. `director/director.ts` maps the existing backend contracts. There are no new libraries or image assets. The event playground and browser pages remain simulated; live browser activity still requires the backend adapter.
+
+Run `npm run test:browser --workspace dashboard -- activity.spec.ts` for the activity checks. They cover all seven gestures on all five characters, actual body/prop motion, desktop/mobile textbox placement, the asymmetric reading eye, repeated events, interruption, long calls, stale results, scroll direction, and reduced motion. Review screenshots under the ignored `dashboard/artifacts/activity-*.png` paths.
 
 ## Backend handoff
 
@@ -79,6 +105,6 @@ PREVIEW_URL=http://127.0.0.1:4173 npm run perf
 PERF_SCENE=studio PREVIEW_URL=http://127.0.0.1:4173 npm run perf
 ```
 
-The default performance scene measures the five-stream sample run. `PERF_SCENE=studio` measures the living room with continuous synthetic pointer movement, a dance, and a spark pass.
+The performance script explicitly wakes all five agents before measuring. The studio sample includes the fully powered circle slider. The default performance scene measures the five-stream sample run. `PERF_SCENE=studio` measures the living room with continuous synthetic pointer movement, a dance, and a spark pass.
 
 Screenshots and the measured JSON reports are generated under `dashboard/artifacts/` (ignored by Git). The official Master artwork is the unmodified DevDay SVG, with opacity/state rings used instead of drawing a modified outline logo. Real transport, recorded replay, snapshot hydration, browser takeover, and backend approvals remain backend integration work. No live API or hosted deployment is claimed.

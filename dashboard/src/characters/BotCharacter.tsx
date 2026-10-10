@@ -10,6 +10,7 @@ import type { LifeCue } from "./life";
 import { Icon } from "./icons";
 import { EMOTES, type Bubble } from "../mood/emotes";
 import { playUi, playVoice, useAudio } from "../effects/sound";
+import { ActivityFace, ActivityProps, useActorActivity } from "./Activity";
 export interface CharacterProps {
   id: BotId;
   mood: Mood;
@@ -124,10 +125,15 @@ function CharacterRig({
   // Local affection does not overwrite an agent's error, approval, or task mood.
   const shownMood = booped && !pointer ? "happy" : displayMood;
   const living = life.active && mood !== "failed";
+  const cueActivity = useActorActivity(actor);
+  const activity = !paused && !resting && mood !== "failed" &&
+    (mood !== "worried" || cueActivity?.kind === "ask") ? cueActivity : null;
+  const expressiveActivity = activity &&
+    ["read", "ask", "found", "finish", "type", "output"].includes(activity.kind);
   return (
     <div
       ref={root}
-      className={`character ${pointer ? "character-pointer" : ""} ${living ? "life-active" : ""} ${resting ? "is-resting" : ""}`}
+      className={`character ${pointer ? "character-pointer" : ""} ${living ? "life-active" : ""} ${activity && life.active ? "activity-animated" : ""} ${resting ? "is-resting" : ""}`}
       style={
         {
           width: size,
@@ -136,9 +142,11 @@ function CharacterRig({
           "--period": `${(resting ? 5.5 : dna.period) / Math.min(speed, 2)}s`,
           "--delay": `${-(hash(seed + id) % 3000) / 1000}s`,
           "--bot-color": cast.color,
+          "--action-cycle": `${0.55 / speed}s`,
         } as CSSProperties
       }
       data-character={id}
+      data-activity={activity?.kind ?? "idle"}
       data-life={
         reduced
           ? "reduced"
@@ -177,7 +185,7 @@ function CharacterRig({
           width={size}
           height={(size * 68) / 64}
           role="img"
-          aria-label={`${cast.name}, ${resting ? "resting" : booped && !pointer ? "happy" : mood}`}
+          aria-label={`${cast.name}, ${resting ? "resting" : booped && !pointer ? "happy" : activity?.kind ?? mood}`}
         >
           <ellipse
             className="life-shadow"
@@ -189,7 +197,9 @@ function CharacterRig({
             opacity=".11"
           />
           <motion.g
+            data-action-body
             style={{
+              x: actor.leanX,
               y: actor.hopY,
               rotate: actor.tilt,
               scaleX: actor.scaleX,
@@ -261,6 +271,8 @@ function CharacterRig({
                               strokeWidth="3.5"
                               strokeLinecap="round"
                             />
+                          ) : expressiveActivity ? (
+                            <ActivityFace cue={activity} />
                           ) : (
                             FACES[shownMood]
                           )}
@@ -274,6 +286,7 @@ function CharacterRig({
                       )}
                     </motion.g>
                   </motion.g>
+                  {activity && <ActivityProps cue={activity} />}
                 </g>
               </g>
             </motion.g>

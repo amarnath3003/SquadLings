@@ -4,6 +4,15 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T02:48:05+05:30 — Rebuild the squad selector around the character circles
+
+- Changed: Replaced the long seat/range layout with a compact 0–5 circle slider, starting empty. The active character moves continuously as the drag thumb on a visible rail; release snaps to its detent. Grey circles wake in place, stagger after larger jumps, and exchange neighbor waves/glances. All five gain focused faces, flowing canvas flames, warm light, and embers. Zero-agent launch redirects to assembly; selected team size controls the sample run.
+- Why: The user requested a shorter selector made from the bots themselves and rejected the separate selection ring and earlier flame treatment. The persistent ring is removed. One canvas draws all five flames behind the faces, with no new dependencies or external assets.
+- Affected: Squad slider/fire/styles, studio launch/empty states, character attention, sample-run checks, performance setup, and demo/sound documentation. Unrelated activity-animation work remains outside this change.
+- Validation: Node 24.14.1 production build (including TypeScript) and all 48 logic tests passed. Pointer geometry passed within 2 px; desktop/mobile screenshots were inspected. Final browser and production performance verification is in progress.
+- Corrections: Fixed compact fire sizing, a wake animation overriding the phone scale, pointer tracking stealing greeting glances, and old flame selectors in browser checks. The first build encountered a concurrent activity-hook type error; that work was corrected separately and the build passed on rerun.
+- Limitations: The demo remains frontend-only and simulated. Human visual and listening review remains pending; automated animation/geometry checks do not establish perceived quality.
+
 ## 2026-10-11T01:01:47+05:30 — Verify and tune sound playback
 
 - Changed: Isolated speaking-state updates to the halo and reused one vocal tract across syllables, reducing character render work and audio-node creation. Split squad effects from cancellable voice sequences so disabling voices cannot leave future utterances. Added stale-queue, voice-disable, resume-retry, full sound-enabled completion, and desktop/mobile sound-settings checks; updated the demo and verification documentation.

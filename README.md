@@ -42,11 +42,15 @@ Open **http://127.0.0.1:5173/** or the development **/lab** entry. No API key is
 
 The independent one-agent API test keeps its own install and commands in [test/README.md](test/README.md).
 
+Build a squad by sliding across the compact circle selector. It starts empty; each grey circle wakes and greets a neighbor. All five gain motivated faces and their own flames at full strength. Select at least one to launch the simulated run.
+
 Enable the toolbar speaker for UI/workflow effects and five original synthesized cartoon voices. **Sound settings** controls volume, effects, voices, and idle chatter; the mix is remembered while fresh page loads stay muted. Try **Face gallery → Voice reaction → Listen to…** to audition the cast. See [sound-design.md](docs/reference/sound-design.md) for coverage, integration, verification, and listening-review limits.
+
+Activity previews in **Squad in action** now include separate **Output** and textbox **Type** gestures, directional scrolling, a reading scan with one magnified eye, an illuminated discovery reaction, a curious question, and a joyful completion with a medal. These react to the existing event stream; see [activity mappings and demo steps](dashboard/README.md#activity-reactions).
 
 ## Current status
 
-- Character frontend: A living room with continuous personality animation, pointer attention, draggable characters, social chatter, group play, naps/wake-up, and expressive boops; squad slider, all ten expressions, character motion, simulated events, browser tiles, reporting flights, board, approvals, particles, sound, and reduced motion are implemented. Backend transport and real browser actions are not connected.
+- Character frontend: A living room with continuous personality animation, pointer attention, draggable characters, social chatter, group play, naps/wake-up, and expressive boops; a compact 0–5 circle slider with staged wake-ups and a fiery full-squad state, all ten expressions, character motion, simulated events, browser tiles, reporting flights, board, approvals, particles, sound, and reduced motion are implemented. Backend transport and real browser actions are not connected.
 - Frontend validation: Node 24.14.1 TypeScript/build, 48 logic tests, all 24 browser checks, and 235 offline audio renders passed. Sound-enabled production 20-second samples measured 55.9 fps in the studio and 58.7 fps with five synthetic streams. Studio had no long tasks over 50 ms; the stream run had two (maximum 128 ms); neither had page errors. Human listening review remains pending. See the dashboard README for reproduction and limits.
 
 - Independent API spike: Prompt entry, session creation, website-origin approval, streamed task output, error reporting, and completed-session cleanup are implemented in [test/computer-use-agent.mjs](test/computer-use-agent.mjs).

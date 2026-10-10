@@ -491,7 +491,7 @@ export function currentMood(conds: Condition[], now: number): Mood {
 ### 7.5a Character Studio additions
 
 - `dashboard/` implements a local character studio and development `/lab` entry independently of backend work. All sample runs are labelled simulated.
-- The launch control has five fixed seats, keyboard-accessible discrete squad size, role labels, and a labelled planning estimate. Signatures stay on the launch screen.
+- The launch control starts empty and uses the five character circles themselves as a compact slider (maximum 360 px), with a None detent and keyboard-accessible 0–5 selection. Grey circles wake in place, exchange neighbor glances/greetings, and gain flowing canvas fire and motivated focused faces when all five are selected. Role labels, the planner, and a labelled planning estimate remain. Zero is an assembly state; launch requires at least one agent. Reduced motion selects immediately with static flames.
 - The living room adds greetings, distinct dance tempos, a passing spark, surprise reactions, naps/wake-up, spring-return dragging, gaze that follows the visitor, and short prewritten conversations. Press/release boops add squash, blush, hearts, and optional sound. `characters/useCharacterLife.ts` layers ambient animation separately from the action rig; `characters/life.ts` records each character’s habits.
 - Personality parameters live in `characters/personality.ts`: distinct glide curves, click squish, float, blink cadence, flourishes, and pentatonic sound pitches.
 - Pure mood, attention, and emote layers take explicit time. Priority is unchanged; one active bubble and at most two queued bubbles per bot. Actor motion values are independent; viewport frames stay outside React state.

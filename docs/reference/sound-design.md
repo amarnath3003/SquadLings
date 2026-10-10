@@ -23,7 +23,7 @@ Vowel-filter transitions, pitch contours, vibrato, noise breaths, and syllable t
 | Trigger | Feedback |
 | --- | --- |
 | Buttons, links, tabs, selects, checkboxes, ranges, disclosures, dialog close | Activation, selection, on/off, tick, open/close motifs |
-| Squad count | Pitch-based join/leave notes, greeting/grumble |
+| Circle squad slider | Pitch ticks, staggered join/greeting, departing sleep voice, full-team ready cue |
 | Run creation, planning, ready, merge, completion | Launch, low Master motif, ready, merge, final flourish |
 | Spawn, status changes, reading, navigation, typing, scrolling, loading/waiting | Greeting, focused babble, activity textures, questioning/waiting murmurs |
 | Board posts, delivery, QA bugs | Posting/discovery, delivery/acknowledgment, bug/surprise |
@@ -40,7 +40,7 @@ Hover, focus, pointer motion, frames, usage updates, unchanged options, disabled
 - `consumeEvent` calls `handleAudioEvent` after duplicate rejection and before reduction; previous state resolves tool/approval ownership. Audio does not depend on actor registration. Incoming backend JSON still requires transport validation.
 - Components call `playUi`, `playVoice`, `voiceSequence`, and `stopAudio`. The shared interaction listener covers ordinary controls. `data-audio="off"` prevents duplicate generic feedback; a cue name overrides it. Special character/workflow controls provide their own sounds.
 - Maximum: one bot voice, four effects, eight starts per rolling second. Urgent voices interrupt lower priorities. Queued touch/milestone voices are capped at two and expire after 800 ms. Routine voices have a four-second per-bot cooldown. Idle voices require fifteen seconds between starts and three seconds without foreground audio.
-- Authored group sequences stagger voices by 700 ms. New group actions cancel the old sequence; urgent workflow cues cancel room/preview audio. Routine effects thin at 2x, and routine audio is suppressed at 4x; voice pitch/duration remain natural.
+- Authored group and circle-slider wake sequences stagger voices by 700 ms. Reduced-motion assembly keeps this natural audio timing while selecting the circles immediately. New group actions cancel the old sequence; urgent workflow cues cancel room/preview audio. Routine effects thin at 2x, and routine audio is suppressed at 4x; voice pitch/duration remain natural.
 - Mute and tab hiding cancel active/scheduled audio. Reset/stop cancels workflow audio; room unmount/offscreen suspension cancels room audio. Returning to a tab does not replay missed events. Initialization/suspension failures leave muted controls and a retry message.
 - Each utterance reuses one vocal tract across its syllables. Speaking-state updates are isolated to the halo, avoiding SVG/actor re-renders. Separate effects/voice gains feed master gain and a compressor. Envelopes and short cancellation fades avoid hard waveform cuts; finished nodes are disconnected. The context starts/resumes from explicit user activation.
 

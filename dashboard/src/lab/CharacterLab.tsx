@@ -22,7 +22,7 @@ export function EventControls({
   const fire = lab.fire;
   const ensure = () => lab.spawn(id, template, mobile);
   const call = (
-    tool: "click" | "type" | "scroll" | "list_elements" | "wait",
+    tool: "click" | "type" | "scroll" | "read_text" | "wait",
   ) => {
     ensure();
     const key = `manual-${Date.now()}`,
@@ -30,7 +30,7 @@ export function EventControls({
     const x = viewport.width * 0.45,
       y = viewport.height * 0.42;
     fire("tool.called", { botId: id, callId: key, tool, args: {} }, id);
-    if (tool === "click") {
+    if (tool === "click" || tool === "read_text") {
       fire(
         "cursor.move",
         {
@@ -42,19 +42,19 @@ export function EventControls({
         },
         id,
       );
-      lab.schedule(350, "cursor.click", { botId: id, x, y }, id);
+      if (tool === "click") lab.schedule(350, "cursor.click", { botId: id, x, y }, id);
     }
     if (tool === "type")
       fire("cursor.type", { botId: id, x, y, length: 12, masked: true }, id);
     if (tool === "scroll") fire("cursor.scroll", { botId: id, dy: 200 }, id);
     lab.schedule(
-      800,
+      tool === "click" || tool === "wait" ? 800 : 1800,
       "tool.result",
       {
         callId: key,
         ok: true,
         summary: `Simulated ${tool} completed.`,
-        ms: 800,
+        ms: tool === "click" || tool === "wait" ? 800 : 1800,
       },
       id,
     );
@@ -127,8 +127,12 @@ export function EventControls({
           [
             ["pointer", "Click", () => call("click")],
             ["keyboard", "Type", () => call("type")],
+            ["note", "Output", () => {
+              ensure();
+              fire("bot.caption", { botId: id, text: "Composing an example update for the squad." }, id);
+            }],
             ["scroll", "Scroll", () => call("scroll")],
-            ["eye", "Read", () => call("list_elements")],
+            ["eye", "Read", () => call("read_text")],
             ["clock", "Wait", () => call("wait")],
             ["spark", "Found", report],
             ["ask", "Ask", ask],

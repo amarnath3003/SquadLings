@@ -16,6 +16,7 @@ interface Entry {
   map: (point: Point) => Point;
   point: () => Point | undefined;
   effect: (event: SwarmEvent) => void;
+  activeCallId?: string;
 }
 const actors = new Map<BotId, Entry>();
 const pendingSpawns = new Map<
@@ -190,6 +191,8 @@ export function direct(event: SwarmEvent, reduced: boolean, speed: number) {
   let id = eventBotId(event);
   if (event.type === "tool.result")
     id ??= useDashboard.getState().state.calls[event.data.callId]?.botId;
+  if (event.type === "approval.resolved")
+    id ??= useDashboard.getState().state.approvals.find((a) => a.id === event.data.approvalId)?.botId;
   if (!id) return;
   const entry = actors.get(id);
   if (!entry) {
@@ -214,10 +217,30 @@ export function direct(event: SwarmEvent, reduced: boolean, speed: number) {
       actor.click(map(event.data));
       break;
     case "cursor.type":
-      actor.flourish("type");
+      if (event.data.length > 0) {
+        actor.click(map(event.data));
+        actor.flourish("type");
+      }
       break;
     case "cursor.scroll":
-      actor.flourish("scroll");
+      if (event.data.dy !== 0) actor.flourish("scroll", { direction: event.data.dy });
+      break;
+    case "bot.caption":
+      // Status copy must not interrupt the browser action it describes.
+      if (!actor.activity.get()?.held)
+        actor.flourish("output");
+      break;
+    case "approval.requested":
+      actor.flourish("ask", { hold: true });
+      break;
+    case "approval.resolved":
+      actor.clearActivity("ask");
+      break;
+    case "page.navigated":
+      actor.clearActivity();
+      break;
+    case "bot.status":
+      if (["paused", "stopped", "out_of_budget"].includes(event.data.status)) actor.stop();
       break;
     case "bot.spawned":
       spawnFlight(id, entry, reduced, speed);
@@ -236,11 +259,30 @@ export function direct(event: SwarmEvent, reduced: boolean, speed: number) {
       actor.flourish("error");
       break;
     case "tool.called":
+      entry.activeCallId = event.data.callId;
+      actor.clearActivity();
       if (
         useDashboard.getState().state.bots[id]?.emotes.current?.name === "retry"
       )
         actor.flourish("retry");
+      else if (["read_text", "list_elements", "look", "screenshot", "read_board"].includes(event.data.tool))
+        actor.flourish("read", { hold: true });
+      else if (event.data.tool === "type") actor.flourish("type", { hold: true });
+      else if (event.data.tool === "scroll") actor.flourish("scroll", { direction: Number(event.data.args.dy) || 1, hold: true });
+      else if (["ask_user", "wait_for_user"].includes(event.data.tool)) actor.flourish("ask", { hold: true });
       break;
+    case "tool.result": {
+      if (entry.activeCallId !== event.data.callId) break;
+      entry.activeCallId = undefined;
+      const tool = useDashboard.getState().state.calls[event.data.callId]?.tool;
+      if (!event.data.ok) actor.flourish("error");
+      else if (tool && ["read_text", "list_elements", "look", "screenshot", "read_board"].includes(tool)) actor.clearActivity("read");
+      else if (tool === "type" || tool === "scroll") actor.clearActivity(tool);
+      else if (tool === "ask_user" || tool === "wait_for_user") {
+        if (!useDashboard.getState().state.approvals.some((a) => a.botId === id && a.status === "pending")) actor.clearActivity("ask");
+      }
+      break;
+    }
   }
   const from = entry.point(),
     color = castFor(id).color;
