@@ -89,7 +89,7 @@ function CharacterRig({
     speed,
     seed,
     root,
-    trackPointer: !pointer && size >= 64,
+    trackPointer: !pointer && size >= 64 && attention === undefined,
   });
   const { perform, gazeX, gazeY } = life;
   useEffect(() => {

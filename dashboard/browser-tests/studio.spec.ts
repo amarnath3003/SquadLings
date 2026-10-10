@@ -14,7 +14,7 @@ test("studio, slider keyboard, fast scrubbing, and expression preview", async ({
   const slider = page.getByRole("slider", { name: "Squad size" });
   await slider.focus();
   await page.keyboard.press("Home");
-  await expect(slider).toHaveValue("1");
+  await expect(slider).toHaveValue("0");
   await page.keyboard.press("End");
   await expect(slider).toHaveValue("5");
   await page.keyboard.press("PageDown");
@@ -46,6 +46,7 @@ test("full sample completes with five reports and no browser errors", async ({
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
+  await page.getByRole("slider", { name: "Squad size" }).fill("5");
   await page.getByRole("button", { name: "Squad in action" }).click();
   await page.getByLabel("Speed").selectOption("4");
   await page.getByLabel("8 fps load streams").check();
@@ -69,6 +70,7 @@ test("OS reduced motion disables float and particles, and mobile mapping works",
   await expect(
     page.getByRole("button", { name: "Reduced motion" }),
   ).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("slider", { name: "Squad size" }).fill("5");
   await page.getByRole("button", { name: "Squad in action" }).click();
   await page.getByLabel("Speed").selectOption("4");
   await page.getByLabel("Mobile Tango (next run)").check();
@@ -156,6 +158,7 @@ test("pointer and ripple land within 2px on desktop and mobile", async ({
 test("a smaller plan benches the spare bot and the result dialog traps focus", async ({
   page,
 }) => {
+  await page.getByRole("slider", { name: "Squad size" }).fill("5");
   await page.getByRole("button", { name: "Squad in action" }).click();
   await page.getByLabel("Speed").selectOption("4");
   await page.getByLabel("Leave last bot on bench").check();

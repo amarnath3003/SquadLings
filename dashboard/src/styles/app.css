@@ -339,12 +339,6 @@ h1 .heading-period {
   gap: 22px;
   margin-top: 24px;
 }
-.squad-builder {
-  padding: 23px;
-  background: white;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
 .section-label {
   display: flex;
   justify-content: space-between;
@@ -357,70 +351,6 @@ h1 .heading-period {
 }
 .muted {
   color: var(--muted);
-}
-.lineup {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 25px 0 18px;
-  gap: 5px;
-}
-.master-seat,
-.seat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 0;
-  text-align: center;
-}
-.master-seat {
-  margin-right: 3px;
-  flex: 1;
-}
-.seat {
-  flex: 1;
-}
-.master-seat strong,
-.seat strong {
-  font-size: 10px;
-  font-weight: 500;
-  margin-top: 8px;
-}
-.master-seat > span,
-.seat > span {
-  font-size: 8px;
-  color: var(--muted);
-  margin-top: 5px;
-  white-space: nowrap;
-}
-.seat-empty strong,
-.seat-empty > span {
-  opacity: 0.45;
-}
-.seat-art {
-  height: 67px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.seat-art .character {
-  transform: scale(0.78);
-}
-.empty-seat {
-  height: 48px;
-  width: 48px;
-  border: 1px dashed #c4c4bc;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #c4c4bc;
-}
-.lineup-divider {
-  height: 65px;
-  width: 1px;
-  background: var(--line);
-  margin: 0 5px;
 }
 .master-logo {
   position: relative;
@@ -440,57 +370,6 @@ h1 .heading-period {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.slider-row {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-.round-button {
-  width: 23px;
-  height: 23px;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-.range-wrap {
-  flex: 1;
-  padding-top: 9px;
-}
-.range-wrap input {
-  width: 100%;
-  height: 5px;
-  cursor: pointer;
-}
-.range-ticks {
-  display: flex;
-  justify-content: space-between;
-  font-size: 8px;
-  color: var(--muted);
-  padding: 11px 2px 0;
-}
-.squad-summary {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 6px;
-  border-top: 1px solid var(--line);
-  padding-top: 17px;
-  margin-top: 17px;
-  font-size: 8px;
-  color: var(--muted);
-}
-.squad-summary strong {
-  font-size: 9px;
-  color: var(--ink);
-  font-weight: 500;
-}
-.summary-names {
-  font-size: 8px;
 }
 .launch-toolbar {
   display: flex;
@@ -1664,28 +1543,11 @@ html[data-hidden="true"] * {
   .character-stage {
     height: 250px;
   }
-  .squad-builder,
   .personality-card {
     padding: 19px;
   }
-  .lineup {
-    gap: 1px;
-  }
-  .seat-art .character {
-    transform: scale(0.62);
-  }
-  .master-seat .master-logo {
-    transform: scale(0.85);
-  }
-  .master-seat > span,
-  .seat > span {
-    font-size: 7px;
-  }
   .launch-toolbar {
     flex-wrap: wrap;
-  }
-  .summary-names {
-    display: none;
   }
   .palette-footer {
     gap: 12px;
@@ -1878,25 +1740,6 @@ html[data-hidden="true"] * {
     grid-template-columns: 1fr;
     gap: 22px;
   }
-  .squad-builder {
-    padding: 20px 16px;
-  }
-  .lineup {
-    margin: 20px 0;
-  }
-  .seat-art .character {
-    transform: scale(0.65);
-  }
-  .master-seat .master-logo {
-    transform: scale(0.7);
-  }
-  .master-seat strong,
-  .seat strong {
-    font-size: 9px;
-  }
-  .lineup-divider {
-    margin: 0 3px;
-  }
   .launch-toolbar {
     justify-content: space-between;
   }
@@ -2015,9 +1858,6 @@ html[data-hidden="true"] * {
 .studio-bottom > div {
   min-width: 0;
 }
-.range-wrap {
-  min-width: 0;
-}
 .tile-grid.count-5 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -2027,32 +1867,8 @@ html[data-hidden="true"] * {
   }
 }
 @media (max-width: 700px) {
-  .seat-art {
-    width: 100%;
-  }
-  .seat-art .character {
-    transform: scale(0.47);
-  }
-  .master-seat {
-    max-width: 32px;
-  }
-  .master-seat .master-logo {
-    transform: scale(0.58);
-  }
-  .seat > span {
-    font-size: 6px;
-  }
   .launch-toolbar {
     gap: 13px;
-  }
-  .lineup-divider {
-    margin: 0 2px;
-  }
-  .squad-summary {
-    font-size: 7px;
-  }
-  .squad-summary strong {
-    font-size: 8px;
   }
   .stage-art {
     width: 100%;

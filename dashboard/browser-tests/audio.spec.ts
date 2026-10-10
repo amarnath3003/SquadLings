@@ -330,6 +330,11 @@ test("a complete sound-enabled workflow keeps the final flourish unique", async 
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
+  await page.getByRole("slider", { name: "Squad size" }).fill("5");
+  await expect(page.locator(".squad-builder")).toHaveAttribute(
+    "data-awake",
+    "5",
+  );
   await enable(page);
   await page
     .getByRole("button", { name: "Squad in action", exact: true })

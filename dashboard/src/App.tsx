@@ -29,7 +29,7 @@ export default function App() {
   useUiSounds();
   const isLab = import.meta.env.DEV && location.pathname === "/lab";
   const [tab, setTab] = useState<Tab>("studio"),
-    [count, setCount] = useState(5),
+    [count, setCount] = useState(0),
     [template, setTemplate] = useState<TemplateId>("trip_planner"),
     [selected, setSelected] = useState<BotId>("bot1"),
     [seed, setSeed] = useState("little-team"),
@@ -93,9 +93,14 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [previewMood, previewKey]);
   const handoff = useRef<ReturnType<typeof setTimeout>>();
+  const builderRequested = useRef(false);
+  const buildSquad = () => {
+    builderRequested.current = true;
+    setTab("studio");
+  };
   useEffect(() => () => clearTimeout(handoff.current), []);
   const start = () => {
-    if (launching) return;
+    if (launching || count === 0) return;
     stopAudio("room");
     stopAudio("preview");
     const begin = () => {
@@ -133,6 +138,10 @@ export default function App() {
   useEffect(() => {
     stopAudio("room");
     stopAudio("preview");
+    if (tab === "studio" && builderRequested.current) {
+      builderRequested.current = false;
+      document.querySelector<HTMLInputElement>(".squad-range input")?.focus();
+    }
   }, [tab]);
   const botIds = useMemo(
     () => (botKey ? (botKey.split(",") as BotId[]) : []),
@@ -329,7 +338,7 @@ export default function App() {
                         className="primary-button"
                         data-audio="off"
                         onClick={start}
-                        disabled={lab.playing || launching}
+                        disabled={lab.playing || launching || count === 0}
                       >
                         <Icon name="play" size={15} /> Play a sample run{" "}
                         <Icon name="arrow" size={16} />
@@ -440,7 +449,9 @@ export default function App() {
                         ? "Playing"
                         : lab.hasRun
                           ? status
-                          : "Ready to play"}
+                          : count
+                            ? "Ready to play"
+                            : "Pick your team"}
                     </span>
                     {lab.playing ? (
                       <button
@@ -455,10 +466,14 @@ export default function App() {
                       <button
                         className="primary-button"
                         data-audio="off"
-                        onClick={start}
+                        onClick={() => (count ? start() : buildSquad())}
                       >
                         <Icon name="play" size={14} />
-                        {lab.hasRun ? "Replay sample" : "Play sample run"}
+                        {count === 0
+                          ? "Build your squad"
+                          : lab.hasRun
+                            ? "Replay sample"
+                            : "Play sample run"}
                       </button>
                     )}
                     <button
@@ -555,15 +570,23 @@ export default function App() {
                           />
                         ))}
                       </div>
-                      <h2>Your squad is ready.</h2>
-                      <p>Play the sample, or send a character an event.</p>
+                      <h2>
+                        {count
+                          ? "Your squad is ready."
+                          : "Your squad is still asleep."}
+                      </h2>
+                      <p>
+                        {count
+                          ? "Play the sample, or send a character an event."
+                          : "Wake a teammate with the slider in Character studio."}
+                      </p>
                       <button
                         className="primary-button"
                         data-audio="off"
-                        onClick={start}
+                        onClick={() => (count ? start() : buildSquad())}
                       >
                         <Icon name="play" size={14} />
-                        Let’s see them in action
+                        {count ? "Let’s see them in action" : "Wake your squad"}
                       </button>
                     </div>
                   </div>

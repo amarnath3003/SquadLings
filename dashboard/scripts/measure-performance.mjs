@@ -21,6 +21,8 @@ try {
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
   await page.goto(`${baseURL}/lab`);
+  await page.getByRole("slider", { name: "Squad size" }).fill("5");
+  await page.locator(".squad-powered").waitFor();
   if (audio) {
     await page
       .getByRole("button", { name: "Turn sound on", exact: true })
@@ -106,14 +108,23 @@ try {
       streams: document.querySelectorAll(".frame-canvas").length,
       studioCharacters: document.querySelectorAll(".room-roster .character")
         .length,
+      fireCanvases: document.querySelectorAll(
+        '.squad-energy[data-fire="flowing"]',
+      ).length,
+      poweredAgents: document.querySelectorAll(
+        '.squad-selector[data-visible="true"] .agent-seat[data-powered="true"]',
+      ).length,
     };
   }, scene === "studio");
   if (
     scene === "studio" &&
-    (measurement.actions.length !== 2 || measurement.studioCharacters !== 5)
+    (measurement.actions.length !== 2 ||
+      measurement.studioCharacters !== 5 ||
+      measurement.poweredAgents !== 5 ||
+      measurement.fireCanvases !== 1)
   )
     throw new Error(
-      "The studio scene did not exercise all expected controls and characters",
+      "The studio scene did not exercise all expected controls, characters and fired-up agents",
     );
   if (scene === "run" && measurement.streams !== 5)
     throw new Error("The run scene did not mount five synthetic streams");
