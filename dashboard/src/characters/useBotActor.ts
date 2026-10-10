@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo } from "react";
 import { animate, useMotionValue, type MotionValue } from "motion/react";
 import type { BotId, Mood } from "@swarm/shared/types";
-import { PERSONALITY, hash, mulberry32 } from "./personality";
+import { PERSONALITY } from "./personality";
 import { lookOffset, type Point } from "../mood/attention";
 export interface Actor {
   x: MotionValue<number>;
@@ -41,8 +41,6 @@ export function useBotActor(
     eyeY = useMotionValue(0),
     blink = useMotionValue(1),
     opacity = useMotionValue(1);
-  const moodRef = useRef(mood);
-  moodRef.current = mood;
   const actor = useMemo<Actor>(() => {
     const dna = PERSONALITY[id];
     let gliding = false;
@@ -227,61 +225,14 @@ export function useBotActor(
     opacity,
   ]);
   useEffect(() => {
-    const random = mulberry32(hash(seed + id)),
-      dna = PERSONALITY[id];
-    let timer: ReturnType<typeof setTimeout>,
-      flourish: ReturnType<typeof setTimeout>;
-    const scheduleBlink = () => {
-      timer = setTimeout(
-        () => {
-          if (!document.hidden && ["calm", "curious"].includes(moodRef.current))
-            animate(blink, [1, 0.1, 1], {
-              duration: dna.blink[2] / 1000 / speed,
-            });
-          scheduleBlink();
-        },
-        (dna.blink[0] + random() * (dna.blink[1] - dna.blink[0])) / speed,
-      );
-    };
-    const scheduleFlourish = () => {
-      flourish = setTimeout(
-        () => {
-          if (
-            !reduced &&
-            speed < 4 &&
-            !document.hidden &&
-            !actor.isGliding() &&
-            ["calm", "curious"].includes(moodRef.current)
-          ) {
-            if (id === "bot3") {
-              animate(scaleX, [1, 1.03, 1], { duration: 2.4 / speed });
-              animate(scaleY, [1, 1.03, 1], { duration: 2.4 / speed });
-            } else if (id === "bot4")
-              animate(hopY, [0, -3, 0, -3, 0], { duration: 0.5 / speed });
-            else
-              animate(tilt, id === "bot5" ? [0, -5, 5, -5, 5, 0] : [0, -6, 0], {
-                duration: 0.9 / speed,
-              });
-          }
-          scheduleFlourish();
-        },
-        (6000 + random() * 6000) / speed,
-      );
-    };
-    if (!reduced) {
-      scheduleBlink();
-      scheduleFlourish();
-    }
     const pause = () => {
       if (document.hidden) actor.stop();
     };
     document.addEventListener("visibilitychange", pause);
     return () => {
-      clearTimeout(timer);
-      clearTimeout(flourish);
       actor.stop();
       document.removeEventListener("visibilitychange", pause);
     };
-  }, [actor, id, seed, reduced, speed]);
+  }, [actor]);
   return actor;
 }

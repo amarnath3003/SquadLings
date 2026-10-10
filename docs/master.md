@@ -419,7 +419,7 @@ export const FACES: Record<Mood, JSX.Element> = {
 ```
 
 - **Face change (blink-swap):** the eyes squash vertically (scaleY 1 → 0.1 → 1 over 140 ms), and the glyph swaps at the midpoint.
-- **Idle blink:** calm and curious blink every 2.5–6 s (random); each blink takes 120 ms.
+- **Idle life (expanded at user request):** all nonterminal moods breathe and blink with character-specific timing, including occasional double blinks. Autonomous gestures yield in focused/worried/failed moods. Ambient motion pauses offscreen, when hidden, during takeover pause, and with reduced motion. See §7.5a.
 - **Eye look:** before a move, the eyes shift up to 3 px toward the target for 120 ms.
 
 ### 7.4 Mood engine
@@ -492,12 +492,13 @@ export function currentMood(conds: Condition[], now: number): Mood {
 
 - `dashboard/` implements a local character studio and development `/lab` entry independently of backend work. All sample runs are labelled simulated.
 - The launch control has five fixed seats, keyboard-accessible discrete squad size, role labels, and a labelled planning estimate. Signatures stay on the launch screen.
+- The living room adds greetings, distinct dance tempos, a passing spark, surprise reactions, naps/wake-up, spring-return dragging, gaze that follows the visitor, and short prewritten conversations. Press/release boops add squash, blush, hearts, and optional sound. `characters/useCharacterLife.ts` layers ambient animation separately from the action rig; `characters/life.ts` records each character’s habits.
 - Personality parameters live in `characters/personality.ts`: distinct glide curves, click squish, float, blink cadence, flourishes, and pentatonic sound pitches.
 - Pure mood, attention, and emote layers take explicit time. Priority is unchanged; one active bubble and at most two queued bubbles per bot. Actor motion values are independent; viewport frames stay outside React state.
 - The Master roster shows fixed assignments, actual event-driven steps, latest reports, and statuses. Report objects travel to their own row; the result preview shows a team lineup.
 - Effects use one shared particle canvas (60 total, 16 per bot) and one shared flight layer (six simultaneous flights). Sound is synthesized and off by default.
 - Reduced motion follows the OS setting or an explicit toggle. It disables float, glides, hops, squish, flights, and particles while retaining faces, bubbles, and text status.
-- This is an implementation checkpoint, not acceptance of every item in the extended brief. The launch handoff, staggered pop-outs, bench row, merge returns, report/board flights, social glances, and team photo are now implemented. Backend transport, recorded replay, snapshot hydration, and real takeover remain integration work. Local checks include 36 logic tests, nine browser tests, and a synthetic production load measurement of 59.9 fps average / 16.7 ms p95 with zero long tasks over 50 ms; real browser/projector rehearsal remains necessary.
+- This is an implementation checkpoint, not acceptance of every item in the extended brief. The launch handoff, staggered pop-outs, bench row, merge returns, report/board flights, social glances, and team photo are now implemented. Backend transport, recorded replay, snapshot hydration, and real takeover remain integration work. Local checks include 36 logic tests, 14 browser tests, and 20-second synthetic production measurements of 58.9 fps / 16.8 ms p95 for the interactive studio and 60.0 fps / 16.7 ms p95 for five streams, both with zero long tasks over 50 ms; real browser/projector rehearsal remains necessary.
 
 ### 7.6 Implementation rules
 

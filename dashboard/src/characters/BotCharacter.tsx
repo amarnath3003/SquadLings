@@ -5,8 +5,11 @@ import { castFor } from "@swarm/shared/cast";
 import { FACES } from "./faces";
 import { PERSONALITY, hash } from "./personality";
 import { useBotActor, type Actor } from "./useBotActor";
+import { useCharacterLife } from "./useCharacterLife";
+import type { LifeCue } from "./life";
 import { Icon } from "./icons";
 import { EMOTES, type Bubble } from "../mood/emotes";
+import { sound } from "../effects/sound";
 export interface CharacterProps {
   id: BotId;
   mood: Mood;
@@ -20,6 +23,9 @@ export interface CharacterProps {
   seed?: string;
   interactive?: boolean;
   paused?: boolean;
+  resting?: boolean;
+  cue?: LifeCue;
+  attention?: -1 | 1;
   edge?: "left" | "top" | "right";
 }
 function IndependentCharacter(props: CharacterProps) {
@@ -52,15 +58,39 @@ function CharacterRig({
   seed = "launch",
   interactive = false,
   paused = false,
+  resting = false,
+  cue,
   edge,
+  attention,
 }: CharacterProps & { actor: Actor }) {
   const cast = castFor(id),
     dna = PERSONALITY[id];
   const [displayMood, setDisplayMood] = useState(mood),
-    [booped, setBooped] = useState(false);
-  const lastBoop = useRef(-Infinity);
+    [booped, setBooped] = useState(0);
+  const root = useRef<HTMLDivElement>(null),
+    lastBoop = useRef(-Infinity);
+  const life = useCharacterLife({
+    id,
+    mood,
+    reduced,
+    paused,
+    resting,
+    speed,
+    seed,
+    root,
+    trackPointer: !pointer && size >= 64,
+  });
+  const { perform, gazeX, gazeY } = life;
   useEffect(() => {
-    if (reduced) {
+    if (!life.active || resting || attention === undefined) return;
+    gazeX.set(attention * 3);
+    gazeY.set(-0.5);
+  }, [attention, life.active, resting, gazeX, gazeY]);
+  useEffect(() => {
+    if (cue) perform(cue.gesture);
+  }, [cue, perform]);
+  useEffect(() => {
+    if (reduced || paused) {
       setDisplayMood(mood);
       return;
     }
@@ -74,55 +104,41 @@ function CharacterRig({
       clearTimeout(timer);
       playback.stop();
     };
-  }, [mood, reduced, speed, actor]);
+  }, [mood, reduced, paused, speed, actor]);
   useEffect(() => {
     if (!booped) return;
-    const t = setTimeout(() => setBooped(false), 400);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setBooped(0), 1100);
+    return () => clearTimeout(timer);
   }, [booped]);
-  const body = (
-    <>
-      <ellipse cx="32" cy="63" rx="19" ry="3" fill="#111" opacity=".08" />
-      <motion.g
-        style={{
-          y: actor.hopY,
-          rotate: actor.tilt,
-          scaleX: actor.scaleX,
-          scaleY: actor.scaleY,
-          originX: "32px",
-          originY: "60px",
-        }}
-      >
-        <g
-          className={
-            !reduced && ["calm", "curious"].includes(mood) ? "idle-float" : ""
-          }
-          style={
-            {
-              "--float": `${dna.float}px`,
-              "--period": `${dna.period / speed}s`,
-              "--delay": `${-(hash(seed + id) % 3000) / 1000}s`,
-            } as CSSProperties
-          }
-        >
-          <circle cx="32" cy="32" r="32" fill="white" />
-          <circle cx="32" cy="32" r="30" fill={cast.color} />
-          <motion.g style={{ x: actor.eyeX, y: actor.eyeY }}>
-            <motion.g
-              style={{ scaleY: actor.blink, originX: "32px", originY: "30px" }}
-            >
-              {FACES[booped && mood === "calm" ? "happy" : displayMood]}
-            </motion.g>
-          </motion.g>
-        </g>
-      </motion.g>
-    </>
-  );
+  // Local affection does not overwrite an agent's error, approval, or task mood.
+  const shownMood = booped && !pointer ? "happy" : displayMood;
+  const living = life.active && mood !== "failed";
   return (
     <div
-      className={`character ${pointer ? "character-pointer" : ""}`}
-      style={{ width: size, height: size, opacity: 1 }}
+      ref={root}
+      className={`character ${pointer ? "character-pointer" : ""} ${living ? "life-active" : ""} ${resting ? "is-resting" : ""}`}
+      style={
+        {
+          width: size,
+          height: size,
+          "--float": `${resting ? 1 : dna.float * (mood === "focused" ? 0.3 : 1)}px`,
+          "--period": `${(resting ? 5.5 : dna.period) / Math.min(speed, 2)}s`,
+          "--delay": `${-(hash(seed + id) % 3000) / 1000}s`,
+          "--bot-color": cast.color,
+        } as CSSProperties
+      }
       data-character={id}
+      data-life={
+        reduced
+          ? "reduced"
+          : paused
+            ? "paused"
+            : !life.active
+              ? "offscreen"
+              : resting
+                ? "resting"
+                : "awake"
+      }
     >
       {pointer && (
         <svg
@@ -149,25 +165,147 @@ function CharacterRig({
           width={size}
           height={(size * 68) / 64}
           role="img"
-          aria-label={`${cast.name}, ${booped ? "happy" : mood}`}
+          aria-label={`${cast.name}, ${resting ? "resting" : booped && !pointer ? "happy" : mood}`}
         >
-          {body}
+          <ellipse
+            className="life-shadow"
+            cx="32"
+            cy="64"
+            rx="20"
+            ry="2.8"
+            fill="#111"
+            opacity=".11"
+          />
+          <motion.g
+            style={{
+              y: actor.hopY,
+              rotate: actor.tilt,
+              scaleX: actor.scaleX,
+              scaleY: actor.scaleY,
+              transformBox: "view-box",
+              originX: "32px",
+              originY: "60px",
+            }}
+          >
+            <motion.g
+              style={{
+                x: life.x,
+                y: life.y,
+                rotate: life.tilt,
+                scaleX: life.sx,
+                scaleY: life.sy,
+                transformBox: "view-box",
+                originX: "32px",
+                originY: "57px",
+              }}
+            >
+              <g className={living ? "idle-float" : ""}>
+                <g className="life-breath">
+                  <circle cx="32" cy="32" r="32" fill="white" />
+                  <circle cx="32" cy="32" r="30" fill={cast.color} />
+                  <path
+                    d="M12 24A22 22 0 0 1 34 10"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                    opacity=".2"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M17 53A25 25 0 0 0 53 40"
+                    fill="none"
+                    stroke="#111"
+                    strokeWidth="1.3"
+                    opacity=".07"
+                    strokeLinecap="round"
+                  />
+                  <motion.g style={{ x: actor.eyeX, y: actor.eyeY }}>
+                    <motion.g
+                      data-gaze
+                      style={{ x: life.gazeX, y: life.gazeY }}
+                    >
+                      <motion.g
+                        style={{
+                          scaleY: actor.blink,
+                          transformBox: "view-box",
+                          originX: "32px",
+                          originY: "30px",
+                        }}
+                      >
+                        <motion.g
+                          data-blink
+                          style={{
+                            scaleY: life.blink,
+                            transformBox: "view-box",
+                            originX: "32px",
+                            originY: "30px",
+                          }}
+                        >
+                          {resting ? (
+                            <path
+                              d="M17 31q5 4 10 0M37 31q5 4 10 0"
+                              fill="none"
+                              stroke="#111"
+                              strokeWidth="3.5"
+                              strokeLinecap="round"
+                            />
+                          ) : (
+                            FACES[shownMood]
+                          )}
+                        </motion.g>
+                      </motion.g>
+                      {booped > 0 && !pointer && (
+                        <g fill="#fff" opacity=".35">
+                          <ellipse cx="16" cy="39" rx="4" ry="2" />
+                          <ellipse cx="48" cy="39" rx="4" ry="2" />
+                        </g>
+                      )}
+                    </motion.g>
+                  </motion.g>
+                </g>
+              </g>
+            </motion.g>
+          </motion.g>
         </svg>
+        {resting && (
+          <span className="sleep-notes" aria-hidden="true">
+            <i>z</i>
+            <i>z</i>
+            <i>z</i>
+          </span>
+        )}
+        {booped > 0 && !reduced && (
+          <span key={booped} className="affection-burst" aria-hidden="true">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <i key={i} style={{ "--petal": i } as CSSProperties}>
+                ♡
+              </i>
+            ))}
+          </span>
+        )}
         {interactive && !paused && (
           <button
             className="boop-target"
             aria-label={`Boop ${cast.name}`}
-            title={`${cast.name} · ${cast.personality}. ${cast.line}`}
+            title={`${cast.name} · Press and release for a little love`}
+            onPointerDown={(e) => {
+              e.currentTarget.setPointerCapture(e.pointerId);
+              life.press(true);
+            }}
+            onPointerUp={() => life.press(false)}
+            onPointerCancel={() => life.press(false)}
+            onBlur={() => life.press(false)}
             onClick={(e) => {
               e.stopPropagation();
-              if (performance.now() - lastBoop.current < 1000) return;
+              if (performance.now() - lastBoop.current < 650) return;
               lastBoop.current = performance.now();
-              setBooped(true);
-              actor.click({ x: actor.x.get(), y: actor.y.get() });
+              setBooped(performance.now());
+              perform("love");
+              sound(id, "click", speed);
             }}
           />
         )}
-        {(bubble || booped) && (
+        {(bubble || booped > 0) && (
           <motion.div
             key={booped ? "heart" : bubble?.name}
             className={`speech-bubble ${edge ? `bubble-${edge}` : ""}`}

@@ -18,6 +18,7 @@ import { center } from "./director/geometry";
 import { setSound } from "./effects/sound";
 import { Timeline } from "./components/Timeline";
 import { ResultDialog } from "./components/ResultDialog";
+import { LivingStage } from "./components/LivingStage";
 import { PerformanceMeter } from "./components/PerformanceMeter";
 
 type Tab = "studio" | "run" | "faces" | "guide";
@@ -271,8 +272,8 @@ export default function App() {
                     <p>
                       Five curious teammates. One shared mission.
                       <br />
-                      Give them a task, and watch their personalities come
-                      alive.
+                      They breathe, wonder, play, and look out for each other.
+                      Come spend a little time with them.
                     </p>
                   </div>
                   <div className="intro-note">
@@ -300,46 +301,14 @@ export default function App() {
                     </svg>
                   </div>
                 </div>
-                <section
-                  className="character-stage"
-                  aria-label="Meet all five characters"
-                >
-                  <div className="stage-grid" />
-                  {CAST.map((c, i) => (
-                    <button
-                      key={c.id}
-                      className={`stage-character ${selected === c.id ? "selected" : ""}`}
-                      onClick={() => {
-                        setSelected(c.id);
-                        setPreviewMood(undefined);
-                      }}
-                      aria-label={`Meet ${c.name}`}
-                      aria-pressed={selected === c.id}
-                      style={
-                        {
-                          "--character-color": c.color,
-                          "--stage-delay": `${i * 0.08}s`,
-                        } as React.CSSProperties
-                      }
-                    >
-                      <div className="stage-art">
-                        <BotCharacter
-                          id={c.id}
-                          mood={c.signature}
-                          size={128}
-                          reduced={reduced}
-                        />
-                      </div>
-                      <strong>{c.name}</strong>
-                      <span>{c.personality}</span>
-                      <div className="stage-indicator" />
-                    </button>
-                  ))}
-                  <span className="stage-caption">
-                    SMALL IN SIZE. FULL OF LIFE.
-                  </span>
-                  <span className="stage-corner">[ 5 / 5 ]</span>
-                </section>
+                <LivingStage
+                  selected={selected}
+                  onSelect={(id) => {
+                    setSelected(id);
+                    setPreviewMood(undefined);
+                  }}
+                  reduced={reduced}
+                />
                 <div className="studio-bottom">
                   <div>
                     <SquadSlider
@@ -433,7 +402,7 @@ export default function App() {
                       ))}
                     </div>
                     <span className="local-preview-note">
-                      Expression preview · tap the character for a boop
+                      Press, release, and make their day. Try a little boop.
                     </span>
                   </section>
                 </div>

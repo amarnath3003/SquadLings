@@ -4,6 +4,16 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T00:11:13+05:30 — Give the characters a continuous life of their own
+
+- Changed: Added a layered ambient rig, nine gesture sequences, personality-specific habits, breathing/shadows, single/double blinks, pointer attention, subtle highlights, springy press/release boops, blush/hearts, and optional reaction sounds. The new living room adds greetings, dancing, passing a spark, surprises, naps/wake-up, bounded spring-return dragging, and prewritten conversations with partner glances.
+- Why: The previous idle loop ran only for calm/curious moods, leaving most signature faces still. The user requested much livelier characters and richer interaction. Ambient values now run separately from the action rig, preserving exact cursor coordinates and task faces. A shared pointer listener avoids React updates per animation frame; hidden/offscreen/paused characters stop ambient work, and reduced motion remains supported.
+- Affected: `dashboard/src/characters/`, `components/LivingStage.tsx`, `styles/life.css`, studio integration, browser checks, performance script, README/master/submission documentation. No new dependencies or external assets were added.
+- Validation: TypeScript/production build and 36 logic tests passed; all 14 browser checks passed. Five new checks cover continuous life/gaze, group play, repeated boops, naps/wake-up, reduced motion/offscreen suspension, chatter, drag return, and blink geometry. Desktop/mobile screenshots were inspected. The full-run, cursor accuracy, and tile-isolation checks also passed a focused rerun after the final compact-motion optimization.
+- Performance: Production Chrome 150 at 1440 × 1000 measured 58.9 fps / 16.8 ms p95 for a 20-second studio sample with pointer tracking, dance, and spark controls. The final five-stream sample measured 60.0 fps / 16.7 ms p95. Both had zero long tasks over 50 ms and zero page errors. An earlier run measured 53.7 fps with 12 long tasks; cursor-sized bots now retain breathing/blinking and task gestures while autonomous idle flourishes are reserved for portraits.
+- Corrections: Fixed an ambiguous boop test selector, numeric zero leaking into rendered text, mobile speech-bubble height, and SVG blink pivots drifting toward the bottom of the face. A geometry check now verifies blinks close in place. Corrected the focused-test command to forward its filter directly through the dashboard workspace.
+- Limitations: Synthetic headless samples exclude startup and do not certify real sessions/projector hardware. Chatter is prewritten and local; backend transport, actual agent work, persistence, and final submission remain separate. Human visual review is pending.
+
 ## 2026-10-10T23:41:01+05:30 — Verify and complete the character interaction layer
 
 - Changed: Finished launch/seat/pop-out/bench/merge choreography, Master state rings and roster flashes, report/board/delivery flights, social glances, extended event controls, an accessible result dialog, and the typed `consumeEvent` backend handoff. Replaced the temporary Master glyph with the unmodified official DevDay icon and documented its source/hash.

@@ -1,0 +1,509 @@
+/* Ambient motion has its own transform layers; action coordinates stay exact. */
+.life-breath {
+  transform-origin: 32px 57px;
+}
+.life-active .life-breath {
+  animation: life-breathe var(--period) ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+.life-active .life-shadow {
+  transform-origin: 32px 64px;
+  animation: life-shadow var(--period) ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+@keyframes life-breathe {
+  0%,
+  100% {
+    transform: scale(1.012, 0.99);
+  }
+  50% {
+    transform: scale(0.985, 1.018);
+  }
+}
+@keyframes life-shadow {
+  0%,
+  100% {
+    transform: scaleX(1);
+    opacity: 0.12;
+  }
+  50% {
+    transform: scaleX(0.84);
+    opacity: 0.07;
+  }
+}
+.character .boop-target:focus-visible {
+  opacity: 1;
+  outline: 2px dashed var(--bot-color);
+  outline-offset: 6px;
+}
+.affection-burst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.affection-burst i {
+  position: absolute;
+  left: 45%;
+  top: 35%;
+  font-size: 17px;
+  font-style: normal;
+  color: var(--bot-color);
+  animation: love-burst 0.95s ease-out both;
+  --angle: calc(var(--petal) * 72deg);
+}
+@keyframes love-burst {
+  0% {
+    transform: rotate(var(--angle)) translateY(-10px)
+      rotate(calc(-1 * var(--angle))) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(var(--angle)) translateY(-60px)
+      rotate(calc(-1 * var(--angle))) scale(1.1);
+    opacity: 0;
+  }
+}
+.sleep-notes {
+  position: absolute;
+  right: -5px;
+  top: -15px;
+  font-family: Georgia, serif;
+  color: #62637b;
+  pointer-events: none;
+}
+.sleep-notes i {
+  position: absolute;
+  font-style: normal;
+  opacity: 0.65;
+  font-size: 13px;
+}
+.sleep-notes i:nth-child(2) {
+  left: 8px;
+  top: -10px;
+  font-size: 16px;
+}
+.sleep-notes i:nth-child(3) {
+  left: 19px;
+  top: -22px;
+  font-size: 19px;
+}
+.life-active .sleep-notes i {
+  animation: sleep-rise 3s ease-in-out infinite;
+}
+.life-active .sleep-notes i:nth-child(2) {
+  animation-delay: 0.65s;
+}
+.life-active .sleep-notes i:nth-child(3) {
+  animation-delay: 1.3s;
+}
+@keyframes sleep-rise {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateY(-5px);
+    opacity: 0.8;
+  }
+}
+.living-room {
+  border: 1px solid #deded5;
+  border-radius: 16px;
+  background: #f6f6ef;
+  overflow: hidden;
+  box-shadow: 0 5px 24px #35352e05;
+}
+.room-header {
+  height: 48px;
+  padding: 0 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #deded566;
+  position: relative;
+  z-index: 2;
+}
+.room-header > span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1.3px;
+}
+.room-header i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #9494a9;
+}
+.room-header .awake-dot {
+  background: var(--event-green, #04b84c);
+  box-shadow: 0 0 0 4px #04b84c10;
+}
+.room-ambient {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  font-size: 10px;
+  color: #62625a;
+  background: transparent;
+  padding: 6px 0 6px 10px;
+}
+.living-stage.character-stage {
+  height: 310px;
+  border: none;
+  border-radius: 0;
+  padding: 35px 18px 45px;
+  background: radial-gradient(ellipse at 50% 25%, #fffffc 0%, #f1f1e8 68%);
+  isolation: isolate;
+}
+.living-stage .stage-grid {
+  background-image: radial-gradient(#babab355 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.65;
+  mask-image: linear-gradient(transparent, black);
+}
+.room-horizon {
+  position: absolute;
+  left: -10%;
+  width: 120%;
+  height: 160px;
+  bottom: -68px;
+  border: 1px solid #ddded3;
+  border-radius: 50%;
+  background: #e7e8dd33;
+  pointer-events: none;
+}
+.room-orbit {
+  position: absolute;
+  border: 1px solid #dbddd255;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.orbit-one {
+  width: 440px;
+  height: 440px;
+  top: -340px;
+  left: -120px;
+}
+.orbit-two {
+  width: 550px;
+  height: 550px;
+  top: -440px;
+  right: -180px;
+}
+.room-roster {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  position: relative;
+}
+.living-stage .stage-character {
+  padding: 20px 2px 12px;
+  z-index: 2;
+}
+.living-stage .stage-art {
+  transition: none;
+  cursor: grab;
+  touch-action: none;
+}
+.living-stage .stage-character:hover .stage-art {
+  transform: none;
+}
+.living-stage .stage-character strong {
+  font-size: 17px;
+}
+.living-stage .stage-character > span:not(.stage-thought) {
+  font-size: 10px;
+}
+.living-stage .stage-indicator {
+  height: 4px;
+  width: 20px;
+  border-radius: 8px;
+  bottom: -4px;
+}
+.stage-character.selected::before {
+  content: "";
+  position: absolute;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  top: 37px;
+  background: var(--character-color);
+  opacity: 0.055;
+  box-shadow: 0 0 0 18px var(--character-color);
+  pointer-events: none;
+}
+.living-stage .stage-thought {
+  height: auto;
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  translate: -50% 0;
+  max-width: 155px;
+  width: max-content;
+  padding: 8px 11px;
+  border: 1px solid #dcdcd3;
+  border-radius: 12px 12px 12px 3px;
+  background: #fffffff2;
+  box-shadow: 0 4px 12px #11111105;
+  font-size: 10px;
+  line-height: 1.4;
+  color: #34342e;
+  z-index: 5;
+  margin: 0;
+  letter-spacing: -0.1px;
+  pointer-events: none;
+}
+.room-motes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.room-motes i {
+  position: absolute;
+  bottom: 20%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: room-mote calc(7s + var(--mote) * 0.7s) ease-in-out infinite;
+  animation-delay: calc(var(--mote) * -0.9s);
+}
+@keyframes room-mote {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  30%,
+  65% {
+    opacity: 0.25;
+  }
+  100% {
+    transform: translate(15px, -160px);
+    opacity: 0;
+  }
+}
+.passing-spark {
+  position: absolute;
+  top: 48px;
+  width: 34px;
+  height: 34px;
+  margin-left: -17px;
+  background: #fff7cd;
+  border: 1px solid #e5d785;
+  color: #746225;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  z-index: 4;
+  pointer-events: none;
+  box-shadow: 0 0 20px #f0d75655;
+}
+.room-controls {
+  position: relative;
+  z-index: 2;
+  padding: 16px 20px 14px;
+  border-top: 1px solid #deded577;
+  background: #ffffffe0;
+}
+.room-play-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.room-play-buttons button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 12px;
+  font-size: 11px;
+  border: 1px solid #deded6;
+  border-radius: 8px;
+  background: white;
+  transition:
+    background 0.15s,
+    transform 0.15s;
+}
+.room-play-buttons button:hover {
+  background: #f1f1e9;
+  transform: translateY(-2px);
+}
+.room-play-buttons button:active {
+  transform: translateY(0) scale(0.97);
+}
+.room-play-buttons button[aria-pressed="true"] {
+  background: #eceaf7;
+  border-color: #b7b1d3;
+}
+.room-controls p {
+  text-align: center;
+  font-size: 9px;
+  color: #77776f;
+  margin-top: 12px;
+  letter-spacing: 0.25px;
+}
+.night-time .living-stage {
+  background: radial-gradient(ellipse at 50% 25%, #ecebf6, #dddded);
+}
+.night-time .room-header {
+  background: #eeedf6;
+  color: #5d5b76;
+}
+.night-time .stage-grid {
+  opacity: 0.25;
+}
+.night-time .room-motes i {
+  background: #ffffff !important;
+  width: 4px;
+  height: 4px;
+}
+.night-time .stage-art {
+  cursor: default;
+}
+.night-time .room-horizon {
+  border-color: #c8c6d7;
+  background: #d0cedb22;
+}
+.night-time .stage-character.selected::before {
+  opacity: 0.035;
+}
+.quiet-room *,
+.quiet-room *::before,
+.quiet-room *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+@media (max-width: 1200px) {
+  .living-stage.character-stage {
+    height: 285px;
+  }
+  .stage-character.selected::before {
+    width: 92px;
+    height: 92px;
+    top: 47px;
+  }
+}
+@media (max-width: 950px) {
+  .living-stage.character-stage {
+    height: 255px;
+    padding-inline: 8px;
+  }
+  .living-stage .stage-thought {
+    font-size: 9px;
+    max-width: 112px;
+  }
+  .stage-character.selected::before {
+    width: 76px;
+    height: 76px;
+    top: 42px;
+  }
+}
+@media (max-width: 640px) {
+  .room-header {
+    padding: 0 13px;
+    height: 43px;
+  }
+  .room-header > span {
+    font-size: 7px;
+    letter-spacing: 0.7px;
+    gap: 7px;
+  }
+  .room-ambient {
+    font-size: 9px;
+    gap: 4px;
+  }
+  .living-stage.character-stage {
+    height: 224px;
+    padding: 30px 2px 39px;
+  }
+  .living-stage .stage-character strong {
+    font-size: 12px;
+  }
+  .living-stage .stage-character > span:not(.stage-thought) {
+    font-size: 7px;
+    line-height: 1.5;
+    height: 21px;
+    max-width: 57px;
+  }
+  .living-stage .stage-thought {
+    top: 0;
+    max-width: 85px;
+    font-size: 8px;
+    padding: 5px 6px;
+    border-radius: 8px 8px 8px 2px;
+  }
+  .living-stage .stage-character:first-child .stage-thought {
+    left: 7px;
+    translate: 0;
+  }
+  .living-stage .stage-character:last-child .stage-thought {
+    left: auto;
+    right: 7px;
+    translate: 0;
+  }
+  .stage-character.selected::before {
+    width: 50px;
+    height: 50px;
+    top: 44px;
+    box-shadow: 0 0 0 8px var(--character-color);
+  }
+  .room-controls {
+    padding: 13px 10px;
+  }
+  .room-play-buttons {
+    gap: 6px;
+  }
+  .room-play-buttons button {
+    padding: 8px 9px;
+    font-size: 10px;
+    gap: 5px;
+  }
+  .room-controls p {
+    font-size: 8px;
+    line-height: 1.6;
+  }
+  .passing-spark {
+    top: 40px;
+    width: 25px;
+    height: 25px;
+    margin-left: -12px;
+  }
+  .living-stage .stage-caption {
+    left: 12px;
+    letter-spacing: 0.5px;
+  }
+  .living-stage .stage-corner {
+    right: 12px;
+    letter-spacing: 0.5px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .life-active *,
+  .room-motes *,
+  .room-play-buttons *,
+  .affection-burst * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

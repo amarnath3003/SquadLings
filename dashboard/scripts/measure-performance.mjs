@@ -8,8 +8,11 @@ const channel =
   existsSync("/Applications/Google Chrome.app")
     ? "chrome"
     : undefined);
+const scene = process.env.PERF_SCENE ?? "run";
 let browser;
 try {
+  if (!["run", "studio"].includes(scene))
+    throw new Error("PERF_SCENE must be run or studio");
   browser = await chromium.launch({ channel });
   const page = await browser.newPage({
     viewport: { width: 1440, height: 1000 },
@@ -17,16 +20,21 @@ try {
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
   await page.goto(`${baseURL}/lab`);
-  await page.getByRole("button", { name: "Squad in action" }).click();
-  await page.getByLabel("8 fps load streams").check();
-  await page
-    .getByRole("button", { name: "Play sample run", exact: true })
-    .click();
-  await page.locator("[data-tile]").nth(4).waitFor();
+  if (scene === "run") {
+    await page.getByRole("button", { name: "Squad in action" }).click();
+    await page.getByLabel("8 fps load streams").check();
+    await page
+      .getByRole("button", { name: "Play sample run", exact: true })
+      .click();
+    await page.locator("[data-tile]").nth(4).waitFor();
+  } else {
+    await page.locator(".room-roster .character").nth(4).waitFor();
+  }
   await page.waitForTimeout(500);
-  const measurement = await page.evaluate(async () => {
+  const measurement = await page.evaluate(async (studio) => {
     const samples = [],
-      longTasks = [];
+      longTasks = [],
+      actions = [];
     let last = performance.now();
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) longTasks.push(entry.duration);
@@ -34,7 +42,35 @@ try {
     observer.observe({ entryTypes: ["longtask"] });
     await new Promise((resolve) => {
       const start = performance.now();
+      let danced = false,
+        spark = false;
+      const play = (label) => {
+        const button = [
+          ...document.querySelectorAll(".room-play-buttons button"),
+        ].find((button) => button.textContent?.trim() === label);
+        if (button) {
+          button.click();
+          actions.push(label);
+        }
+      };
       const frame = (time) => {
+        if (studio) {
+          window.dispatchEvent(
+            new PointerEvent("pointermove", {
+              pointerType: "mouse",
+              clientX: 820 + Math.sin((time - start) / 900) * 420,
+              clientY: 510 + Math.cos((time - start) / 1300) * 130,
+            }),
+          );
+          if (!danced && time - start > 5000) {
+            danced = true;
+            play("Dance break");
+          }
+          if (!spark && time - start > 12000) {
+            spark = true;
+            play("Pass a spark");
+          }
+        }
         samples.push(time - last);
         last = time;
         if (time - start < 20000) requestAnimationFrame(frame);
@@ -48,6 +84,7 @@ try {
     const mean =
       samples.reduce((sum, value) => sum + value, 0) / samples.length;
     return {
+      actions,
       durationSeconds: 20,
       frames: samples.length,
       averageFps: Number((1000 / mean).toFixed(1)),
@@ -55,19 +92,35 @@ try {
       longTasksOver50Ms: longTasks.length,
       maxLongTaskMs: longTasks.length ? Math.round(Math.max(...longTasks)) : 0,
       streams: document.querySelectorAll(".frame-canvas").length,
+      studioCharacters: document.querySelectorAll(".room-roster .character")
+        .length,
     };
-  });
+  }, scene === "studio");
+  if (
+    scene === "studio" &&
+    (measurement.actions.length !== 2 || measurement.studioCharacters !== 5)
+  )
+    throw new Error(
+      "The studio scene did not exercise all expected controls and characters",
+    );
+  if (scene === "run" && measurement.streams !== 5)
+    throw new Error("The run scene did not mount five synthetic streams");
   const report = {
     timestamp: new Date().toISOString(),
     browser: await browser.version(),
     viewport: { width: 1440, height: 1000 },
-    mode: "Headless Chrome, synthetic 8 fps streams; 20s after all tiles mount, including finishes/confetti",
+    mode:
+      scene === "studio"
+        ? "Headless Chrome, 20s living studio with continuous pointer tracking, dance and spark interactions"
+        : "Headless Chrome, synthetic 8 fps streams; 20s after all tiles mount, including finishes/confetti",
     ...measurement,
     pageErrors,
   };
   mkdirSync("artifacts", { recursive: true });
   writeFileSync(
-    "artifacts/performance.json",
+    scene === "studio"
+      ? "artifacts/performance-studio.json"
+      : "artifacts/performance.json",
     `${JSON.stringify(report, null, 2)}\n`,
   );
   console.log(JSON.stringify(report, null, 2));
