@@ -1,15 +1,10 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import {
-  animate,
-  motion,
-  useMotionValue,
-  type MotionStyle,
-} from "motion/react";
-import { CAST } from "@swarm/shared/cast";
+import { AnimatePresence, motion } from "motion/react";
+import { CAST, ORCHESTRATOR } from "@swarm/shared/cast";
 import { estimateRun } from "@swarm/shared/pricing";
 import { SquadFire } from "./SquadFire";
 import { BotCharacter } from "../characters/BotCharacter";
-import { MasterLogo } from "../characters/MasterLogo";
+import { MasterCharacter } from "../characters/MasterCharacter";
 import { Icon } from "../characters/icons";
 import {
   playUi,
@@ -27,13 +22,6 @@ const HELLOS = [
   "Tango. Let's do this.",
   "Blu! We’re all here!",
 ];
-const REPLIES = [
-  "You found us.",
-  "Room for one more!",
-  "Right behind you.",
-  "Now that’s a team.",
-];
-
 function Flame({ className = "" }: { className?: string }) {
   return (
     <svg
@@ -68,27 +56,6 @@ export function SquadSlider({
 }) {
   const root = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(!document.hidden);
-  const [dragging, setDragging] = useState(false);
-  const draggingRef = useRef(false);
-  const thumb = useMotionValue(`${((count + 0.5) / 6) * 100}%`);
-  const endDrag = () => {
-    draggingRef.current = false;
-    setDragging(false);
-  };
-  const moveThumb = (input: HTMLInputElement, clientX: number) => {
-    const box = input.parentElement!.getBoundingClientRect();
-    thumb.set(
-      `${Math.max(100 / 12, Math.min(1100 / 12, ((clientX - box.x) / box.width) * 100))}%`,
-    );
-  };
-  useEffect(() => {
-    if (dragging) return;
-    const playback = animate(thumb, `${((count + 0.5) / 6) * 100}%`, {
-      duration: reduced ? 0 : 0.18,
-      ease: "easeOut",
-    });
-    return () => playback.stop();
-  }, [count, dragging, reduced, thumb]);
   const [awake, setAwake] = useState(count);
   const [encounter, setEncounter] = useState<{
     index: number;
@@ -171,7 +138,7 @@ export function SquadSlider({
       setAwake(count);
       return;
     }
-    // A jump to five still introduces the cast one at a time. Re-scrubbing cancels this sequence.
+    // A jump to five still introduces the cast one at a time. Changing the count cancels this sequence.
     const timers = CAST.slice(from, count).map((_, offset) =>
       setTimeout(() => {
         const index = from + offset;
@@ -200,184 +167,129 @@ export function SquadSlider({
     : encounter
       ? `${CAST[encounter.index].name}: “${HELLOS[encounter.index]}”`
       : count === 0
-        ? "A little nudge. A new teammate."
+        ? "Every great team starts with one."
         : `${count === 1 ? "One bright mind" : `${count} bright minds`}. Better together.`;
   return (
     <section
       ref={root}
       className={`squad-builder squad-selector ${full ? "squad-powered" : ""} ${reduced ? "squad-still" : ""}`}
       aria-labelledby="squad-heading"
+      data-count={count}
       data-awake={awake}
       data-visible={visible}
-      data-dragging={dragging}
       style={
         {
-          "--squad-color": lastColor,
-          "--squad-fill": `${count * 20}%`,
+          "--squad-color": count ? lastColor : "var(--event-purple)",
+          "--stack-count": Math.max(1, count),
         } as CSSProperties
       }
     >
       <div className="squad-selector-heading">
         <div>
-          <span className="squad-eyebrow">BUILD YOUR LITTLE TEAM</span>
+          <span className="squad-eyebrow">YOUR CREW, YOUR CALL</span>
           <h2 id="squad-heading">
-            Wake your squad<span>.</span>
+            Pick your squad<span>.</span>
           </h2>
         </div>
-        <div className="squad-count-controls">
-          <button
-            className="squad-step"
-            data-audio="off"
-            onClick={() => changeCount(count - 1)}
-            disabled={disabled || count === 0}
-            aria-label="Remove a bot"
-          >
-            <Icon name="minus" size={14} />
-          </button>
-          <output className="squad-count" aria-live="polite" aria-atomic="true">
-            <strong>{count}</strong>
-            <span>/ 5</span>
-          </output>
-          <button
-            className="squad-step"
-            data-audio="off"
-            onClick={() => changeCount(count + 1)}
-            disabled={disabled || count === 5}
-            aria-label="Add a bot"
-          >
-            <Icon name="plus" size={14} />
-          </button>
-        </div>
+        <output
+          className="squad-count"
+          aria-live="polite"
+          aria-atomic="true"
+          aria-label="Squad size"
+        >
+          <strong>{count}</strong>
+          <span>/ 5 agents</span>
+        </output>
       </div>
       <p id="squad-hint" className="squad-hint">
-        Drag a circle along the line to wake your team.
+        A small crew. Big possibilities.
       </p>
-      <motion.div
-        className="squad-circle-slider squad-range"
-        style={{ "--drag-position": thumb } as MotionStyle}
+      <div
+        className="squad-stepper"
+        role="group"
+        aria-label="Choose squad size"
+        aria-describedby="squad-hint"
       >
-        <div className="squad-rail" aria-hidden="true">
-          <span />
-        </div>
-        {full && (
-          <SquadFire active={visible} reduced={reduced} position={thumb} />
-        )}
-        <div className="lineup squad-lineup">
-          <div
-            className={`zero-seat ${count === 0 ? "zero-selected" : ""}`}
-            aria-hidden="true"
-          >
-            <span>
-              <Icon name="minus" size={13} />
-            </span>
-            <small>None</small>
-          </div>
-          {CAST.map((bot, i) => {
-            const active = i < awake && i < count;
-            const newcomer = active && encounter?.index === i;
-            const neighbor = active && encounter?.index === i + 1;
-            const greeting = newcomer || neighbor;
-            return (
-              <div
-                key={bot.id}
-                className={`seat agent-seat ${active ? "agent-awake" : "seat-empty"} ${newcomer ? "agent-waking" : ""} ${i === count - 1 ? "agent-thumb" : ""} ${greeting ? "agent-greeting" : ""}`}
-                data-agent={bot.id}
-                data-state={active ? "awake" : i < count ? "queued" : "asleep"}
-                data-powered={full}
-                style={
-                  {
-                    "--agent-color": bot.color,
-                    "--slot-position": `${((i + 1.5) / 6) * 100}%`,
-                  } as CSSProperties
-                }
-              >
-                <div className="seat-art" data-seat={bot.id}>
-                  <span className="dormant-orb" aria-hidden="true" />
-                  <div
-                    className={`agent-body ${launching ? "agent-launching" : ""}`}
-                    aria-hidden={!active}
-                  >
-                    <BotCharacter
-                      id={bot.id}
-                      mood={
-                        full ? "focused" : greeting ? "happy" : bot.signature
-                      }
-                      size={64}
-                      reduced={reduced}
-                      paused={!active || !visible}
-                      attention={
-                        newcomer && i > 0 ? -1 : neighbor ? 1 : undefined
-                      }
-                      cue={
-                        greeting
-                          ? {
-                              gesture: newcomer ? "wave" : "nod",
-                              serial: encounter!.serial,
-                            }
-                          : undefined
-                      }
-                    />
-                  </div>
-                  {i === count - 1 && (
-                    <span className="agent-drag-hint" aria-hidden="true">
-                      ↔ drag
-                    </span>
-                  )}
-                  {newcomer && (
-                    <span className="wake-ring" aria-hidden="true" />
-                  )}
-                  {neighbor && !full && (
-                    <span className="neighbor-reply" aria-hidden="true">
-                      {REPLIES[i]}
-                    </span>
-                  )}
-                </div>
-                <strong>{bot.name}</strong>
-                <span className="agent-role">
-                  {full ? "Fired up" : active ? ROLES[template][i] : "Sleeping"}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-        <input
-          aria-label="Squad size"
-          aria-describedby="squad-hint"
-          type="range"
-          min="0"
-          max="5"
-          step="1"
-          value={count}
-          disabled={disabled}
-          aria-valuetext={
-            count
-              ? `${count} agents: ${CAST.slice(0, count)
-                  .map((b) => b.name)
-                  .join(", ")}${full ? ". Full squad, fired up." : ""}`
-              : "No agents. Slide right to wake Plum."
-          }
+        <button
+          type="button"
+          className="squad-step squad-remove"
           data-audio="off"
-          onPointerDown={(e) => {
-            draggingRef.current = true;
-            setDragging(true);
-            moveThumb(e.currentTarget, e.clientX);
-          }}
-          onPointerMove={(e) => {
-            if (draggingRef.current) moveThumb(e.currentTarget, e.clientX);
-          }}
-          onPointerUp={endDrag}
-          onPointerCancel={endDrag}
-          onLostPointerCapture={endDrag}
-          onBlur={endDrag}
-          onChange={(e) => changeCount(Number(e.target.value))}
-          onKeyDown={(e) => {
-            if (e.key === "PageUp" || e.key === "PageDown") {
-              e.preventDefault();
-              changeCount(count + (e.key === "PageUp" ? 1 : -1));
-            }
-          }}
-        />
-      </motion.div>
+          onClick={() => changeCount(count - 1)}
+          disabled={disabled || count === 0}
+          aria-label="Remove a bot"
+        >
+          <Icon name="minus" size={20} />
+        </button>
+        <div className="squad-stack-stage">
+          <div className="squad-stack">
+            {full && <SquadFire active={visible} reduced={reduced} />}
+            {count === 0 && (
+              <div className="squad-empty" aria-hidden="true">
+                <span /><span />
+              </div>
+            )}
+            <AnimatePresence initial={false}>
+              {CAST.slice(0, count).map((bot, i) => {
+                const newcomer = encounter?.index === i;
+                const neighbor = encounter?.index === i + 1;
+                const greeting = newcomer || neighbor;
+                return (
+                  <motion.div
+                    key={bot.id}
+                    className="seat agent-seat agent-awake"
+                    data-agent={bot.id}
+                    data-state="awake"
+                    data-powered={full}
+                    style={{ "--stack-index": i, zIndex: i + 2 } as CSSProperties}
+                    initial={reduced ? false : { opacity: 0, x: 24, scale: 0.65, rotate: 12 }}
+                    animate={{ opacity: 1, x: 0, scale: 1, rotate: 0 }}
+                    exit={{ opacity: 0, x: 16, scale: 0.7, rotate: -8 }}
+                    transition={{ duration: reduced ? 0 : 0.24, ease: "easeOut" }}
+                  >
+                    <div className="seat-art" data-seat={bot.id}>
+                      <div className={`agent-body ${launching ? "agent-launching" : ""}`}>
+                        <BotCharacter
+                          id={bot.id}
+                          mood={full ? "focused" : greeting ? "happy" : bot.signature}
+                          size={64}
+                          reduced={reduced}
+                          paused={!visible}
+                          attention={newcomer && i > 0 ? -1 : neighbor ? 1 : undefined}
+                          cue={greeting ? { gesture: newcomer ? "wave" : "nod", serial: encounter!.serial } : undefined}
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
+        </div>
+        <button
+          type="button"
+          className="squad-step squad-add"
+          data-audio="off"
+          onClick={() => changeCount(count + 1)}
+          disabled={disabled || count === 5}
+          aria-label="Add a bot"
+        >
+          <Icon name="plus" size={20} />
+        </button>
+      </div>
+      <div className="squad-roster">
+        <strong>
+          {count
+            ? CAST.slice(0, count).map((bot) => bot.name).join(" · ")
+            : "Your crew starts here"}
+        </strong>
+        <span>
+          {count === 0
+            ? "Tap + to meet Plum"
+            : count === 5
+              ? "All five. Ready for anything."
+              : `Next up: ${CAST[count].name} · ${ROLES[template][count]}`}
+        </span>
+      </div>
       <div className="assembly-message" data-encounter={encounter?.index}>
         {full ? (
           <Flame className="squad-fire-icon" />
@@ -388,9 +300,9 @@ export function SquadSlider({
       </div>
       <div className="squad-summary">
         <div className="master-seat">
-          <MasterLogo size={24} reduced={reduced || !visible} shared />
+          <MasterCharacter size={32} reduced={reduced || !visible} shared />
           <span>
-            Master has the plan.
+            {ORCHESTRATOR.name} has the plan.
             <br />
             <strong>You pick the team.</strong>
           </span>

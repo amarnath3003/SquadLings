@@ -6,7 +6,6 @@ Originally fetched on **10 October 2026 (IST)**; the live website palette was fe
 | --- | --- |
 | [Official DevDay site](https://devday.openai.com/) | Event colour tokens and neutral black/white UI direction. |
 | [Published DevDay stylesheet](https://devday.openai.com/_next/static/css/b17bf04869ddf007.css) | Exact `:root` declarations: `--event-blue: #006aff`, `--event-green: #04b84c`, `--event-purple: #924ff7`, `--event-orange: #ff8549`. This hashed asset URL can change when the official site is rebuilt. |
-| [Official DevDay SVG favicon](https://devday.openai.com/icon.svg) | Unmodified local Master artwork in `dashboard/public/openai-devday-icon.svg`. SHA-256: `ed615b8fd9703863918daae6106396a42926fd167abc1bcad4aca860ff0f7ba6`. Project branding/favicon are our own. |
 | [OpenAI design guidelines](https://openai.com/brand/) | Brand attribution and logo guidance. The fuller brand portal redirected to an authentication page; no private brand materials were accessed. |
 | [User-supplied sticker photo](devday-stickers.jpg) | Circular character geometry, black expression glyphs, and the local Sky blue extension. |
 
@@ -23,7 +22,9 @@ The current website links the stylesheet above (with a deployment query paramete
 
 These values already matched the previous character fills; no different official hex values were found in the live website. `DEVDAY_COLORS` in `packages/shared/src/cast.ts` now supplies both the cast and, through `dashboard/src/main.tsx`, the CSS event tokens. Character bodies use a single opaque fill with black expression glyphs. Reflections, highlight strokes, blush overlays, white body rims, ground shadows, colour filters, and glows are removed. Full-squad flames retain their motion as solid event-orange silhouettes. Cards and controls use borders without shadows; day/night room surfaces use solid backgrounds. Gallery/grid patterns remain for background contrast previews.
 
-The same stylesheet's dark theme declares `--color-background: #000` and `--color-primary-100: #fff`. These exact black/white values define the app's default page and text colours. Local charcoal surfaces, grey borders/labels, and darker status fills complete the interface. `color-scheme: dark` and page metadata keep native controls and browser chrome consistent, including under a light OS preference. The official Master SVG stays unmodified and uses its embedded dark-mode styling. Synthetic page previews share the theme; real streamed images are not recoloured.
+The same stylesheet's dark theme declares `--color-background: #000` and `--color-primary-100: #fff`. These exact black/white values define the app's default page and text colours. Local charcoal surfaces, grey borders/labels, and darker status fills complete the interface. `color-scheme: dark` and page metadata keep native controls and browser chrome consistent, including under a light OS preference. Synthetic page previews share the theme; real streamed images are not recoloured.
+
+The user's later supplied reference shows a charcoal circle with paired white carets. Original Onyx artwork follows that resting silhouette, using local charcoal `#262626`, the shared symbol geometry, and white glyphs; this is not an official event colour token. Workflow reactions can add mouths/details, as the user clarified. Onyx replaces the previously used DevDay logo; that asset is removed from the dashboard. No additional external artwork was imported.
 
 SquadLings is the hackathon team's project. OpenAI names and artwork belong to OpenAI; no endorsement is implied.
 

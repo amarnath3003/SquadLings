@@ -5,9 +5,9 @@ import {
   type Reaction,
 } from "../effects/audio/catalogue";
 import { useState } from "react";
-import { CAST } from "@swarm/shared/cast";
+import { CAST, ORCHESTRATOR } from "@swarm/shared/cast";
 import { BotCharacter } from "../characters/BotCharacter";
-import { MasterLogo } from "../characters/MasterLogo";
+import { MasterCharacter, MASTER_LINES } from "../characters/MasterCharacter";
 import { MOODS } from "../characters/faces";
 import { Icon, TOOL_META, STATUS_META } from "../characters/icons";
 import { EMOTES } from "../mood/emotes";
@@ -104,21 +104,12 @@ export function Gallery({ reduced }: { reduced: boolean }) {
       </section>
       <div className="gallery-lower">
         <section className="gallery-panel">
-          <div className="section-label">THE MASTER’S MANY HATS</div>
+          <div className="section-label">ONYX · THE CALM CONDUCTOR</div>
+          <p className="onyx-intro">{ORCHESTRATOR.line}</p>
           <div className="master-gallery">
-            {[
-              "idle",
-              "classifying",
-              "planning",
-              "monitoring",
-              "receiving",
-              "needs you",
-              "merging",
-              "done",
-              "failed",
-            ].map((s) => (
+            {Object.keys(MASTER_LINES).map((s) => (
               <div key={s}>
-                <MasterLogo state={s} reduced={reduced} size={38} />
+                <MasterCharacter state={s} reduced={reduced} size={38} />
                 <span>{s}</span>
               </div>
             ))}

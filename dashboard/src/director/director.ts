@@ -57,7 +57,9 @@ function spawnFlight(id: BotId, entry: Entry, reduced: boolean, speed: number) {
   nextSpawn = performance.now() + delay + 250 / speed;
   later(
     () => {
-      const from = center(document.querySelector(".master-card .master-logo"));
+      const from = center(
+        document.querySelector(".master-card .master-character"),
+      );
       const to = entry.point();
       if (!from || !to) {
         entry.actor.opacity.set(1);
@@ -106,6 +108,7 @@ export function registerActor(id: BotId, entry: Entry) {
 }
 export function resetDirector() {
   generation++;
+  useMasterTick.setState({ tick: 0, lastBot: undefined });
   nextSpawn = 0;
   lastSocial = {};
   pendingSpawns.clear();
@@ -120,7 +123,7 @@ export function resetDirector() {
 }
 function merge(reduced: boolean, speed: number) {
   if (reduced) return;
-  const to = center(document.querySelector(".master-card .master-logo"));
+  const to = center(document.querySelector(".master-card .master-character"));
   if (!to) return;
   let index = 0;
   for (const [id, entry] of actors) {

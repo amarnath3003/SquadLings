@@ -1,15 +1,12 @@
 import { useEffect, useRef } from "react";
-import type { MotionValue } from "motion/react";
 
 // One canvas and one frame callback for all five plumes. Faces stay on a layer above it.
 export function SquadFire({
   active,
   reduced,
-  position,
 }: {
   active: boolean;
   reduced: boolean;
-  position: MotionValue<string>;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -19,9 +16,7 @@ export function SquadFire({
     if (!element || !parent || !ctx || !active) return;
     let frame = 0;
     let width = 0,
-      height = 0,
-      rowWidth = 0,
-      rowLeft = 0;
+      height = 0;
     let centers: { x: number; y: number; radius: number }[] = [];
     const started = performance.now();
     const flameColor = getComputedStyle(parent)
@@ -29,9 +24,6 @@ export function SquadFire({
       .trim();
     const measure = () => {
       const bounds = element.getBoundingClientRect();
-      const row = parent.getBoundingClientRect();
-      rowWidth = row.width;
-      rowLeft = row.x - bounds.x;
       const dpr = Math.min(devicePixelRatio || 1, 2);
       width = bounds.width;
       height = bounds.height;
@@ -135,11 +127,7 @@ export function SquadFire({
       const t = reduced ? 2.4 : now / 1000;
       const ignition = reduced ? 1 : Math.min(1, (now - started) / 450);
       ctx.clearRect(0, 0, width, height);
-      centers.forEach(({ x: seatedX, y, radius }, i) => {
-        const x =
-          i === 4
-            ? rowLeft + (rowWidth * parseFloat(position.get())) / 100
-            : seatedX;
+      centers.forEach(({ x, y, radius }, i) => {
         const phase = i * 2.1;
         const base = y + radius * 0.96;
         const tall =
@@ -170,19 +158,15 @@ export function SquadFire({
       measure();
       if (reduced) draw(performance.now());
     });
-    const unsubscribe = reduced
-      ? position.on("change", () => draw(performance.now()))
-      : () => {};
     observer.observe(parent);
     measure();
     draw(performance.now());
     return () => {
-      unsubscribe();
       observer.disconnect();
       cancelAnimationFrame(frame);
       ctx.clearRect(0, 0, width, height);
     };
-  }, [active, reduced, position]);
+  }, [active, reduced]);
   return (
     <canvas
       ref={canvas}

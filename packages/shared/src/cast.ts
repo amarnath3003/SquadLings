@@ -8,6 +8,14 @@ export const DEVDAY_COLORS = {
   blue: "#006AFF",
 } as const;
 
+export const ORCHESTRATOR = {
+  id: "master",
+  name: "Onyx",
+  color: "#262626",
+  personality: "The calm conductor",
+  line: "One thing at a time. All together.",
+} as const;
+
 export const CAST = [
   {
     id: "bot1",

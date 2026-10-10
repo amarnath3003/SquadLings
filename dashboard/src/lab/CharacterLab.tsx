@@ -1,5 +1,5 @@
 import type { BotId } from "@swarm/shared/types";
-import { CAST } from "@swarm/shared/cast";
+import { CAST, ORCHESTRATOR } from "@swarm/shared/cast";
 import { Icon } from "../characters/icons";
 import { useDashboard } from "../store";
 import type { useLab } from "./useLab";
@@ -224,8 +224,8 @@ export function BoardPanel({ lab }: { lab: LabController }) {
               <div>
                 <strong>{n.title}</strong>
                 <span>
-                  {CAST.find((c) => c.id === n.from)?.name ?? "Master"} →
-                  Everyone
+                  {CAST.find((c) => c.id === n.from)?.name ?? ORCHESTRATOR.name}{" "}
+                  → Everyone
                 </span>
               </div>
             </div>

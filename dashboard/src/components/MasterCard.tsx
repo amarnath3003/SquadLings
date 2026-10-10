@@ -1,6 +1,6 @@
-import { CAST } from "@swarm/shared/cast";
+import { CAST, ORCHESTRATOR } from "@swarm/shared/cast";
 import { useDashboard } from "../store";
-import { MasterLogo } from "../characters/MasterLogo";
+import { MasterCharacter, MASTER_LINES } from "../characters/MasterCharacter";
 import { BotCharacter } from "../characters/BotCharacter";
 import { Icon, STATUS_META } from "../characters/icons";
 import { currentMood } from "../mood/engine";
@@ -27,31 +27,27 @@ export function MasterCard({
   return (
     <section className="master-card">
       <div className="master-card-top">
-        <MasterLogo
+        <MasterCharacter
           state={pending ? "needs you" : master}
           reduced={reduced}
           size={44}
           tick={tick}
           shared
-          ringColor={
-            lastBot ? CAST.find((bot) => bot.id === lastBot)!.color : "var(--ink)"
-          }
         />
         <div>
-          <strong>Master</strong>
+          <strong>{ORCHESTRATOR.name}</strong>
           <span>
             {pending
               ? "Needs your input"
               : master === "idle"
-                ? "The big-picture thinker"
+                ? ORCHESTRATOR.personality
                 : master.charAt(0).toUpperCase() + master.slice(1)}
           </span>
         </div>
         <span className="micro-tag">COORDINATOR</span>
       </div>
       <p className="master-description">
-        A place for every finding.
-        <br />A plan that brings it all together.
+        {MASTER_LINES[pending ? "needs you" : master] ?? ORCHESTRATOR.line}
       </p>
       <div className="master-roster">
         {CAST.slice(0, assigned).map((c) => {

@@ -1,4 +1,4 @@
-import { CAST } from "@swarm/shared/cast";
+import { CAST, ORCHESTRATOR } from "@swarm/shared/cast";
 import { useDashboard } from "../store";
 export function Timeline() {
   const events = useDashboard((state) => state.state.events);
@@ -19,7 +19,7 @@ export function Timeline() {
                 <strong>
                   {event.botId
                     ? CAST.find((bot) => bot.id === event.botId)?.name
-                    : "Master"}
+                    : ORCHESTRATOR.name}
                 </strong>
                 <code>{event.type}</code>
               </div>

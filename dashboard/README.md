@@ -6,6 +6,8 @@ The default theme uses the current DevDay website's black `#000000` background a
 
 Characters use single opaque fills, black expression glyphs, and no reflections, highlights, blush overlays, body rims, shadows, or glows. The live DevDay website's exact purple `#924FF7`, green `#04B84C`, orange `#FF8549`, and blue `#006AFF` are shared by the cast and interface through `DEVDAY_COLORS` in `packages/shared/src/cast.ts`. Sky `#A6D8F5` remains a local sticker colour; the website publishes no fifth event token. Full-squad flames are solid orange silhouettes. See [brand-sources.md](../docs/reference/brand-sources.md) for the fetched stylesheet and verification notes.
 
+Onyx is **the calm conductor**, an original charcoal `#262626` orchestrator with white `^ ^` symbols at rest, matching the supplied reference. It thinks with a measured tilt, scans while monitoring, nods at landed reports, waits for your approval, and celebrates quietly. Nine workflow states share the squad's symbol vocabulary; reaction mouths/details are allowed, while the resting face stays symbol-only. Its line is “One thing at a time. All together.” The backend identity remains `master`; it coordinates the existing five browser agents.
+
 From the repository root, with **Node.js 22.12 or newer**:
 
 ```sh
@@ -21,10 +23,10 @@ Open **http://127.0.0.1:5173/** for the studio or **http://127.0.0.1:5173/lab** 
 1. Meet Plum, Lime, Tango, Blu, and Sky in their living room. Move the pointer nearby and watch their gaze follow. Each bot breathes, blinks, shifts its weight, and has its own gestures.
 2. Try **Say hello**, **Dance break**, **Pass a spark**, **Surprise them**, or **Nap time / Wake up**. Drag a character and release it to spring home. They also exchange short, prewritten remarks; **Chatter** switches those off.
 3. Select a character and preview expressions. Press and release a boop target for squash, a happy reaction, hearts, and optional sound. Enter/Space also works.
-4. The squad starts empty. Drag across the compact row of circles, or use arrow keys, Home/End, PageUp/PageDown, or +/−. Grey circles wake in place and greet their neighbor. At five, every bot has a determined face and its own flames. Drag back to **None** to clear the team. Pick Trip Planner, QA Swarm, or Auto.
-5. Wake at least one teammate, then play a sample run. Watch the tiles, shared board, and reports to the Master. An empty run screen links back to the focused squad control.
+4. The squad starts empty. Press **+** on the right to add a character, or **−** on the left to remove the last one. The overlapping stack grows and shrinks in the centre; a live count and next-teammate hint keep the selection clear. Enter/Space activates either button. At five, every bot has a determined face and flames. Pick Trip Planner, QA Swarm, or Auto.
+5. Wake at least one teammate, then play a sample run. Watch the tiles, shared board, and reports to Onyx. An empty run screen links back to the focused squad control.
 6. Use event buttons to try a particular reaction. Approval controls act only on this simulated run.
-7. Inspect all 50 expressions, the emote set, activity icons, and Master states in Face gallery.
+7. Inspect all 50 teammate expressions, the emote set, activity icons, and Onyx’s nine states in Face gallery.
 8. Enable the toolbar speaker for UI/workflow effects and five original cartoon gibberish voices. **Sound settings** offers master volume (35% initially) and separate effects, voices, and idle chatter switches. The mix is saved; each page load starts muted. Face gallery has a voice audition bank and playable expressions. Reduced motion keeps audio and makes the speaking halo static.
 9. In Squad in action, choose 1×/2×/4× speed, a deterministic seed, 8 fps synthetic load streams, or mobile Tango for the next run. In `/lab`, try leaving the last bot on the bench.
 10. Open More reactions & states to preview safety blocks, gates, loading, login requests, pause/resume, deliveries, bugs, or a terminal failure. Pause/resume only previews the UI; browser takeover is not connected.
@@ -52,11 +54,11 @@ See [sound-design.md](../docs/reference/sound-design.md) for sound coverage, bac
 
 Ambient activity stops when a character leaves the viewport, the document is hidden, or the character is paused. Reduced motion retains expressions and readable reactions while disabling breathing, gestures, dragging, and particles. Task errors and approvals retain their event-driven faces. The studio's chatter and social scenes are local, prewritten entertainment; no model calls, conversation memory, or autonomous backend work is involved.
 
-## The circle slider
+## The squad stack
 
-`launch/SquadSlider.tsx` keeps a native 0–5 range input aligned with six visible positions: **None**, then the five characters. A thin rail runs through the circles, and the active bot itself moves as the thumb while dragging; releasing settles it onto a detent. The row is capped at 360 px and shrinks on phones. All keyboard range controls work, and the selected count is announced. The planner and real-run estimate sit below it.
+`launch/SquadSlider.tsx` now presents a character stack between fixed **− / +** buttons. There is no range input, rail, handle, or extra count selector. Only selected characters appear: each arrival pops into the right side and each departure tucks away as the stack recentres. The count is announced with a live output; the roster names and next teammate appear below. Buttons disable at zero/five and while launching or running. An empty run screen focuses the add button when returning to the studio.
 
-Wake-ups stagger by 700 ms after a jump to a larger team. New arrivals and their neighbors exchange a wave, nod, and held glance. Scrubbing cancels old sequences; hiding or leaving finishes the visual selection silently and cancels pending greetings. Full strength adds flowing fire, a warm glow, rising embers, and focused faces. `launch/SquadFire.tsx` draws all five plumes with one canvas and one frame callback; it stops offscreen and draws a still frame for reduced motion. Reduced motion selects immediately and uses static flames while audio retains natural timing. Zero is an assembly state only; launch requires 1–5 agents. The living room remains a separate character playground.
+The buttons are at least 44 × 44 px, with smaller overlapping portraits on narrow phones. Enter and Space use native button activation. Reduced motion selects immediately without stack transitions and uses static flames. Existing greetings, optional sound, launch choreography, planner and real-run estimate remain. `launch/SquadFire.tsx` draws the full crew’s plumes with one canvas and stops offscreen. Zero is an assembly state only; launch requires 1–5 agents.
 
 ## Activity reactions
 
@@ -92,6 +94,8 @@ Run `npm run test:browser --workspace dashboard -- activity.spec.ts` for the act
 
 Verified using Node 24.14.1 and installed Google Chrome 150 on this host:
 
+- Stack selector update: TypeScript/build and 48 logic tests passed. Six selector checks plus the blink check passed in an isolated development copy; all nine studio and ten audio checks passed in the shared working tree. Desktop and 390/320 px selector screenshots were inspected. At 320 px the selector fits, while surrounding page chrome retains an existing 20 px horizontal overflow. Concurrent character work was excluded from the isolated build.
+
 - TypeScript and production build pass.
 - 48 Vitest checks cover the existing mood/emote/store/geometry contracts plus audio event ownership, lifecycle cue coverage, priorities, cooldowns, speed filtering, preferences, and the rolling start budget.
 - The full 42-check browser suite passed during the flat-palette update, covering activities, slider, living room, audio, workflow, mobile, reduced motion, cursor/ripple accuracy, dialog focus, and render isolation. After the dark theme and synthetic preview changes were finished, all 16 studio/slider checks passed again.
@@ -111,6 +115,6 @@ PREVIEW_URL=http://127.0.0.1:4173 npm run perf
 PERF_SCENE=studio PREVIEW_URL=http://127.0.0.1:4173 npm run perf
 ```
 
-Performance has not been remeasured after the flat-fill/dark-theme update. The performance script explicitly wakes all five agents before measuring. The studio sample includes the fully powered circle slider. The default performance scene measures the five-stream sample run. `PERF_SCENE=studio` measures the living room with continuous synthetic pointer movement, a dance, and a spark pass.
+Performance has not been remeasured after the flat-fill/dark-theme update. The performance script explicitly wakes all five agents before measuring. The studio sample includes the fully powered character stack. The default performance scene measures the five-stream sample run. `PERF_SCENE=studio` measures the living room with continuous synthetic pointer movement, a dance, and a spark pass.
 
-Screenshots and the measured JSON reports are generated under `dashboard/artifacts/` (ignored by Git). The official Master artwork is the unmodified DevDay SVG, with opacity/state rings used instead of drawing a modified outline logo. Real transport, recorded replay, snapshot hydration, browser takeover, and backend approvals remain backend integration work. No live API or hosted deployment is claimed.
+Screenshots and the measured JSON reports are generated under `dashboard/artifacts/` (ignored by Git). `characters/MasterCharacter.tsx` renders original Onyx artwork; the former OpenAI logo asset has been removed. Launch and merge flights target the character. Ambient motion pauses offscreen/hidden, reduced motion preserves static expressions, pending approvals take priority over report nods, and reset clears report reception. Run `npm run test:browser --workspace dashboard -- orchestrator.spec.ts` for the lifecycle checks. Real transport, recorded replay, snapshot hydration, browser takeover, and backend approvals remain backend integration work. No live API or hosted deployment is claimed.

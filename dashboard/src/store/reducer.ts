@@ -8,7 +8,7 @@ import type {
   ToolName,
   Viewport,
 } from "@swarm/shared/types";
-import { CAST, castFor } from "@swarm/shared/cast";
+import { CAST, ORCHESTRATOR, castFor } from "@swarm/shared/cast";
 import { eventBotId, type SwarmEvent } from "@swarm/shared/events";
 import { currentMood, updateConditions, type Condition } from "../mood/engine";
 import {
@@ -67,7 +67,10 @@ export function initialState(): DashboardState {
     calls: {},
   };
 }
-export function newBot(id: BotId, roleName = "Master decides"): BotView {
+export function newBot(
+  id: BotId,
+  roleName = `${ORCHESTRATOR.name} decides`,
+): BotView {
   const cast = castFor(id);
   return {
     id,

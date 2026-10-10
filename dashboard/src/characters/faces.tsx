@@ -1,6 +1,6 @@
 import type { Mood } from "@swarm/shared/types";
 const S = {
-  stroke: "#111",
+  stroke: "currentColor",
   strokeWidth: 3.5,
   strokeLinecap: "round",
   strokeLinejoin: "round",
@@ -9,8 +9,8 @@ const S = {
 export const FACES: Record<Mood, React.ReactNode> = {
   calm: (
     <>
-      <circle cx="22" cy="31" r="2.6" fill="#111" />
-      <circle cx="42" cy="31" r="2.6" fill="#111" />
+      <circle cx="22" cy="31" r="2.6" fill="currentColor" />
+      <circle cx="42" cy="31" r="2.6" fill="currentColor" />
     </>
   ),
   curious: (

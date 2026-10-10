@@ -242,21 +242,21 @@ Each use case is a **template**: configuration, not code. See [§20](#20-templat
 
 ### 6.2 A run, as the user sees it
 
-1. **Launch.** The launch screen shows the Master logo and the five characters in a row, each wearing its signature face. The user types the Tokyo request and presses Start.
-2. **Planning.** The Master logo turns solid and spins. Plan cards type themselves onto the master card: Flights, Hotels, Activities, Transport, Budget.
-3. **Bots launch.** Five characters pop out of the logo one by one and fly to their tiles. The tiles light up with live browsers.
+1. **Launch.** The launch screen shows Onyx, the charcoal coordinator, and the five browser-agent characters, each wearing its signature face. The user types the Tokyo request and presses Start.
+2. **Planning.** Onyx’s white glyphs become focused, and it tilts thoughtfully. Plan cards type themselves onto the master card: Flights, Hotels, Activities, Transport, Budget.
+3. **Bots launch.** Five characters launch from Onyx one by one and fly to their tiles. The tiles light up with live browsers.
 4. **Bots work.** Each character glances at its next target, glides over, squishes and clicks. Captions read "Open nonstop filter" and "Sort by guest rating".
 5. **A teammate's finding is shared.**
    - **Plum (Flights)** finds a good flight. Its eyes turn to `+ +`, sparkles burst, and a purple sticky note flies to the board: "Arrives Sat 14:20 NRT".
    - A paper plane carries the note to **Lime (Hotels)**. Lime's face turns `o o` as it adjusts the check-in date.
 6. **A risky action is stopped.** Lime tries to click "Reserve". Its face goes `/ \`, it wobbles, and an approval card appears. The user presses Skip. Lime goes `n n` and records the hotel under "Things only you can do".
-7. **Finish and merge.** Each bot finishes with `^ ^` and confetti. The bots fly back into the Master logo, which spins fast, and the itinerary slides in. It shows flights, stay, a day-by-day plan, transport, budget, and "Things only you can do".
+7. **Finish and merge.** Each bot finishes with `^ ^` and confetti. The bots fly back to Onyx, which concentrates with focused glyphs, and the itinerary slides in. It shows flights, stay, a day-by-day plan, transport, budget, and "Things only you can do".
 
 ### 6.3 Screens
 
 **A. Launch screen**
 
-- The lineup: the Master logo and five characters with their signature faces.
+- The lineup: Onyx and five browser-agent characters with their signature faces.
 - A large task box with the placeholder "What should the swarm do?".
 - Template chips: Auto · Trip Planner · QA Swarm.
 - An options row: Bots (1–5), Budget cap ($), and Target URL (QA Swarm only).
@@ -376,7 +376,7 @@ The original measured values below come from the supplied sticker brief (measure
 
 | Slot | Character | Sticker | Measured | UI token | Signature face | Personality |
 |---|---|---|---|---|---|---|
-| master | Master | OpenAI logo | black | `#0D0D0D` | none (outline logo = idle, solid = active) | The planner |
+| master | Onyx | Original charcoal circle | local charcoal | `#262626` | white `^ ^` at rest | The calm conductor |
 | bot1 | Plum | Purple | `#4F2C93` | `#924FF7` | `¬ ¬` | The skeptic |
 | bot2 | Lime | Green | `#59A612` | `#04B84C` | `+ +` | The finder |
 | bot3 | Tango | Orange | `#D75724` | `#FF8549` | `= =` | The patient one |
@@ -469,9 +469,9 @@ export function currentMood(conds: Condition[], now: number): Mood {
 ### 7.5 Set pieces
 
 1. **Launch.**
-   - The Master logo changes from outline to solid and spins once every 1.2 s while planning.
+   - Onyx uses focused white glyphs and a measured thinking tilt while planning.
    - Plan cards type themselves onto the master card.
-   - When `plan.ready` arrives, the bots pop out of the logo 250 ms apart. Each scales 0 → 1.2 → 1 with a spring.
+   - When `plan.ready` arrives, the bots launch from Onyx 250 ms apart. Each scales 0 → 1.2 → 1 with a spring.
    - Each bot flies along an arc to its tile (700 ms), lands with a squash, and its face goes from calm to curious.
 2. **One step.**
    - Eye attention (120 ms), target flash (200 ms), and glide overlap within `cursor.move.durationMs`; they are not sequential delays. Every glide lands by the supplied deadline (normally 350 ms). Personality may shape the curve but never change the click time.
@@ -484,8 +484,8 @@ export function currentMood(conds: Condition[], now: number): Mood {
 8. **Ask.** A `/ \` wobble and a "?" bubble. The approval card slides into the sidebar and pins to the tile.
 9. **Finish.** `^ ^`, two hops, confetti.
 10. **Merge.**
-    - Finished bots fly back into the Master logo, 150 ms apart.
-    - The logo spins fast for 1.5 s.
+    - Finished bots fly back to Onyx, 150 ms apart.
+    - Onyx concentrates with focused symbols and a gentle tilt.
     - The result drawer slides in.
 11. **Error.** `x x`, a shake and a smoke puff. On a retry, the character shrinks and pops back.
 
@@ -509,7 +509,7 @@ export function currentMood(conds: Condition[], now: number): Mood {
 
 ### 7.7 Brand note
 
-The circular faces are inspired by the supplied DevDay sticker reference. Follow the [official design guidelines](https://openai.com/brand/); participation in the hackathon does not itself establish blanket permission. SquadLings uses its own project branding. The Master uses the unmodified [official DevDay SVG favicon](https://devday.openai.com/icon.svg), fetched locally and attributed in `reference/brand-sources.md`. To preserve that artwork, idle/active states use opacity and surrounding state rings rather than redrawing outline/solid variants. SquadLings uses its own character favicon.
+The circular faces are inspired by the supplied DevDay sticker reference. Follow the [official design guidelines](https://openai.com/brand/); participation in the hackathon does not itself establish blanket permission. SquadLings uses its own project branding. Onyx is original SVG artwork inspired by the user’s later reference: a flat charcoal circle with paired white carets at rest. Reaction mouths and details are allowed during animation; the resting face keeps only its symbols. Its calm personality uses measured tilts, watchful glances, report nods, and state-specific lines. The former DevDay logo asset has been removed; see `reference/brand-sources.md`. SquadLings uses its own character favicon.
 
 ---
 
@@ -1361,7 +1361,7 @@ export interface SwarmEvent<T extends EventType = EventType> {
 | `run.created` | request, templateId, options | ✓ | Title |
 | `run.template_selected` | templateId, confidence | ✓ | Template chip |
 | `run.status` | status | ✓ | Top bar |
-| `master.status` | planning / monitoring / merging / done | ✓ | Master logo animation |
+| `master.status` | planning / monitoring / merging / done | ✓ | Onyx glyph and body reactions |
 | `master.text` | text | ✓ | Master card caption |
 | `plan.ready` | plan | ✓ | Plan cards, bot pop-out |
 | `bot.spawned` | botId, name, color, roleId, roleName, goal, viewport, device | ✓ | Tile, pop-out |
@@ -1479,7 +1479,7 @@ Frames are **not** kept in React state. They're drawn straight onto each tile's 
 ```
 App
 ├── LaunchScreen
-│   ├── Lineup (MasterLogo + 5 BotCharacter, signature faces)
+│   ├── Lineup (MasterCharacter (Onyx) + 5 BotCharacter, signature faces)
 │   ├── TaskBox · TemplateChips · OptionsRow · StartButton
 │   └── RecentRuns
 ├── RunScreen
@@ -1491,7 +1491,7 @@ App
 │   │   │   ├── Overlay → BotCharacter · TargetBox · FocusBox · Ripple · SpeechBubble
 │   │   │   ├── CaptionBar
 │   │   │   └── TileActions (Focus · Take over · Stop)
-│   │   └── MasterCard (MasterLogo · PlanList · Progress)
+│   │   └── MasterCard (MasterCharacter · PlanList · Progress)
 │   ├── Sidebar
 │   │   ├── BoardPanel → StickyNote
 │   │   └── ApprovalQueue → ApprovalCard
@@ -2752,11 +2752,11 @@ For the demo, `pnpm build && pnpm start` serves the built dashboard from the ser
 
 | Task | Done when |
 |---|---|
-| P3.1 BotCharacter SVG: body, 10 faces, pointer tip, name pill; Master logo | Static lineup matches §7 |
+| P3.1 BotCharacter SVG: body, 10 faces, pointer tip, name pill; Onyx coordinator | Static lineup matches §7 |
 | P3.2 Mood engine + unit tests | Priorities and expiries behave as in §7.4 |
 | P3.3 Motion: glide, target box, squish, ripple, idle float, blink, eye look | Smooth at 60 fps with 5 bots |
 | P3.4 Effects: sparkle, flying note, paper plane, confetti, smoke, "?" and "…" bubbles | Each set piece in §7.5 works |
-| P3.5 Master choreography: planning spin, pop-out, fly-back at merge | Launch and merge sequences play |
+| P3.5 Onyx choreography: thinking tilt, report nod, launch, fly-back at merge | Launch and merge sequences play |
 | P3.6 Reduced-motion mode | Verified with the OS setting |
 
 ### Phase 4: Templates, prompts and BuggyMart (about 6 h, in parallel with Phases 2–3) ⭐
@@ -3014,10 +3014,10 @@ Record results here once known. 🔎 items stay open until answered.
 | Time | On screen | Say |
 |---|---|---|
 | 0:00–0:15 | Launch screen with the sticker lineup | "Agents today are black boxes, and they do one thing at a time. Meet Swarm: five agents you can watch work." |
-| 0:15–0:30 | Type the Tokyo request, press Start. Master logo spins, plan appears, bots pop out | "The Master, an Agents API session, splits the job. Each bot gets its own real browser." |
+| 0:15–0:30 | Type the Tokyo request, press Start. Onyx thinks, plan appears, bots launch | "The Master, an Agents API session, splits the job. Each bot gets its own real browser." |
 | 0:30–1:15 | Five live tiles; cursors gliding; notes flying; Budget warns | "Every click you see is real. Plum posts the arrival time, and Lime picks it up instantly for check-in." |
 | 1:15–1:35 | Lime goes `/ \`; approval card for "Reserve"; press Skip | "Anything risky hits a safety gate. The Decisions API checks every click in milliseconds. Nothing gets booked without you." |
-| 1:35–1:55 | Bots fly into the logo; the itinerary appears | "The Master merges everything into one plan, including the steps only you should take." |
+| 1:35–1:55 | Bots fly to Onyx; the itinerary appears | "The Master merges everything into one plan, including the steps only you should take." |
 | 1:55–2:40 | Switch to QA Swarm on BuggyMart; personas run; bug cards appear | "Same engine, different template: a keyboard-only tester, a phone user, a breaker, a role checker." |
 | 2:40–3:00 | Scorecard (e.g. 9/10, cost, time) | "Built on the Agents API, GPT-6.1 Sol and the Decisions API. One engine, any job." |
 

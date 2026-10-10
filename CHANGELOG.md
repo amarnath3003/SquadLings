@@ -4,6 +4,15 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T03:40:15+05:30 — Replace the agent slider with a growing character stack
+
+- Changed: Removed the range input, draggable character thumb, rail, and extra count choices. Fixed − on the left and + on the right of a centred, overlapping character stack; arrivals pop in and departures tuck away. Added a live count, selected names, next-teammate hint, empty state, 44 px minimum buttons, keyboard activation, and responsive portrait sizing. Preserved greetings, full-squad flames, reduced motion, launch limits and cancellation.
+- Why: The user rejected an extra handle and requested a stack that grows/shrinks through side buttons.
+- Affected: Squad selector/styles/fire, App focus/empty-state copy, browser selection helpers and checks, performance setup, and both READMEs. No dependencies or external assets added. Concurrent orchestrator/character changes are separate work.
+- Validation: Production build/TypeScript passed in the working tree and an isolated copy of this change; 48 logic tests passed. All nine studio and ten audio checks passed. All six selector checks and the blink geometry check passed in the isolated development copy; inspected desktop and 390/320 px screenshots. Documentation links and diff whitespace passed.
+- Corrections: Fixed small-screen characters overlapping/intercepting the minus button. The 320 px check now measures selector containment separately: surrounding page chrome has an existing 20 px overflow at that width. A broader animation test missed a blink during concurrent character edits; its isolated rerun passed. An initial isolated browser run used production serving, which lacks the tests' development diagnostics; corrected to a development server.
+- Limitations: Human visual/listening review pending; no new performance, deployment, or live-backend claim. Whole-page 320 px overflow remains outside this selector change.
+
 ## 2026-10-11T03:18:36+05:30 — Match the live DevDay palette and default to a flat dark theme
 
 - Changed: Fetched the current DevDay website and its linked stylesheet directly; verified exact purple `#924FF7`, green `#04B84C`, orange `#FF8549`, blue `#006AFF`, and dark-mode black/white primitives. Centralized the four event colours in `DEVDAY_COLORS`, shared by character fills and CSS. The existing four hex values already matched the live website; Sky remains the local sticker-derived `#A6D8F5`.

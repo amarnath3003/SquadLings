@@ -1,9 +1,10 @@
+import { chooseSquad } from "./squad-helpers";
 import { expect, test } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 test.beforeEach(async ({ page }) => {
   await page.goto("/lab");
 });
-test("studio, slider keyboard, fast scrubbing, and expression preview", async ({
+test("studio, keyboard squad controls, rapid changes, and expression preview", async ({
   page,
 }) => {
   const errors: string[] = [];
@@ -11,15 +12,11 @@ test("studio, slider keyboard, fast scrubbing, and expression preview", async ({
   await expect(
     page.getByRole("heading", { name: "Little circles. Big personalities." }),
   ).toBeVisible();
-  const slider = page.getByRole("slider", { name: "Squad size" });
-  await slider.focus();
-  await page.keyboard.press("Home");
-  await expect(slider).toHaveValue("0");
-  await page.keyboard.press("End");
-  await expect(slider).toHaveValue("5");
-  await page.keyboard.press("PageDown");
-  await expect(slider).toHaveValue("4");
-  for (const n of [1, 5, 1, 5, 2, 5]) await slider.fill(String(n));
+  const add = page.getByRole("button", { name: "Add a bot", exact: true });
+  await add.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator(".squad-selector")).toHaveAttribute("data-count", "1");
+  for (const n of [5, 1, 5, 2, 5]) await chooseSquad(page, n);
   await expect(page.locator(".seat:not(.seat-empty)")).toHaveCount(5);
   await page.getByRole("button", { name: "Meet Lime" }).click();
   await expect(page.locator(".personality-name h2")).toHaveText("Lime");
@@ -46,7 +43,7 @@ test("full sample completes with five reports and no browser errors", async ({
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  await page.getByRole("slider", { name: "Squad size" }).fill("5");
+  await chooseSquad(page, 5);
   await page.getByRole("button", { name: "Squad in action" }).click();
   await page.getByLabel("Speed").selectOption("4");
   await page.getByLabel("8 fps load streams").check();
@@ -70,7 +67,7 @@ test("OS reduced motion disables float and particles, and mobile mapping works",
   await expect(
     page.getByRole("button", { name: "Reduced motion" }),
   ).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("slider", { name: "Squad size" }).fill("5");
+  await chooseSquad(page, 5);
   await page.getByRole("button", { name: "Squad in action" }).click();
   await page.getByLabel("Speed").selectOption("4");
   await page.getByLabel("Mobile Tango (next run)").check();
@@ -93,7 +90,7 @@ test("mobile studio has no document-level horizontal overflow", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByRole("slider")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Add a bot", exact: true })).toBeVisible();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -158,7 +155,7 @@ test("pointer and ripple land within 2px on desktop and mobile", async ({
 test("a smaller plan benches the spare bot and the result dialog traps focus", async ({
   page,
 }) => {
-  await page.getByRole("slider", { name: "Squad size" }).fill("5");
+  await chooseSquad(page, 5);
   await page.getByRole("button", { name: "Squad in action" }).click();
   await page.getByLabel("Speed").selectOption("4");
   await page.getByLabel("Leave last bot on bench").check();

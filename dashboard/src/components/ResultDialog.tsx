@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import type { BotId } from "@swarm/shared/types";
-import { castFor } from "@swarm/shared/cast";
+import { castFor, ORCHESTRATOR } from "@swarm/shared/cast";
 import { BotCharacter } from "../characters/BotCharacter";
 import { Icon } from "../characters/icons";
 import { useDashboard } from "../store";
@@ -103,7 +103,7 @@ export function ResultDialog({
         </h2>
         <p>
           The squad finished its simulated run. Example findings were shared and
-          reports came back to the Master.
+          reports came back to {ORCHESTRATOR.name}.
         </p>
         <div className="result-facts">
           <span>{ids.length} teammates</span>

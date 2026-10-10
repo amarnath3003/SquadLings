@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
-import { CAST } from "@swarm/shared/cast";
+import { CAST, ORCHESTRATOR } from "@swarm/shared/cast";
 import type { BotId, Mood } from "@swarm/shared/types";
 import { BotCharacter } from "./characters/BotCharacter";
 import { Icon } from "./characters/icons";
@@ -113,7 +113,7 @@ export default function App() {
       begin();
       return;
     }
-    const to = center(document.querySelector(".master-seat .master-logo"));
+    const to = center(document.querySelector(".master-seat .master-character"));
     if (!to) {
       begin();
       return;
@@ -140,7 +140,7 @@ export default function App() {
     stopAudio("preview");
     if (tab === "studio" && builderRequested.current) {
       builderRequested.current = false;
-      document.querySelector<HTMLInputElement>(".squad-range input")?.focus();
+      document.querySelector<HTMLButtonElement>(".squad-add")?.focus();
     }
   }, [tab]);
   const botIds = useMemo(
@@ -438,8 +438,8 @@ export default function App() {
                     <span className="eyebrow">SIMULATED SQUAD SESSION</span>
                     <h1>A little teamwork.</h1>
                     <p>
-                      Every move has a reason. Every finding comes back to the
-                      Master.
+                      Every move has a reason. Every finding comes back to{" "}
+                      {ORCHESTRATOR.name}.
                     </p>
                   </div>
                   <div className="run-controls">
@@ -578,7 +578,7 @@ export default function App() {
                       <p>
                         {count
                           ? "Play the sample, or send a character an event."
-                          : "Wake a teammate with the slider in Character studio."}
+                          : "Add a teammate with + in Character studio."}
                       </p>
                       <button
                         className="primary-button"

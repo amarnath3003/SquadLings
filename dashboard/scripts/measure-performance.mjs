@@ -21,7 +21,8 @@ try {
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
   await page.goto(`${baseURL}/lab`);
-  await page.getByRole("slider", { name: "Squad size" }).fill("5");
+  for (let n = 0; n < 5; n++)
+    await page.getByRole("button", { name: "Add a bot", exact: true }).click();
   await page.locator(".squad-powered").waitFor();
   if (audio) {
     await page

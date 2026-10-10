@@ -1,321 +1,128 @@
 import { expect, test } from "@playwright/test";
 import { mkdirSync } from "node:fs";
+import { chooseSquad } from "./squad-helpers";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/lab");
   await page.locator(".squad-selector").scrollIntoViewIfNeeded();
-});
-
-test("empty squad wakes in place and new neighbors look at each other", async ({
-  page,
-}) => {
-  const panel = page.locator(".squad-selector");
-  const slider = page.getByRole("slider", { name: "Squad size" });
-  await expect(slider).toHaveValue("0");
-  await expect(slider).toHaveAttribute("min", "0");
-  await expect(panel.locator('[data-state="asleep"]')).toHaveCount(5);
-  await expect(panel.getByRole("button", { name: /Boop/ })).toHaveCount(0);
-  await expect(
-    page.getByRole("button", { name: "Play a sample run" }),
-  ).toBeDisabled();
-  await expect(
-    page.getByRole("button", { name: "Remove a bot" }),
-  ).toBeDisabled();
-  await slider.focus();
-  await page.keyboard.press("ArrowRight");
-  const plum = panel.locator('[data-agent="bot1"]');
-  await expect(plum).toHaveAttribute("data-state", "awake");
-  await expect(panel.locator('[data-state="asleep"]')).toHaveCount(4);
-  await expect(plum.locator(".agent-body")).toHaveCSS(
-    "animation-name",
-    "agent-awaken",
-  );
-  await expect(
-    page.getByRole("button", { name: "Play a sample run" }),
-  ).toBeEnabled();
-  await page.keyboard.press("ArrowRight");
-  const lime = panel.locator('[data-agent="bot2"]');
-  await expect(panel.locator(".assembly-message")).toContainText("Hey, Plum!");
-  await expect(plum.locator(".neighbor-reply")).toHaveText("You found us.");
-  const gaze = async (selector: string) =>
-    panel
-      .locator(selector)
-      .evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m41);
-  await expect
-    .poll(() => gaze('[data-agent="bot1"] [data-gaze]'))
-    .toBeGreaterThan(2.5);
-  await expect
-    .poll(() => gaze('[data-agent="bot2"] [data-gaze]'))
-    .toBeLessThan(-2.5);
-  // Pointer tracking must not steal the brief greeting's attention.
-  const range = (await slider.boundingBox())!;
-  await page.mouse.move(range.x + range.width, range.y);
-  await expect
-    .poll(() => gaze('[data-agent="bot2"] [data-gaze]'))
-    .toBeLessThan(-2.5);
-  await expect(lime.getByRole("img")).toHaveAttribute(
-    "aria-label",
-    "Lime, happy",
-  );
   mkdirSync("artifacts", { recursive: true });
-  await panel.screenshot({ path: "artifacts/squad-neighbors.png" });
 });
 
-test("jumping to five wakes sequentially, powers the bar, and Home clears it", async ({
-  page,
-}) => {
+test("only side buttons control a growing and shrinking character stack", async ({ page }) => {
   const panel = page.locator(".squad-selector");
-  const slider = page.getByRole("slider", { name: "Squad size" });
-  await slider.focus();
-  await page.keyboard.press("End");
-  await expect(slider).toHaveValue("5");
-  await expect(panel.locator('[data-state="awake"]')).toHaveCount(1);
-  await expect(panel.locator('[data-state="queued"]')).toHaveCount(4);
-  await expect(panel.locator('[data-state="awake"]')).toHaveCount(5);
+  const add = page.getByRole("button", { name: "Add a bot", exact: true });
+  const remove = page.getByRole("button", { name: "Remove a bot", exact: true });
+  await expect(panel.getByRole("slider")).toHaveCount(0);
+  await expect(panel.getByRole("button")).toHaveCount(2);
+  await expect(remove).toBeDisabled();
+  await expect(panel.locator(".squad-empty")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Play a sample run" })).toBeDisabled();
+  await panel.screenshot({ path: "artifacts/squad-stack-empty.png" });
+  let previousWidth = 0;
+  for (let n = 1; n <= 5; n++) {
+    await add.click();
+    await expect(panel).toHaveAttribute("data-count", String(n));
+    await expect(panel.locator("[data-agent]")).toHaveCount(n);
+    await expect(panel.locator(".squad-count")).toContainText(String(n));
+    await page.waitForTimeout(280);
+    const stack = (await panel.locator(".squad-stack").boundingBox())!;
+    expect(stack.width).toBeGreaterThan(previousWidth);
+    previousWidth = stack.width;
+    const left = (await remove.boundingBox())!;
+    const right = (await add.boundingBox())!;
+    expect(left.x + left.width).toBeLessThan(stack.x);
+    expect(stack.x + stack.width).toBeLessThan(right.x);
+    if (n === 3) await panel.screenshot({ path: "artifacts/squad-stack-three.png" });
+  }
+  await expect(add).toBeDisabled();
   await expect(panel).toHaveClass(/squad-powered/);
   await expect(panel.locator("canvas[data-fire=flowing]")).toHaveCount(1);
-  await expect(panel.locator(".assembly-message")).toContainText("Full squad.");
-  await expect(panel.locator("[data-powered=true]")).toHaveCount(5);
   for (const name of ["Plum", "Lime", "Tango", "Blu", "Sky"]) {
-    await expect(
-      panel.getByRole("img", { name: `${name}, focused`, exact: true }),
-    ).toBeVisible();
+    await expect(panel.getByRole("img", { name: `${name}, focused`, exact: true })).toBeVisible();
   }
-  expect(
-    (await panel.locator(".squad-circle-slider").boundingBox())!.width,
-  ).toBeLessThanOrEqual(360);
-  const pixels = () =>
-    panel.locator(".squad-energy").evaluate((el) => {
-      const c = el as HTMLCanvasElement;
-      const data = c
-        .getContext("2d")!
-        .getImageData(0, 0, c.width, c.height).data;
-      let sum = 0;
-      for (let i = 0; i < data.length; i += 17) sum += data[i];
-      return sum;
-    });
-  const first = await pixels();
-  expect(first).toBeGreaterThan(0);
-  await page.waitForTimeout(180);
-  expect(await pixels()).not.toBe(first);
-  await page.keyboard.press("PageDown");
-  await expect(slider).toHaveValue("4");
+  await panel.screenshot({ path: "artifacts/squad-stack-full.png" });
+  for (let n = 4; n >= 0; n--) {
+    await remove.click();
+    await expect(panel).toHaveAttribute("data-count", String(n));
+    await expect(panel.locator("[data-agent]")).toHaveCount(n);
+  }
+  await expect(remove).toBeDisabled();
   await expect(panel.locator(".squad-energy")).toHaveCount(0);
-  await page.keyboard.press("Home");
-  await expect(slider).toHaveValue("0");
-  await expect(panel).toHaveAttribute("data-awake", "0");
-  await page.keyboard.press("PageDown");
-  await expect(slider).toHaveValue("0");
-  await panel.screenshot({ path: "artifacts/squad-empty.png" });
 });
 
-test("rapid scrubbing, mute, hiding and unmount cancel pending greetings", async ({
-  page,
-}) => {
+test("keyboard activation, greetings, rapid changes and reduced motion", async ({ page }) => {
   const panel = page.locator(".squad-selector");
-  const slider = page.getByRole("slider", { name: "Squad size" });
-  const diagnostics = () =>
-    page.evaluate(async () =>
-      (await import("/src/effects/sound.ts")).getAudioDiagnostics(),
-    );
-  await page
-    .getByRole("button", { name: "Turn sound on", exact: true })
-    .click();
-  await slider.fill("5");
-  await expect(panel).toHaveAttribute("data-awake", "1");
-  await page
-    .getByRole("button", { name: "Turn sound off", exact: true })
-    .click();
-  expect((await diagnostics()).scheduled).toBe(0);
-  await page
-    .getByRole("button", { name: "Turn sound on", exact: true })
-    .click();
-  const before = (await diagnostics()).voices;
-  await expect(panel).toHaveAttribute("data-awake", "5");
-  expect((await diagnostics()).voices).toBe(before);
-  for (const n of [0, 5, 1, 4, 2, 5, 0]) await slider.fill(String(n));
-  await page.waitForTimeout(3100);
-  await expect(panel).toHaveAttribute("data-awake", "0");
-  await expect(panel.locator(".squad-energy")).toHaveCount(0);
-  await slider.fill("5");
-  await page.evaluate(() => {
-    Object.defineProperty(document, "hidden", {
-      configurable: true,
-      value: true,
-    });
-    document.dispatchEvent(new Event("visibilitychange"));
-  });
-  expect((await diagnostics()).scheduled).toBe(0);
-  await expect(panel).toHaveAttribute("data-awake", "5");
-  await page.evaluate(() => {
-    Object.defineProperty(document, "hidden", {
-      configurable: true,
-      value: false,
-    });
-    document.dispatchEvent(new Event("visibilitychange"));
-  });
-  const returned = (await diagnostics()).voices;
+  const add = page.getByRole("button", { name: "Add a bot", exact: true });
+  await add.focus();
+  await page.keyboard.press("Enter");
+  await expect(panel).toHaveAttribute("data-count", "1");
+  await page.keyboard.press("Space");
+  await expect(panel).toHaveAttribute("data-count", "2");
+  await expect(panel.locator(".assembly-message")).toContainText("Hey, Plum!");
+  for (const n of [5, 0, 3, 1, 5, 0]) await chooseSquad(page, n);
   await page.waitForTimeout(800);
-  expect((await diagnostics()).voices).toBe(returned);
-  await slider.fill("0");
-  await slider.fill("5");
-  await page.getByRole("button", { name: "Face gallery", exact: true }).click();
-  expect((await diagnostics()).scheduled).toBe(0);
-  const departed = (await diagnostics()).voices;
-  await page.waitForTimeout(900);
-  expect((await diagnostics()).voices).toBe(departed);
-});
-
-test("reduced motion keeps the full state static and the mobile capsule usable", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(panel.locator("[data-agent]")).toHaveCount(0);
+  await expect(panel).toHaveAttribute("data-awake", "0");
   await page.emulateMedia({ reducedMotion: "reduce" });
-  const panel = page.locator(".squad-selector");
-  const slider = page.getByRole("slider", { name: "Squad size" });
-  await slider.fill("5");
-  await expect(panel).toHaveAttribute("data-awake", "5");
-  await expect(panel.locator(".agent-body").first()).toHaveCSS(
-    "animation-name",
-    "none",
-  );
-  await expect(panel.locator(".squad-energy")).toHaveAttribute(
-    "data-fire",
-    "still",
-  );
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth,
-    ),
-  ).toBe(true);
-  await slider.blur();
-  await panel.screenshot({ path: "artifacts/squad-full-mobile.png" });
-  await page.getByRole("button", { name: "Remove a bot", exact: true }).click();
-  await expect(slider).toHaveValue("4");
-  await page.getByRole("button", { name: "Add a bot", exact: true }).click();
-  await expect(slider).toHaveValue("5");
-  await expect(
-    page.getByRole("button", { name: "Add a bot", exact: true }),
-  ).toBeDisabled();
-  const lime = (await panel
-    .locator('[data-agent="bot2"] .seat-art')
-    .boundingBox())!;
-  await page.mouse.click(lime.x + lime.width / 2, lime.y + lime.height / 2);
-  await expect(slider).toHaveValue("2");
-  await expect(panel.locator(".squad-energy")).toHaveCount(0);
-  const zero = (await panel.locator(".zero-seat > span").boundingBox())!;
-  await page.mouse.click(zero.x + zero.width / 2, zero.y + zero.height / 2);
-  await expect(slider).toHaveValue("0");
+  await chooseSquad(page, 5);
+  await expect(panel.locator(".squad-energy")).toHaveAttribute("data-fire", "still");
+  await expect(panel.locator(".squad-stack")).toHaveCSS("transition-duration", "0s");
+  await chooseSquad(page, 0);
+  await expect(panel.locator("[data-agent]")).toHaveCount(0);
 });
 
-test("empty run directs back to assembly and the launched team matches the selection", async ({
-  page,
-}) => {
-  await page
-    .getByRole("button", { name: "Squad in action", exact: true })
-    .click();
-  await expect(
-    page.getByRole("heading", { name: "Your squad is still asleep." }),
-  ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Build your squad", exact: true })
-    .click();
-  await expect(page.getByRole("slider", { name: "Squad size" })).toBeFocused();
-  await page.getByRole("slider", { name: "Squad size" }).fill("3");
-  await expect(page.locator(".squad-selector")).toHaveAttribute(
-    "data-awake",
-    "3",
-  );
-  await page
-    .getByRole("button", { name: "Play a sample run", exact: true })
-    .click();
+for (const width of [390, 320]) {
+  test(`mobile stack fits at ${width}px with large touch controls`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.setViewportSize({ width, height: 844 });
+    await chooseSquad(page, 0);
+    for (let n = 0; n <= 5; n++) {
+      await chooseSquad(page, n);
+      const panel = page.locator(".squad-selector");
+      await panel.scrollIntoViewIfNeeded();
+      const stack = (await panel.locator(".squad-stack").boundingBox())!;
+      const left = (await panel.locator(".squad-remove").boundingBox())!;
+      const right = (await panel.locator(".squad-add").boundingBox())!;
+      expect(left.width).toBeGreaterThanOrEqual(44);
+      expect(right.height).toBeGreaterThanOrEqual(44);
+      expect(left.x + left.width).toBeLessThanOrEqual(stack.x);
+      expect(stack.x + stack.width).toBeLessThanOrEqual(right.x);
+      const bounds = (await panel.boundingBox())!;
+      expect(bounds.x).toBeGreaterThanOrEqual(0);
+      expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+      expect(await panel.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+      if (width === 390)
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    }
+    await page.locator(".squad-selector").screenshot({ path: `artifacts/squad-stack-${width}.png` });
+  });
+}
+
+test("empty run focuses add and launch uses exactly the selected crew", async ({ page }) => {
+  await page.getByRole("button", { name: "Squad in action", exact: true }).click();
+  await page.getByRole("button", { name: "Build your squad", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Add a bot", exact: true })).toBeFocused();
+  await chooseSquad(page, 3);
+  await page.getByRole("button", { name: "Play a sample run", exact: true }).click();
   await expect(page.locator("[data-tile]")).toHaveCount(3);
-  await page
-    .getByRole("button", { name: "Character studio", exact: true })
-    .click();
-  await expect(page.getByRole("slider", { name: "Squad size" })).toBeDisabled();
-  await expect(
-    page.getByRole("button", { name: "Remove a bot", exact: true }),
-  ).toBeDisabled();
-  await page
-    .getByRole("button", { name: "Squad in action", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Character studio", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Add a bot", exact: true })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Remove a bot", exact: true })).toBeDisabled();
+  await page.getByRole("button", { name: "Squad in action", exact: true }).click();
   await page.getByRole("button", { name: "Stop sample", exact: true }).click();
 });
 
-test("native pointer dragging reaches each detent and the full squad stays animated", async ({
-  page,
-}) => {
-  const slider = page.getByRole("slider", { name: "Squad size" });
-  const range = (await slider.boundingBox())!;
-  const y = range.y + range.height / 2;
-  const x = (n: number) => range.x + 12 + ((range.width - 24) * n) / 5;
-  await slider.fill("2");
-  await expect(page.locator(".squad-selector")).toHaveAttribute(
-    "data-awake",
-    "2",
-  );
-  await page.waitForTimeout(200);
-  await page.mouse.move(x(2), y);
-  await page.mouse.down();
-  await page.mouse.move(x(2) + 8, y);
-  await expect(slider).toHaveValue("2");
-  const thumb = (await page.locator(".agent-thumb .agent-body").boundingBox())!;
-  expect(Math.abs(thumb.x + thumb.width / 2 - x(2) - 8)).toBeLessThan(2);
-  await page.mouse.up();
-  await slider.fill("0");
-  await page.mouse.move(x(0), y);
-  await page.mouse.down();
-  for (let n = 1; n <= 5; n++) {
-    await page.mouse.move(x(n), y, { steps: 4 });
-    await expect(slider).toHaveValue(String(n));
-  }
-  await page.mouse.up();
-  const panel = page.locator(".squad-selector");
-  await expect(panel).toHaveClass(/squad-powered/);
-  await expect(panel.locator(".squad-energy")).toHaveAttribute(
-    "data-fire",
-    "flowing",
-  );
-  await slider.blur();
-  await page.mouse.move(0, 0);
-  await panel.screenshot({ path: "artifacts/squad-full.png" });
-  await page.mouse.click(x(0), y);
-  await expect(slider).toHaveValue("0");
-  await expect(panel).toHaveAttribute("data-awake", "0");
-});
-
-test("changing motion preference preserves one natural greeting per bot", async ({
-  page,
-}) => {
-  await page
-    .getByRole("button", { name: "Turn sound on", exact: true })
-    .click();
-  await expect(
-    page.getByRole("button", { name: "Turn sound off", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("slider", { name: "Squad size" }).fill("5");
-  await expect(page.locator(".squad-selector")).toHaveAttribute(
-    "data-awake",
-    "1",
-  );
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(page.locator(".squad-selector")).toHaveAttribute(
-    "data-awake",
-    "5",
-  );
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.waitForTimeout(3400);
-  const greetings = await page.evaluate(async () =>
-    (await import("/src/effects/sound.ts"))
-      .getAudioDiagnostics()
-      .trace.filter(
-        (e) =>
-          e.scope === "preview" &&
-          e.channel === "voice" &&
-          e.label === "greeting",
-      )
-      .map((e) => e.id),
-  );
-  expect(greetings).toEqual(["bot1", "bot2", "bot3", "bot4", "bot5"]);
+test("leaving the selector cancels its audio and returning does not replay greetings", async ({ page }) => {
+  await page.getByRole("button", { name: "Turn sound on", exact: true }).click();
+  await chooseSquad(page, 4);
+  await page.getByRole("button", { name: "Face gallery", exact: true }).click();
+  const diagnostics = () => page.evaluate(async () =>
+    (await import("/src/effects/sound.ts")).getAudioDiagnostics());
+  expect((await diagnostics()).scheduled).toBe(0);
+  const departed = (await diagnostics()).voices;
+  await page.waitForTimeout(800);
+  expect((await diagnostics()).voices).toBe(departed);
+  await page.getByRole("button", { name: "Character studio", exact: true }).click();
+  await page.waitForTimeout(800);
+  expect((await diagnostics()).voices).toBe(departed);
 });

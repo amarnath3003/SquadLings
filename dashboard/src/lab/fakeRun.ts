@@ -1,4 +1,4 @@
-import { CAST, CURSOR_GLIDE_MS } from "@swarm/shared/cast";
+import { CAST, CURSOR_GLIDE_MS, ORCHESTRATOR } from "@swarm/shared/cast";
 import type { EventData, EventType, SwarmEvent } from "@swarm/shared/events";
 import type { Approval, BotId, ToolName } from "@swarm/shared/types";
 import { hash, mulberry32 } from "../characters/personality";
@@ -12,11 +12,11 @@ export const ROLES = {
     "Role checker",
   ],
   auto: [
-    "Master decides",
-    "Master decides",
-    "Master decides",
-    "Master decides",
-    "Master decides",
+    `${ORCHESTRATOR.name} decides`,
+    `${ORCHESTRATOR.name} decides`,
+    `${ORCHESTRATOR.name} decides`,
+    `${ORCHESTRATOR.name} decides`,
+    `${ORCHESTRATOR.name} decides`,
   ],
 };
 export type TemplateId = keyof typeof ROLES;

@@ -1,3 +1,4 @@
+import { chooseSquad } from "./squad-helpers";
 import { expect, test, type Page } from "@playwright/test";
 import { mkdirSync, writeFileSync } from "node:fs";
 
@@ -330,7 +331,7 @@ test("a complete sound-enabled workflow keeps the final flourish unique", async 
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await page.getByRole("slider", { name: "Squad size" }).fill("5");
+  await chooseSquad(page, 5);
   await expect(page.locator(".squad-builder")).toHaveAttribute(
     "data-awake",
     "5",

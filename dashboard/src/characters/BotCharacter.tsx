@@ -238,6 +238,7 @@ function CharacterRig({
                       >
                         <motion.g
                           data-blink
+                          color="#111"
                           style={{
                             scaleY: life.blink,
                             transformBox: "view-box",

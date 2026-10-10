@@ -111,7 +111,7 @@ test("motion preferences and offscreen suspension apply to the living room", asy
   await expect(page.locator(".room-roster [data-life=awake]")).toHaveCount(5);
   await page.setViewportSize({ width: 390, height: 844 });
   await page
-    .getByRole("slider", { name: "Squad size" })
+    .getByRole("button", { name: "Add a bot", exact: true })
     .scrollIntoViewIfNeeded();
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await expect(page.locator(".room-roster [data-life=paused]")).toHaveCount(5);

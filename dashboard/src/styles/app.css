@@ -353,24 +353,124 @@ h1 .heading-period {
 .muted {
   color: var(--muted);
 }
-.master-logo {
+.master-character {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
 }
-.master-ask {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.onyx-art {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.onyx-body {
+  transform-origin: 32px 32px;
+}
+.onyx-symbols {
+  transform-origin: 32px 30px;
+}
+.master-character[data-active="true"] .onyx-body {
+  animation: onyx-breathe 6s ease-in-out infinite;
+}
+.master-character[data-active="true"] .onyx-symbols {
+  animation: onyx-blink 6.4s linear infinite;
+}
+.master-character[data-active="true"][data-state="planning"] .onyx-body,
+.master-character[data-active="true"][data-state="classifying"] .onyx-body {
+  animation: onyx-think 4s ease-in-out infinite;
+}
+.master-character[data-active="true"][data-state="monitoring"] .onyx-face {
+  animation: onyx-watch 7s ease-in-out infinite;
+}
+.master-character[data-active="true"][data-state="receiving"] .onyx-body {
+  animation: onyx-nod 0.65s ease-in-out both;
+}
+.master-character[data-active="true"][data-state="needs you"] .onyx-body {
+  animation: onyx-ask 3s ease-in-out infinite;
+}
+.master-character[data-active="true"][data-state="merging"] .onyx-body {
+  animation: onyx-think 2.5s ease-in-out infinite reverse;
+}
+.master-character[data-active="true"][data-state="done"] .onyx-body {
+  animation: onyx-nod 0.8s ease-in-out both;
+}
+.master-character[data-state="failed"] .onyx-body,
+.master-character[data-state="failed"] .onyx-symbols {
+  animation: none;
+}
+.onyx-intro {
+  margin: 10px 0 18px;
+  font-size: 11px;
+  color: var(--muted);
+}
+@keyframes onyx-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-1px) scale(1.015, 1.025);
+  }
+}
+@keyframes onyx-blink {
+  0%,
+  42%,
+  45%,
+  100% {
+    transform: scaleY(1);
+  }
+  43.5% {
+    transform: scaleY(0.08);
+  }
+}
+@keyframes onyx-think {
+  0%,
+  100% {
+    transform: rotate(-3deg) translateY(0);
+  }
+  50% {
+    transform: rotate(3deg) translateY(-1px);
+  }
+}
+@keyframes onyx-watch {
+  0%,
+  15%,
+  100% {
+    transform: translateX(0);
+  }
+  35%,
+  48% {
+    transform: translateX(-2px);
+  }
+  70%,
+  85% {
+    transform: translateX(2px);
+  }
+}
+@keyframes onyx-nod {
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+  45% {
+    transform: translateY(3px) scaleY(0.96);
+  }
+  70% {
+    transform: translateY(-1px) scaleY(1.02);
+  }
+}
+@keyframes onyx-ask {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  35%,
+  70% {
+    transform: rotate(6deg);
+  }
 }
 .launch-toolbar {
   display: flex;
@@ -1902,13 +2002,6 @@ html[data-hidden="true"] * {
 }
 .result-backdrop {
   overscroll-behavior: contain;
-}
-.master-ring {
-  position: absolute;
-  inset: 0;
-  border: 1px solid;
-  border-radius: 50%;
-  pointer-events: none;
 }
 .bench-row {
   padding-top: 14px;
