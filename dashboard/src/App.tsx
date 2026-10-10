@@ -1,60 +1,703 @@
-import { useCallback, useEffect, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { CAST } from '@swarm/shared/cast';
-import type { BotId,Mood } from '@swarm/shared/types';
-import { BotCharacter } from './characters/BotCharacter';
-import { Icon } from './characters/icons';
-import { SquadSlider } from './launch/SquadSlider';
-import { MasterCard } from './components/MasterCard';
-import { BotTile } from './components/BotTile';
-import { Gallery } from './lab/Gallery';
-import { EventControls, BoardPanel } from './lab/CharacterLab';
-import { useLab } from './lab/useLab';
-import type { TemplateId } from './lab/fakeRun';
-import { useDashboard } from './store';
-import { EffectsCanvas } from './effects/EffectsCanvas';
-import { Flights } from './effects/Flights';
-import { setSound } from './effects/sound';
-import { PerformanceMeter } from './components/PerformanceMeter';
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, LayoutGroup, motion } from "motion/react";
+import { CAST } from "@swarm/shared/cast";
+import type { BotId, Mood } from "@swarm/shared/types";
+import { BotCharacter } from "./characters/BotCharacter";
+import { Icon } from "./characters/icons";
+import { SquadSlider } from "./launch/SquadSlider";
+import { MasterCard } from "./components/MasterCard";
+import { BotTile } from "./components/BotTile";
+import { Gallery } from "./lab/Gallery";
+import { EventControls, BoardPanel } from "./lab/CharacterLab";
+import { useLab } from "./lab/useLab";
+import type { TemplateId } from "./lab/fakeRun";
+import { useDashboard } from "./store";
+import { EffectsCanvas } from "./effects/EffectsCanvas";
+import { Flights, fly } from "./effects/Flights";
+import { center } from "./director/geometry";
+import { setSound } from "./effects/sound";
+import { Timeline } from "./components/Timeline";
+import { ResultDialog } from "./components/ResultDialog";
+import { PerformanceMeter } from "./components/PerformanceMeter";
 
-type Tab='studio'|'run'|'faces'|'guide';
+type Tab = "studio" | "run" | "faces" | "guide";
 export default function App() {
-  const isLab=import.meta.env.DEV && location.pathname==='/lab';
-  const [tab,setTab]=useState<Tab>('studio'),[count,setCount]=useState(5),[template,setTemplate]=useState<TemplateId>('trip_planner'),[selected,setSelected]=useState<BotId>('bot1'),[seed,setSeed]=useState('little-team'),[speed,setSpeed]=useState(1),[forceReduced,setForceReduced]=useState(false),[audio,setAudio]=useState(false),[audioError,setAudioError]=useState(''),[load,setLoad]=useState(false),[mobile,setMobile]=useState(false),[focus,setFocus]=useState<BotId>(),[particles,setParticles]=useState(0),[previewMood,setPreviewMood]=useState<Mood>(),[previewKey,setPreviewKey]=useState(0);
-  const systemReduced=useReducedMotion(),reduced=Boolean(systemReduced)||forceReduced;
-  const lab=useLab(reduced,speed),bots=useDashboard(s=>s.state.bots),events=useDashboard(s=>s.state.events),status=useDashboard(s=>s.state.run.status),result=useDashboard(s=>s.state.result);
-  const cast=CAST.find(c=>c.id===selected)!;
-  const onParticles=useCallback((n:number)=>setParticles(n),[]);
-  const handleFocus=useCallback((id:BotId)=>setFocus(current=>current===id?undefined:id),[]);
-  useEffect(()=>{document.documentElement.dataset.hidden=String(document.hidden);const change=()=>{document.documentElement.dataset.hidden=String(document.hidden);};document.addEventListener('visibilitychange',change);return()=>document.removeEventListener('visibilitychange',change);},[]);
-  useEffect(()=>{const pending=useDashboard.getState().state.approvals.filter(a=>a.status==='pending').length;document.title=pending?`(${pending}) Needs you · SquadLings`:`SquadLings · ${tab==='faces'?'Face gallery':'Character Studio'}`;},[events,tab]);
-  useEffect(()=>{if(!previewMood)return;const timer=setTimeout(()=>setPreviewMood(undefined),1500);return()=>clearTimeout(timer);},[previewMood,previewKey]);
-  const start=()=>{setTab('run');setFocus(undefined);lab.start(seed.trim()||'little-team',count,template,mobile);};
-  const toggleSound=async()=>{try{await setSound(!audio);setAudio(!audio);setAudioError('');}catch{setAudioError('Audio could not start. Try again in this browser.');}};
-  const botIds=CAST.filter(c=>bots[c.id]).map(c=>c.id);
-  return <div className="app-shell">
-    <aside className="sidebar"><a className="brand" href="/" aria-label="SquadLings home"><span className="brand-face"><svg width="24" height="24" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="currentColor"/><path d="M18 33l5-7 5 7M36 33l5-7 5 7" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round"/></svg></span>SquadLings<span className="brand-period">.</span></a><span className="sidebar-caption">A LITTLE TEAM. A LOT OF POSSIBILITY.</span>
-      <nav aria-label="Studio navigation">{([['studio','spark','Character studio'],['run','grid','Squad in action'],['faces','eye','Face gallery'],['guide','sliders','Motion notes']] as const).map(([id,icon,label])=><button key={id} className={`nav-item ${tab===id?'active':''}`} aria-current={tab===id?'page':undefined} onClick={()=>setTab(id)}><Icon name={icon} size={18}/>{label}{tab===id&&<span className="nav-dot"/>}</button>)}</nav>
-      <div className="sidebar-bottom"><div className="mini-lineup">{CAST.map(c=><span key={c.id} style={{background:c.color}}/>)}</div><p>Built with a little character.</p><span>DEVDAY EXCHANGE · KOCHI 2026</span><a href="https://devday.openai.com/" target="_blank" rel="noreferrer">Inspired by OpenAI DevDay <Icon name="arrow" size={13}/></a>{import.meta.env.DEV&&<a href={isLab?'/':'/lab'}>{isLab?'Back to studio':'Open Character Lab'} <Icon name="code" size={13}/></a>}</div>
-    </aside>
-    <div className="main-shell"><header className="topbar"><div className="breadcrumbs"><span>SquadLings</span><span>/</span><strong>{isLab?'Character Lab':tab==='studio'?'Character studio':tab==='run'?'Squad in action':tab==='faces'?'Face gallery':'Motion notes'}</strong></div><div className="topbar-actions"><span className="local-badge"><i/> Local playground</span><button className={`icon-button ${audio?'is-on':''}`} title={audio?'Turn sound off':'Turn sound on'} aria-label={audio?'Turn sound off':'Turn sound on'} aria-pressed={audio} onClick={toggleSound}><Icon name={audio?'volume':'mute'} size={18}/></button><button className="motion-toggle" aria-pressed={reduced} onClick={()=>setForceReduced(!forceReduced)} title={systemReduced?'Your operating system has reduced motion enabled.':'Reduce animation'}><Icon name="moon" size={15}/><span>Reduced motion</span><i className={reduced?'on':''}/></button></div></header>
-      {audioError&&<p className="error-message" role="alert">{audioError}</p>}
-      <main>
-      {tab==='studio'&&<div className="studio"><div className="page-intro"><div><span className="eyebrow"><span/> MEET THE SQUAD</span><h1>Little circles.<br/>Big personalities<span className="heading-period">.</span></h1><p>Five curious teammates. One shared mission.<br/>Give them a task, and watch their personalities come alive.</p></div><div className="intro-note"><span className="note-star"><Icon name="spark" size={28}/></span><p>A little skeptical.<br/>A little impatient.<br/><strong>A lot better together.</strong></p><svg width="82" height="37" viewBox="0 0 82 37" aria-hidden="true"><path d="M78 3C58 40 30 8 5 25m0 0 13 3M5 25l7-12" fill="none" stroke="currentColor" strokeWidth="1.3"/></svg></div></div>
-        <section className="character-stage" aria-label="Meet all five characters"><div className="stage-grid"/>{CAST.map((c,i)=><button key={c.id} className={`stage-character ${selected===c.id?'selected':''}`} onClick={()=>{setSelected(c.id);setPreviewMood(undefined);}} aria-label={`Meet ${c.name}`} aria-pressed={selected===c.id} style={{'--character-color':c.color,'--stage-delay':`${i*0.08}s`} as React.CSSProperties}><div className="stage-art"><BotCharacter id={c.id} mood={c.signature} size={128} reduced={reduced}/></div><strong>{c.name}</strong><span>{c.personality}</span><div className="stage-indicator"/></button>)}<span className="stage-caption">SMALL IN SIZE. FULL OF LIFE.</span><span className="stage-corner">[ 5 / 5 ]</span></section>
-        <div className="studio-bottom"><div><SquadSlider count={count} onChange={setCount} template={template} reduced={reduced} disabled={lab.playing}/><div className="launch-toolbar"><div className="template-options" aria-label="Scenario">{([['trip_planner','plane','Trip Planner'],['qa_swarm','bug','QA Swarm'],['auto','spark','Auto']] as const).map(([id,icon,label])=><button key={id} onClick={()=>setTemplate(id)} className={template===id?'selected':''} disabled={lab.playing}><Icon name={icon} size={14}/>{label}</button>)}</div><button className="primary-button" onClick={start} disabled={lab.playing}><Icon name="play" size={15}/> Play a sample run <Icon name="arrow" size={16}/></button></div><p className="demo-disclaimer">A simulated run, just for the characters. No API calls, no real browsing, no cost.</p></div>
-          <section className="personality-card" style={{'--selected-color':cast.color} as React.CSSProperties}><div className="section-label"><span>A LITTLE CLOSER</span><span>0{CAST.indexOf(cast)+1} / 05</span></div><div className="personality-preview"><BotCharacter key={selected} id={selected} mood={previewMood??cast.signature} size={95} reduced={reduced} interactive/><span className="personality-quote">“{cast.line}”</span></div><div className="personality-name"><h2>{cast.name}</h2><span>{cast.personality}</span></div><p>Try a feeling. Every expression tells a little story.</p><div className="feeling-controls">{([['curious','eye','Curious'],['found','spark','Found it'],['happy','heart','Happy'],['worried','ask','Unsure']] as const).map(([m,icon,label])=><button key={m} className={previewMood===m?'active':''} onClick={()=>{setPreviewMood(m);setPreviewKey(k=>k+1);}}><Icon name={icon} size={14}/>{label}</button>)}</div><span className="local-preview-note">Expression preview · tap the character for a boop</span></section>
-        </div><div className="palette-footer"><span>THE DEVDAY PALETTE</span><div>{CAST.map(c=><span key={c.id} title={`${c.name}: ${c.color}${c.id==='bot5'?' (local Sky extension)':' (official event token)'}`}><i style={{background:c.color}}/>{c.color}</span>)}</div><a href="https://devday.openai.com/" target="_blank" rel="noreferrer">Colour source <Icon name="arrow" size={12}/></a></div>
-      </div>}
-      {tab==='run'&&<div className="run-screen"><div className="run-heading"><div><span className="eyebrow">SIMULATED SQUAD SESSION</span><h1>A little teamwork.</h1><p>Every move has a reason. Every finding comes back to the Master.</p></div><div className="run-controls"><span className="run-status"><i/>{lab.playing?'Playing':lab.hasRun?status:'Ready to play'}</span>{lab.playing?<button className="outline-button" onClick={lab.stop}><Icon name="stop" size={14}/>Stop sample</button>:<button className="primary-button" onClick={start}><Icon name="play" size={14}/>{lab.hasRun?'Replay sample':'Play sample run'}</button>}<button className="icon-button" onClick={lab.reset} aria-label="Reset playground"><Icon name="retry" size={18}/></button></div></div>
-        <div className="run-settings"><label>Seed <input value={seed} onChange={e=>setSeed(e.target.value)} maxLength={60} disabled={lab.playing}/></label><label>Speed <select value={speed} onChange={e=>setSpeed(Number(e.target.value))}><option value={1}>1×</option><option value={2}>2×</option><option value={4}>4×</option></select></label><label className="checkbox-label"><input type="checkbox" checked={load} onChange={e=>setLoad(e.target.checked)}/>8 fps load streams</label><label className="checkbox-label"><input type="checkbox" checked={mobile} onChange={e=>setMobile(e.target.checked)} disabled={lab.playing}/>Mobile Tango (next run)</label><PerformanceMeter particles={particles} load={load}/></div>
-        <div className="run-layout"><div className={`tile-grid count-${botIds.length} ${focus?'has-focus':''}`}>{botIds.map(id=><BotTile key={id} id={id} reduced={reduced} speed={speed} load={load} focused={focus===id} onFocus={handleFocus} seed={seed}/>)}{botIds.length!==4&&<MasterCard reduced={reduced} count={count}/>}<div className={`empty-run ${botIds.length?'hidden':''}`}><div className="empty-run-faces">{CAST.slice(0,count).map(c=><BotCharacter key={c.id} id={c.id} mood={c.signature} size={58} reduced={reduced}/>)}</div><h2>Your squad is ready.</h2><p>Play the sample, or send a character an event.</p><button className="primary-button" onClick={start}><Icon name="play" size={14}/>Let’s see them in action</button></div></div><aside className="run-sidebar">{botIds.length===4&&<MasterCard reduced={reduced} count={count}/>}<EventControls id={selected} onSelect={setSelected} lab={lab} template={template} mobile={mobile}/><BoardPanel lab={lab}/></aside></div>
-        <section className="timeline"><div className="section-label"><span>THE LITTLE THINGS, AS THEY HAPPEN</span><span>{events.length} events</span></div>{events.length?<div className="timeline-events">{events.slice(-8).reverse().map(e=><div key={e.id}><span>{((e.ts-1000)/1000).toFixed(1)}s</span><strong>{e.botId?CAST.find(c=>c.id===e.botId)?.name:'Master'}</strong><code>{e.type}</code></div>)}</div>:<p className="muted">Events will show up here when the squad gets going.</p>}</section>
-      </div>}
-      {tab==='faces'&&<Gallery reduced={reduced}/>}
-      {tab==='guide'&&<div className="guide"><span className="eyebrow">A LITTLE METHOD TO THE MOTION</span><h1>Personality, with purpose.</h1><p>Actions come from events. Character comes from how they move.</p><div className="guide-grid">{CAST.map(c=><section key={c.id}><BotCharacter id={c.id} mood={c.signature} size={64} reduced={reduced}/><h2>{c.name}</h2><span>{c.personality}</span><p>{c.id==='bot1'?'A considered glide. A tiny double-check at the end.':c.id==='bot2'?'Eager arrivals and a spin when there’s something to share.':c.id==='bot3'?'Slow breaths and a calm, smooth glide. Never in a rush.':c.id==='bot4'?'Snappy moves, a little lean, and the biggest click squish.':'A floaty glide, a happy sway, and an extra hop at the finish.'}</p></section>)}</div><div className="guide-notes"><section><Icon name="pointer"/><h3>Every click lands.</h3><p>The pointer tip is the hotspot. Cursor moves follow event coordinates and settle within the supplied 350 ms window.</p></section><section><Icon name="moon"/><h3>A quieter kind of charm.</h3><p>Reduced motion keeps faces and status updates, with fade-jumps instead of glides, hops, flights, or particles.</p></section><section><Icon name="spark"/><h3>Colour with a source.</h3><p>Four accents come from the official DevDay event stylesheet. Sky is our sticker-inspired extension.</p><a href="https://devday.openai.com/" target="_blank" rel="noreferrer">Official DevDay site <Icon name="arrow" size={12}/></a></section></div></div>}
-      </main><footer className="page-footer"><span>SquadLings · Made for the joy of making.</span><span>CHARACTER STUDIO <i/> V0.1</span></footer>
-    </div><EffectsCanvas reduced={reduced} onCount={onParticles}/><Flights reduced={reduced} speed={speed}/>
-    <AnimatePresence>{lab.resultOpen&&result&&<div className="result-backdrop"><motion.section role="dialog" aria-modal="true" aria-labelledby="result-title" className="result-drawer" initial={{opacity:0,y:reduced?0:30}} animate={{opacity:1,y:0}} exit={{opacity:0,y:reduced?0:30}}><button className="icon-button result-close" autoFocus aria-label="Close sample result" onClick={()=>lab.setResultOpen(false)}><Icon name="x"/></button><span className="eyebrow">THAT’S A LITTLE TEAMWORK</span><div className="team-photo">{CAST.slice(0,count).map(c=><BotCharacter key={c.id} id={c.id} mood={bots[c.id]?.status==='failed'?'failed':'happy'} size={68} reduced={reduced}/>)}</div><h2 id="result-title">Better together<span>.</span></h2><p>The squad finished its simulated run. Findings were shared, a question was answered, and everyone reported back.</p><div className="result-facts"><span>{botIds.length} teammates</span><span>{events.filter(e=>e.type==='board.posted').length} shared findings</span><span>$0 API cost</span></div><button className="primary-button" onClick={()=>lab.setResultOpen(false)}>Back to the squad <Icon name="arrow" size={16}/></button><small>This is a Character Lab demonstration. No real task was performed.</small></motion.section></div>}</AnimatePresence>
-  </div>;
+  const isLab = import.meta.env.DEV && location.pathname === "/lab";
+  const [tab, setTab] = useState<Tab>("studio"),
+    [count, setCount] = useState(5),
+    [template, setTemplate] = useState<TemplateId>("trip_planner"),
+    [selected, setSelected] = useState<BotId>("bot1"),
+    [seed, setSeed] = useState("little-team"),
+    [speed, setSpeed] = useState(1),
+    [forceReduced, setForceReduced] = useState(false),
+    [audio, setAudio] = useState(false),
+    [audioError, setAudioError] = useState(""),
+    [load, setLoad] = useState(false),
+    [mobile, setMobile] = useState(false),
+    [bench, setBench] = useState(false),
+    [launching, setLaunching] = useState(false),
+    [focus, setFocus] = useState<BotId>(),
+    [particles, setParticles] = useState(0),
+    [previewMood, setPreviewMood] = useState<Mood>(),
+    [previewKey, setPreviewKey] = useState(0);
+  const [systemReduced, setSystemReduced] = useState(
+    () => matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+  useEffect(() => {
+    const media = matchMedia("(prefers-reduced-motion: reduce)"),
+      change = () => setSystemReduced(media.matches);
+    change();
+    media.addEventListener("change", change);
+    return () => media.removeEventListener("change", change);
+  }, []);
+  const reduced = systemReduced || forceReduced;
+  const lab = useLab(reduced, speed),
+    botKey = useDashboard((s) =>
+      CAST.filter((bot) => s.state.bots[bot.id])
+        .map((bot) => bot.id)
+        .join(","),
+    ),
+    pending = useDashboard(
+      (s) =>
+        s.state.approvals.filter((approval) => approval.status === "pending")
+          .length,
+    ),
+    findings = useDashboard((s) => s.state.board.length),
+    status = useDashboard((s) => s.state.run.status),
+    result = useDashboard((s) => s.state.result);
+  const cast = CAST.find((c) => c.id === selected)!;
+  const onParticles = useCallback((n: number) => setParticles(n), []);
+  const handleFocus = useCallback(
+    (id: BotId) => setFocus((current) => (current === id ? undefined : id)),
+    [],
+  );
+  useEffect(() => {
+    document.documentElement.dataset.hidden = String(document.hidden);
+    const change = () => {
+      document.documentElement.dataset.hidden = String(document.hidden);
+    };
+    document.addEventListener("visibilitychange", change);
+    return () => document.removeEventListener("visibilitychange", change);
+  }, []);
+  useEffect(() => {
+    document.title = pending
+      ? `(${pending}) Needs you · SquadLings`
+      : `SquadLings · ${tab === "faces" ? "Face gallery" : "Character Studio"}`;
+  }, [pending, tab]);
+  useEffect(() => {
+    if (!previewMood) return;
+    const timer = setTimeout(() => setPreviewMood(undefined), 1500);
+    return () => clearTimeout(timer);
+  }, [previewMood, previewKey]);
+  const handoff = useRef<ReturnType<typeof setTimeout>>();
+  useEffect(() => () => clearTimeout(handoff.current), []);
+  const start = () => {
+    if (launching) return;
+    const begin = () => {
+      setLaunching(false);
+      setTab("run");
+      setFocus(undefined);
+      lab.start(seed.trim() || "little-team", count, template, mobile, bench);
+    };
+    if (tab !== "studio" || reduced) {
+      begin();
+      return;
+    }
+    const to = center(document.querySelector(".master-seat .master-logo"));
+    if (!to) {
+      begin();
+      return;
+    }
+    setLaunching(true);
+    CAST.slice(0, count).forEach((bot, index) => {
+      const from = center(document.querySelector(`[data-seat="${bot.id}"]`));
+      if (from)
+        fly({
+          id: `launch-${bot.id}`,
+          botId: bot.id,
+          kind: "character",
+          from,
+          to,
+          color: bot.color,
+          duration: 240,
+          delay: index * 90,
+        });
+    });
+    handoff.current = setTimeout(begin, 600);
+  };
+  const toggleSound = async () => {
+    try {
+      await setSound(!audio);
+      setAudio(!audio);
+      setAudioError("");
+    } catch {
+      setAudioError("Audio could not start. Try again in this browser.");
+    }
+  };
+  const botIds = useMemo(
+    () => (botKey ? (botKey.split(",") as BotId[]) : []),
+    [botKey],
+  );
+  return (
+    <LayoutGroup>
+      <div className="app-shell">
+        <aside className="sidebar">
+          <a className="brand" href="/" aria-label="SquadLings home">
+            <span className="brand-face">
+              <svg width="24" height="24" viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="30" fill="currentColor" />
+                <path
+                  d="M18 33l5-7 5 7M36 33l5-7 5 7"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>
+            SquadLings<span className="brand-period">.</span>
+          </a>
+          <span className="sidebar-caption">
+            A LITTLE TEAM. A LOT OF POSSIBILITY.
+          </span>
+          <nav aria-label="Studio navigation">
+            {(
+              [
+                ["studio", "spark", "Character studio"],
+                ["run", "grid", "Squad in action"],
+                ["faces", "eye", "Face gallery"],
+                ["guide", "sliders", "Motion notes"],
+              ] as const
+            ).map(([id, icon, label]) => (
+              <button
+                key={id}
+                className={`nav-item ${tab === id ? "active" : ""}`}
+                aria-current={tab === id ? "page" : undefined}
+                onClick={() => setTab(id)}
+              >
+                <Icon name={icon} size={18} />
+                {label}
+                {tab === id && <span className="nav-dot" />}
+              </button>
+            ))}
+          </nav>
+          <div className="sidebar-bottom">
+            <div className="mini-lineup">
+              {CAST.map((c) => (
+                <span key={c.id} style={{ background: c.color }} />
+              ))}
+            </div>
+            <p>Built with a little character.</p>
+            <span>DEVDAY EXCHANGE · KOCHI 2026</span>
+            <a
+              href="https://devday.openai.com/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Inspired by OpenAI DevDay <Icon name="arrow" size={13} />
+            </a>
+            {import.meta.env.DEV && (
+              <a href={isLab ? "/" : "/lab"}>
+                {isLab ? "Back to studio" : "Open Character Lab"}{" "}
+                <Icon name="code" size={13} />
+              </a>
+            )}
+          </div>
+        </aside>
+        <div className="main-shell">
+          <header className="topbar">
+            <div className="breadcrumbs">
+              <span>SquadLings</span>
+              <span>/</span>
+              <strong>
+                {isLab
+                  ? "Character Lab"
+                  : tab === "studio"
+                    ? "Character studio"
+                    : tab === "run"
+                      ? "Squad in action"
+                      : tab === "faces"
+                        ? "Face gallery"
+                        : "Motion notes"}
+              </strong>
+            </div>
+            <div className="topbar-actions">
+              <span className="local-badge">
+                <i /> Local playground
+              </span>
+              <button
+                className={`icon-button ${audio ? "is-on" : ""}`}
+                title={audio ? "Turn sound off" : "Turn sound on"}
+                aria-label={audio ? "Turn sound off" : "Turn sound on"}
+                aria-pressed={audio}
+                onClick={toggleSound}
+              >
+                <Icon name={audio ? "volume" : "mute"} size={18} />
+              </button>
+              <button
+                className="motion-toggle"
+                aria-pressed={reduced}
+                onClick={() => setForceReduced(!forceReduced)}
+                title={
+                  systemReduced
+                    ? "Your operating system has reduced motion enabled."
+                    : "Reduce animation"
+                }
+              >
+                <Icon name="moon" size={15} />
+                <span>Reduced motion</span>
+                <i className={reduced ? "on" : ""} />
+              </button>
+            </div>
+          </header>
+          {audioError && (
+            <p className="error-message" role="alert">
+              {audioError}
+            </p>
+          )}
+          <main>
+            {tab === "studio" && (
+              <div className="studio">
+                <div className="page-intro">
+                  <div>
+                    <span className="eyebrow">
+                      <span /> MEET THE SQUAD
+                    </span>
+                    <h1>
+                      Little circles.
+                      <br />
+                      Big personalities<span className="heading-period">.</span>
+                    </h1>
+                    <p>
+                      Five curious teammates. One shared mission.
+                      <br />
+                      Give them a task, and watch their personalities come
+                      alive.
+                    </p>
+                  </div>
+                  <div className="intro-note">
+                    <span className="note-star">
+                      <Icon name="spark" size={28} />
+                    </span>
+                    <p>
+                      A little skeptical.
+                      <br />A little impatient.
+                      <br />
+                      <strong>A lot better together.</strong>
+                    </p>
+                    <svg
+                      width="82"
+                      height="37"
+                      viewBox="0 0 82 37"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M78 3C58 40 30 8 5 25m0 0 13 3M5 25l7-12"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.3"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <section
+                  className="character-stage"
+                  aria-label="Meet all five characters"
+                >
+                  <div className="stage-grid" />
+                  {CAST.map((c, i) => (
+                    <button
+                      key={c.id}
+                      className={`stage-character ${selected === c.id ? "selected" : ""}`}
+                      onClick={() => {
+                        setSelected(c.id);
+                        setPreviewMood(undefined);
+                      }}
+                      aria-label={`Meet ${c.name}`}
+                      aria-pressed={selected === c.id}
+                      style={
+                        {
+                          "--character-color": c.color,
+                          "--stage-delay": `${i * 0.08}s`,
+                        } as React.CSSProperties
+                      }
+                    >
+                      <div className="stage-art">
+                        <BotCharacter
+                          id={c.id}
+                          mood={c.signature}
+                          size={128}
+                          reduced={reduced}
+                        />
+                      </div>
+                      <strong>{c.name}</strong>
+                      <span>{c.personality}</span>
+                      <div className="stage-indicator" />
+                    </button>
+                  ))}
+                  <span className="stage-caption">
+                    SMALL IN SIZE. FULL OF LIFE.
+                  </span>
+                  <span className="stage-corner">[ 5 / 5 ]</span>
+                </section>
+                <div className="studio-bottom">
+                  <div>
+                    <SquadSlider
+                      count={count}
+                      onChange={setCount}
+                      template={template}
+                      reduced={reduced}
+                      disabled={lab.playing || launching}
+                      launching={launching}
+                    />
+                    <div className="launch-toolbar">
+                      <div className="template-options" aria-label="Scenario">
+                        {(
+                          [
+                            ["trip_planner", "plane", "Trip Planner"],
+                            ["qa_swarm", "bug", "QA Swarm"],
+                            ["auto", "spark", "Auto"],
+                          ] as const
+                        ).map(([id, icon, label]) => (
+                          <button
+                            key={id}
+                            onClick={() => setTemplate(id)}
+                            className={template === id ? "selected" : ""}
+                            disabled={lab.playing}
+                          >
+                            <Icon name={icon} size={14} />
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                      <button
+                        className="primary-button"
+                        onClick={start}
+                        disabled={lab.playing || launching}
+                      >
+                        <Icon name="play" size={15} /> Play a sample run{" "}
+                        <Icon name="arrow" size={16} />
+                      </button>
+                    </div>
+                    <p className="demo-disclaimer">
+                      A simulated run, just for the characters. No API calls, no
+                      real browsing, no cost.
+                    </p>
+                  </div>
+                  <section
+                    className="personality-card"
+                    style={
+                      { "--selected-color": cast.color } as React.CSSProperties
+                    }
+                  >
+                    <div className="section-label">
+                      <span>A LITTLE CLOSER</span>
+                      <span>0{CAST.indexOf(cast) + 1} / 05</span>
+                    </div>
+                    <div className="personality-preview">
+                      <BotCharacter
+                        key={selected}
+                        id={selected}
+                        mood={previewMood ?? cast.signature}
+                        size={95}
+                        reduced={reduced}
+                        interactive
+                      />
+                      <span className="personality-quote">“{cast.line}”</span>
+                    </div>
+                    <div className="personality-name">
+                      <h2>{cast.name}</h2>
+                      <span>{cast.personality}</span>
+                    </div>
+                    <p>Try a feeling. Every expression tells a little story.</p>
+                    <div className="feeling-controls">
+                      {(
+                        [
+                          ["curious", "eye", "Curious"],
+                          ["found", "spark", "Found it"],
+                          ["happy", "heart", "Happy"],
+                          ["worried", "ask", "Unsure"],
+                        ] as const
+                      ).map(([m, icon, label]) => (
+                        <button
+                          key={m}
+                          className={previewMood === m ? "active" : ""}
+                          onClick={() => {
+                            setPreviewMood(m);
+                            setPreviewKey((k) => k + 1);
+                          }}
+                        >
+                          <Icon name={icon} size={14} />
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                    <span className="local-preview-note">
+                      Expression preview · tap the character for a boop
+                    </span>
+                  </section>
+                </div>
+                <div className="palette-footer">
+                  <span>THE DEVDAY PALETTE</span>
+                  <div>
+                    {CAST.map((c) => (
+                      <span
+                        key={c.id}
+                        title={`${c.name}: ${c.color}${c.id === "bot5" ? " (local Sky extension)" : " (official event token)"}`}
+                      >
+                        <i style={{ background: c.color }} />
+                        {c.color}
+                      </span>
+                    ))}
+                  </div>
+                  <a
+                    href="https://devday.openai.com/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Colour source <Icon name="arrow" size={12} />
+                  </a>
+                </div>
+              </div>
+            )}
+            {tab === "run" && (
+              <div className="run-screen">
+                <div className="run-heading">
+                  <div>
+                    <span className="eyebrow">SIMULATED SQUAD SESSION</span>
+                    <h1>A little teamwork.</h1>
+                    <p>
+                      Every move has a reason. Every finding comes back to the
+                      Master.
+                    </p>
+                  </div>
+                  <div className="run-controls">
+                    <span className="run-status">
+                      <i />
+                      {lab.playing
+                        ? "Playing"
+                        : lab.hasRun
+                          ? status
+                          : "Ready to play"}
+                    </span>
+                    {lab.playing ? (
+                      <button className="outline-button" onClick={lab.stop}>
+                        <Icon name="stop" size={14} />
+                        Stop sample
+                      </button>
+                    ) : (
+                      <button className="primary-button" onClick={start}>
+                        <Icon name="play" size={14} />
+                        {lab.hasRun ? "Replay sample" : "Play sample run"}
+                      </button>
+                    )}
+                    <button
+                      className="icon-button"
+                      onClick={lab.reset}
+                      aria-label="Reset playground"
+                    >
+                      <Icon name="retry" size={18} />
+                    </button>
+                  </div>
+                </div>
+                <div className="run-settings">
+                  <label>
+                    Seed{" "}
+                    <input
+                      value={seed}
+                      onChange={(e) => setSeed(e.target.value)}
+                      maxLength={60}
+                      disabled={lab.playing}
+                    />
+                  </label>
+                  <label>
+                    Speed{" "}
+                    <select
+                      value={speed}
+                      onChange={(e) => setSpeed(Number(e.target.value))}
+                    >
+                      <option value={1}>1×</option>
+                      <option value={2}>2×</option>
+                      <option value={4}>4×</option>
+                    </select>
+                  </label>
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={load}
+                      onChange={(e) => setLoad(e.target.checked)}
+                    />
+                    8 fps load streams
+                  </label>
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={mobile}
+                      onChange={(e) => setMobile(e.target.checked)}
+                      disabled={lab.playing}
+                    />
+                    Mobile Tango (next run)
+                  </label>
+                  {isLab && (
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={bench}
+                        disabled={lab.playing}
+                        onChange={(event) => setBench(event.target.checked)}
+                      />
+                      Leave last bot on bench
+                    </label>
+                  )}
+                  <PerformanceMeter particles={particles} load={load} />
+                </div>
+                <div className="run-layout">
+                  <div
+                    className={`tile-grid count-${botIds.length} ${focus ? "has-focus" : ""}`}
+                  >
+                    {botIds.map((id) => (
+                      <BotTile
+                        key={id}
+                        id={id}
+                        reduced={reduced}
+                        speed={speed}
+                        load={load}
+                        focused={focus === id}
+                        onFocus={handleFocus}
+                        seed={seed}
+                      />
+                    ))}
+                    {botIds.length !== 4 && (
+                      <MasterCard reduced={reduced} count={count} />
+                    )}
+                    <div
+                      className={`empty-run ${botIds.length ? "hidden" : ""}`}
+                    >
+                      <div className="empty-run-faces">
+                        {CAST.slice(0, count).map((c) => (
+                          <BotCharacter
+                            key={c.id}
+                            id={c.id}
+                            mood={c.signature}
+                            size={58}
+                            reduced={reduced}
+                          />
+                        ))}
+                      </div>
+                      <h2>Your squad is ready.</h2>
+                      <p>Play the sample, or send a character an event.</p>
+                      <button className="primary-button" onClick={start}>
+                        <Icon name="play" size={14} />
+                        Let’s see them in action
+                      </button>
+                    </div>
+                  </div>
+                  <aside className="run-sidebar">
+                    {botIds.length === 4 && (
+                      <MasterCard reduced={reduced} count={count} />
+                    )}
+                    <EventControls
+                      id={selected}
+                      onSelect={setSelected}
+                      lab={lab}
+                      template={template}
+                      mobile={mobile}
+                    />
+                    <BoardPanel lab={lab} />
+                  </aside>
+                </div>
+                <Timeline />
+              </div>
+            )}
+            {tab === "faces" && <Gallery reduced={reduced} />}
+            {tab === "guide" && (
+              <div className="guide">
+                <span className="eyebrow">A LITTLE METHOD TO THE MOTION</span>
+                <h1>Personality, with purpose.</h1>
+                <p>
+                  Actions come from events. Character comes from how they move.
+                </p>
+                <div className="guide-grid">
+                  {CAST.map((c) => (
+                    <section key={c.id}>
+                      <BotCharacter
+                        id={c.id}
+                        mood={c.signature}
+                        size={64}
+                        reduced={reduced}
+                      />
+                      <h2>{c.name}</h2>
+                      <span>{c.personality}</span>
+                      <p>
+                        {c.id === "bot1"
+                          ? "A considered glide. A tiny double-check at the end."
+                          : c.id === "bot2"
+                            ? "Eager arrivals and a spin when there’s something to share."
+                            : c.id === "bot3"
+                              ? "Slow breaths and a calm, smooth glide. Never in a rush."
+                              : c.id === "bot4"
+                                ? "Snappy moves, a little lean, and the biggest click squish."
+                                : "A floaty glide, a happy sway, and an extra hop at the finish."}
+                      </p>
+                    </section>
+                  ))}
+                </div>
+                <div className="guide-notes">
+                  <section>
+                    <Icon name="pointer" />
+                    <h3>Every click lands.</h3>
+                    <p>
+                      The pointer tip is the hotspot. Cursor moves follow event
+                      coordinates and settle within the supplied 350 ms window.
+                    </p>
+                  </section>
+                  <section>
+                    <Icon name="moon" />
+                    <h3>A quieter kind of charm.</h3>
+                    <p>
+                      Reduced motion keeps faces and status updates, with
+                      fade-jumps instead of glides, hops, flights, or particles.
+                    </p>
+                  </section>
+                  <section>
+                    <Icon name="spark" />
+                    <h3>Colour with a source.</h3>
+                    <p>
+                      Four accents come from the official DevDay event
+                      stylesheet. Sky is our sticker-inspired extension.
+                    </p>
+                    <a
+                      href="https://devday.openai.com/"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Official DevDay site <Icon name="arrow" size={12} />
+                    </a>
+                  </section>
+                </div>
+              </div>
+            )}
+          </main>
+          <footer className="page-footer">
+            <span>SquadLings · Made for the joy of making.</span>
+            <span>
+              CHARACTER STUDIO <i /> V0.1
+            </span>
+          </footer>
+        </div>
+        <EffectsCanvas reduced={reduced} onCount={onParticles} />
+        <Flights reduced={reduced} speed={speed} />
+        <AnimatePresence>
+          {lab.resultOpen && result && (
+            <ResultDialog
+              ids={botIds}
+              reduced={reduced}
+              findings={findings}
+              onClose={() => lab.setResultOpen(false)}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+    </LayoutGroup>
+  );
 }

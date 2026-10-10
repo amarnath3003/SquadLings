@@ -4,6 +4,15 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-10T23:41:01+05:30 — Verify and complete the character interaction layer
+
+- Changed: Finished launch/seat/pop-out/bench/merge choreography, Master state rings and roster flashes, report/board/delivery flights, social glances, extended event controls, an accessible result dialog, and the typed `consumeEvent` backend handoff. Replaced the temporary Master glyph with the unmodified official DevDay icon and documented its source/hash.
+- Why: Make the frontend independently demonstrable and reviewable while preserving the backend event catalogue, cursor timing/coordinates, and truthful step counts.
+- Correctness: Fixed expired emote pruning, curious-tool hold behaviour, live OS motion-preference updates, phone overflow, duplicate result handling, late manual actions after reset, pre-mount event effects, stopped rig transforms, and invalid URL display. Added per-tile development render counters; moved them out of a module singleton after hot reload revealed a test instrumentation mismatch.
+- Performance: Removed app-wide event/whole-bot subscriptions, isolated timeline rendering, and kept cursor move/click/scroll out of bot view updates. The production synthetic load measurement (20 seconds after all five tiles mounted, five 8 fps canvases, including finishes/confetti, Chrome 150 at 1440 × 1000) measured 59.9 fps average, 16.7 ms p95, zero long tasks over 50 ms, and no page errors. The earlier development sample measured 49.1 fps / 33.4 ms p95 and prompted these corrections.
+- Validation: TypeScript and production build passed; 36 Vitest checks and all nine Playwright checks passed in a full browser rerun after the render-counter correction. Browser checks cover all 50 expressions, slider keys/rapid scrubbing, complete sample run, OS reduced motion, mobile layout, approvals/reset, desktop/mobile pointer and ripple placement within 2 px, benches, dialog focus, and tile render isolation. Screenshots are in ignored `dashboard/artifacts/`; setup/source/verification/submission documentation was updated.
+- Limitations: Synthetic headless results exclude startup and do not certify five real browser sessions or the projector. Backend transport, snapshot hydration, persisted replay, and real approvals/takeover remain integration work. Participant details and final submitted SHA remain for the team; no hosted deployment, final submission, or remote push is claimed. Original rough drafts/photo remain unchanged.
+
 ## 2026-10-10T23:12:31+05:30 — Build the independent character studio
 
 - Changed: Added the npm workspace, `dashboard/`, minimal shared contracts in `packages/shared/`, colour/source documentation, and a correctly located copy of the supplied sticker reference. Preserved the independent `test/` spike and the original rough brief/photo.

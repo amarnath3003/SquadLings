@@ -1,12 +1,21 @@
 {
-  "name": "squadlings", "version": "0.1.0", "private": true,
-  "workspaces": ["dashboard", "packages/shared"],
+  "name": "squadlings",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "dashboard",
+    "packages/shared"
+  ],
   "scripts": {
     "dev": "npm run dev --workspace dashboard",
     "build": "npm run build --workspace dashboard",
     "check": "npm run check --workspace dashboard",
     "test": "npm run test --workspace dashboard",
-    "test:browser": "npm run test:browser --workspace dashboard"
+    "test:browser": "npm run test:browser --workspace dashboard",
+    "perf": "npm run perf --workspace dashboard",
+    "preview": "npm run preview --workspace dashboard"
   },
-  "engines": { "node": ">=22.12.0" }
+  "engines": {
+    "node": ">=22.12.0"
+  }
 }

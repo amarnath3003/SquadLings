@@ -35,14 +35,14 @@ npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:5173/** or the development **/lab** entry. No API key is needed. `npm run check` checks TypeScript; `npm run build` produces `dashboard/dist`. See [dashboard/README.md](dashboard/README.md) for demo controls, backend handoff, and verification limits. Official event colours and source attribution are documented in [brand-sources.md](docs/reference/brand-sources.md).
+Open **http://127.0.0.1:5173/** or the development **/lab** entry. No API key is needed. `npm run check` checks TypeScript; `npm run build` produces `dashboard/dist`; `npm run preview` serves it at port 4173. `npm test`, `npm run test:browser`, and `npm run perf` verify the animation layer. See [dashboard/README.md](dashboard/README.md) for demo controls, backend handoff, and verification limits. Official event colours and source attribution are documented in [brand-sources.md](docs/reference/brand-sources.md).
 
 The independent one-agent API test keeps its own install and commands in [test/README.md](test/README.md).
 
 ## Current status
 
 - Character frontend: Studio, squad slider, all ten expressions, character motion, simulated events, browser tiles, reporting flights, board, approvals, particles, sound, and reduced motion are implemented. Backend transport and real browser actions are not connected.
-- Frontend validation: TypeScript and production build passed under Node 22.23.3; Playwright rendered the local studio in installed Chrome without page errors. Further interaction/logic verification is ongoing.
+- Frontend validation: TypeScript and production build passed under Node 22.23.3; Playwright rendered the local studio in installed Chrome without page errors. 36 logic tests and 9 browser checks passed, including desktop/mobile click accuracy, OS reduced motion, and isolated bot renders. A 20-second production load sample measured 59.9 fps average, 16.7 ms p95, and no long tasks over 50 ms with five synthetic streams. See the dashboard README for limits and reproduction.
 
 - Independent API spike: Prompt entry, session creation, website-origin approval, streamed task output, error reporting, and completed-session cleanup are implemented in [test/computer-use-agent.mjs](test/computer-use-agent.mjs).
 - Known limitations: A live test requires Node.js 22 or newer, a permitted, billed OpenAI application API key, and an interactive terminal. The repository check does not make a live API call.

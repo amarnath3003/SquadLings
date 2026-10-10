@@ -1,10 +1,10 @@
-# Swarm: Master Document
+# SquadLings: Master Document
 
-> **Swarm** is a team of up to five AI browser agents, drawn as the DevDay sticker characters. They split a job, work on real websites in parallel while you watch every click, share what they find, ask before anything risky, and hand you one merged result.
+> **SquadLings** is a team of up to five AI browser agents, drawn as the DevDay sticker characters. They split a job, work on real websites in parallel while you watch every click, share what they find, ask before anything risky, and hand you one merged result.
 
 | | |
 |---|---|
-| Project | Swarm (working name) |
+| Project | SquadLings (original spec working name: Swarm) |
 | Event | OpenAI DevDay Community Hackathon, 2026 |
 | Document | Master spec: product, architecture, build plan, demo |
 | Version | 1.0 (core) |
@@ -497,7 +497,7 @@ export function currentMood(conds: Condition[], now: number): Mood {
 - The Master roster shows fixed assignments, actual event-driven steps, latest reports, and statuses. Report objects travel to their own row; the result preview shows a team lineup.
 - Effects use one shared particle canvas (60 total, 16 per bot) and one shared flight layer (six simultaneous flights). Sound is synthesized and off by default.
 - Reduced motion follows the OS setting or an explicit toggle. It disables float, glides, hops, squish, flights, and particles while retaining faces, bubbles, and text status.
-- This is an implementation checkpoint, not acceptance of every item in the extended brief. Backend transport, recorded replay, detailed launch/bench/merge choreography, and laptop performance certification remain separate work or pending verification.
+- This is an implementation checkpoint, not acceptance of every item in the extended brief. The launch handoff, staggered pop-outs, bench row, merge returns, report/board flights, social glances, and team photo are now implemented. Backend transport, recorded replay, snapshot hydration, and real takeover remain integration work. Local checks include 36 logic tests, nine browser tests, and a synthetic production load measurement of 59.9 fps average / 16.7 ms p95 with zero long tasks over 50 ms; real browser/projector rehearsal remains necessary.
 
 ### 7.6 Implementation rules
 
@@ -507,7 +507,7 @@ export function currentMood(conds: Condition[], now: number): Mood {
 
 ### 7.7 Brand note
 
-The circular faces are inspired by the supplied DevDay sticker reference. Follow the [official design guidelines](https://openai.com/brand/); participation in the hackathon does not itself establish blanket permission. SquadLings uses its own project branding. The current first milestone uses an original coordinator glyph in place of the Blossom; artwork verification continues in the next milestone.
+The circular faces are inspired by the supplied DevDay sticker reference. Follow the [official design guidelines](https://openai.com/brand/); participation in the hackathon does not itself establish blanket permission. SquadLings uses its own project branding. The Master uses the unmodified [official DevDay SVG favicon](https://devday.openai.com/icon.svg), fetched locally and attributed in `reference/brand-sources.md`. To preserve that artwork, idle/active states use opacity and surrounding state rings rather than redrawing outline/solid variants. SquadLings uses its own character favicon.
 
 ---
 

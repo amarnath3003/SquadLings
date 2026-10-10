@@ -6,6 +6,7 @@ Fetched on **10 October 2026 (IST)** from first-party OpenAI sites.
 | --- | --- |
 | [Official DevDay site](https://devday.openai.com/) | Event colour tokens and neutral black/white UI direction. |
 | [Published DevDay stylesheet](https://devday.openai.com/_next/static/css/b17bf04869ddf007.css) | Exact `:root` declarations: `--event-blue: #006aff`, `--event-green: #04b84c`, `--event-purple: #924ff7`, `--event-orange: #ff8549`. This hashed asset URL can change when the official site is rebuilt. |
+| [Official DevDay SVG favicon](https://devday.openai.com/icon.svg) | Unmodified local Master artwork in `dashboard/public/openai-devday-icon.svg`. SHA-256: `ed615b8fd9703863918daae6106396a42926fd167abc1bcad4aca860ff0f7ba6`. Project branding/favicon are our own. |
 | [OpenAI design guidelines](https://openai.com/brand/) | Brand attribution and logo guidance. The fuller brand portal redirected to an authentication page; no private brand materials were accessed. |
 | [User-supplied sticker photo](devday-stickers.jpg) | Circular character geometry, black expression glyphs, and the local Sky blue extension. |
 

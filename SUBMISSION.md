@@ -4,12 +4,12 @@ Complete this file during the hackathon and use it to prepare your submission th
 
 ## Project
 
-- **Project name:** One-agent Computer Use test
-- **Short description:** A minimal, interactive, read-only task runner for one OpenAI Agents API browser agent. The user enters a task, approves website origins, and receives the agent's result.
-- **Code repository URL:** TODO
-- **Final submitted implementation commit SHA:** TODO
-- **Working demo URL or local demo steps:** Follow [test/README.md](test/README.md) to install dependencies, export `OPENAI_API_KEY`, and run `npm start` from `test/`.
-- **Demo access requirements:** Node.js 22 or newer, an interactive terminal, a billed OpenAI application API key with Agents and Responses permissions, and user approval for the requested public website origin. Do not include the key in the repository.
+- **Project name:** SquadLings
+- **Short description:** Five expressive browser-agent characters with distinct motion, an accessible squad builder, live-event-ready overlays, a shared board, and a Master coordinator. The current demo is a zero-cost simulated Character Studio; the team is developing the backend separately.
+- **Code repository URL:** https://github.com/amarnath3003/SquadLings
+- **Final submitted implementation commit SHA:** TODO — select after backend integration and the final rehearsal; the frontend checkpoint is not a final submission.
+- **Working demo URL or local demo steps:** With Node 22.12+, run `npm ci && npm run dev` from the root and open http://127.0.0.1:5173/. Follow [dashboard/README.md](dashboard/README.md).
+- **Demo access requirements:** Node 22.12 or newer and a modern browser. The character demo needs no API key and performs no real browsing. The independent API spike in `test/` has separate key/access requirements.
 
 ## Participants
 
@@ -21,14 +21,14 @@ Participate solo or in a team of up to 4. Remove unused rows.
 
 ## Run and demonstrate
 
-- **Prerequisites and versions:** Node.js 22 or newer.
-- **Install command:** `cd test && npm install`
-- **Required environment variable names:** `OPENAI_API_KEY`; optionally `OPENAI_AGENT_MODEL`. Export values in the terminal; no `.env` file is required.
-- **Start command:** `cd test && npm start`
-- **Demo walkthrough:** Start the runner, enter a browser-based task, approve each requested website origin, then observe the agent’s result and URLs.
-- **Checks performed and results:** `cd test && npm install` installed `openai@7.32.0` with no reported vulnerabilities; `cd test && npm run check` passed. The SDK was imported successfully. A live call was not made because it needs a participant API key and Node.js 22 or newer, while the workspace has Node.js 18.18.0.
-- **Known limitations or incomplete features:** The runner supports public, read-only browser tasks only. It cancels browser sign-in requests and does not exercise mutations, private sites, screenshots, or recovery actions.
-- **Libraries, APIs, and public datasets used:** [OpenAI Agents API Computer Use guide](https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use) and the official `openai` JavaScript SDK. No datasets are used.
+- **Prerequisites and versions:** Node.js 22.12+; validation used Node 22.23.3 and Chrome 150.
+- **Install command:** `npm ci` from the repository root.
+- **Required environment variable names:** None for the frontend. `PREVIEW_URL` and `PLAYWRIGHT_CHANNEL` optionally configure browser verification. The separate API spike uses `OPENAI_API_KEY` (never commit it).
+- **Start command:** `npm run dev`; production preview: `npm run build && npm run preview`.
+- **Demo walkthrough:** Choose squad size and scenario, preview expressions, play a sample run, observe shared findings and reports, inspect all faces, and try reduced motion, a mobile tile, or manual events.
+- **Checks performed and results:** TypeScript and production build passed; 36 Vitest tests and nine Playwright checks passed. A 20-second headless production load sample measured 59.9 fps average, 16.7 ms p95, zero long tasks over 50 ms, and no page errors with five synthetic 8 fps canvases and finish effects.
+- **Known limitations or incomplete features:** The current demo is simulated; backend transport, real browser frames/actions, persisted replay, snapshot hydration, real approvals/takeover, and final projector rehearsal are separate integration work. The performance measurement does not certify live sessions. Participant details and final submitted SHA remain to be filled by the team. No hosted deployment or final submission is claimed.
+- **Libraries, APIs, and public datasets used:** React, Vite, Motion, Zustand, TypeScript, Vitest, Playwright, SVG/Canvas, and Web Audio. Four colour tokens and the unmodified Master icon come from official OpenAI DevDay assets; [source record](docs/reference/brand-sources.md). The separate API spike uses the official `openai` SDK. No datasets are used.
 - **AI usage record:** [AI_USAGE.md](AI_USAGE.md)
 - **Development change log:** [CHANGELOG.md](CHANGELOG.md)
 
