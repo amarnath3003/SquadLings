@@ -5,7 +5,8 @@ import type { BotId, Mood } from "@swarm/shared/types";
 import { BotCharacter } from "../characters/BotCharacter";
 import { HABITS, type LifeCue } from "../characters/life";
 import { Icon } from "../characters/icons";
-import { sound } from "../effects/sound";
+import { playUi, playVoice, stopAudio, voiceSequence } from "../effects/sound";
+import type { Reaction, UiCue } from "../effects/audio/catalogue";
 
 type Play = "hello" | "dance" | "spark" | "surprise" | "wake" | "pet" | "chat";
 interface StageCue {
@@ -82,8 +83,7 @@ function StageBot({
     if (!cue || resting || !awake) return;
     if (cue.target && cue.target !== cast.id) return;
     const play = cue.play;
-    const delay =
-      reduced || cue.target ? 0 : index * (play === "spark" ? 480 : 140);
+    const delay = reduced || cue.target ? 0 : index * 700;
     const timer = setTimeout(() => {
       const gesture =
         play === "dance"
@@ -144,8 +144,8 @@ function StageBot({
                 : "happy",
         cue: { gesture, serial: cue.serial },
       });
-      if (play !== "chat")
-        sound(cast.id, play === "spark" ? "found" : "click", 1);
+      if (play === "chat")
+        playVoice(cast.id, "question", { scope: "room", priority: 1 });
     }, delay);
     const clear = setTimeout(
       () => setReaction(undefined),
@@ -158,6 +158,7 @@ function StageBot({
   }, [cue, resting, awake, reduced, cast.id, cast.signature, habit, index]);
   return (
     <button
+      data-audio="off"
       className={`stage-character ${selected ? "selected" : ""}`}
       onClick={onMeet}
       aria-label={`Meet ${cast.name}`}
@@ -189,7 +190,15 @@ function StageBot({
         dragElastic={0.12}
         dragSnapToOrigin
         whileDrag={{ scale: 1.08, cursor: "grabbing" }}
-        onDragStart={() => setReaction(undefined)}
+        onDragStart={() => {
+          setReaction(undefined);
+          stopAudio("room");
+          playUi("pickup", { scope: "room", botId: cast.id });
+        }}
+        onDragEnd={() => {
+          playUi("release", { scope: "room", botId: cast.id });
+          playVoice(cast.id, "surprise", { scope: "room" });
+        }}
       >
         <BotCharacter
           id={cast.id}
@@ -280,7 +289,36 @@ export function LivingStage({
       clearTimeout(replyTimer);
     };
   }, [awake, ambient, resting, reduced]);
+  useEffect(() => {
+    if (!awake) stopAudio("room");
+    return () => stopAudio("room");
+  }, [awake]);
   const play = (action: Play, target?: BotId) => {
+    stopAudio("room");
+    const reactions: Record<Play, Reaction> = {
+      hello: "greeting",
+      dance: "laughter",
+      spark: "discovery",
+      surprise: "surprise",
+      wake: "wake",
+      pet: "affection",
+      chat: "question",
+    };
+    const effects: Record<Play, UiCue> = {
+      hello: "join",
+      dance: "dance",
+      spark: "spark",
+      surprise: "pickup",
+      wake: "wake",
+      pet: "boop",
+      chat: "click",
+    };
+    playUi(effects[action], { scope: "room", botId: target });
+    voiceSequence(
+      target ? [target] : CAST.map((c) => c.id),
+      reactions[action],
+      "room",
+    );
     lastInteraction.current = performance.now();
     setResting(false);
     setCue({ play: action, serial: ++serial.current, target });
@@ -343,7 +381,7 @@ export function LivingStage({
               selected={selected === cast.id}
               onMeet={() => {
                 onSelect(cast.id);
-                play("pet", cast.id);
+                play(selected === cast.id ? "pet" : "hello", cast.id);
               }}
               reduced={reduced}
               resting={resting}
@@ -379,7 +417,7 @@ export function LivingStage({
         </span>
       </div>
       <div className="room-controls">
-        <div className="room-play-buttons">
+        <div className="room-play-buttons" data-audio="off">
           <button onClick={() => play("hello")}>
             <Icon name="heart" size={15} />
             Say hello
@@ -401,6 +439,9 @@ export function LivingStage({
             onClick={() => {
               if (resting) play("wake");
               else {
+                stopAudio("room");
+                playUi("sleep", { scope: "room" });
+                playVoice("bot3", "sleep", { scope: "room" });
                 setResting(true);
                 setCue(undefined);
                 setAnnouncement("The squad is taking a little nap.");

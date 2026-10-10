@@ -42,10 +42,12 @@ Open **http://127.0.0.1:5173/** or the development **/lab** entry. No API key is
 
 The independent one-agent API test keeps its own install and commands in [test/README.md](test/README.md).
 
+Enable the toolbar speaker for UI/workflow effects and five original synthesized cartoon voices. **Sound settings** controls volume, effects, voices, and idle chatter; the mix is remembered while fresh page loads stay muted. Try **Face gallery → Voice reaction → Listen to…** to audition the cast. See [sound-design.md](docs/reference/sound-design.md) for coverage, integration, verification, and listening-review limits.
+
 ## Current status
 
 - Character frontend: A living room with continuous personality animation, pointer attention, draggable characters, social chatter, group play, naps/wake-up, and expressive boops; squad slider, all ten expressions, character motion, simulated events, browser tiles, reporting flights, board, approvals, particles, sound, and reduced motion are implemented. Backend transport and real browser actions are not connected.
-- Frontend validation: TypeScript and production build passed under Node 22.23.3; Playwright rendered the local studio in installed Chrome without page errors. 36 logic tests and 14 browser checks passed, including desktop/mobile click accuracy, OS reduced motion, and isolated bot renders. Production 20-second samples measured 58.9 fps in the interactive living room and 60.0 fps with five synthetic streams, both with no long tasks over 50 ms. See the dashboard README for limits and reproduction.
+- Frontend validation: TypeScript and production build passed under Node 24.14.1; 48 logic tests and 21 browser checks passed, including desktop/mobile click accuracy, OS reduced motion, and isolated bot renders. Before the expanded sound layer, production 20-second samples measured 58.9 fps in the interactive living room and 60.0 fps with five synthetic streams, both with no long tasks over 50 ms. See the dashboard README for limits and reproduction.
 
 - Independent API spike: Prompt entry, session creation, website-origin approval, streamed task output, error reporting, and completed-session cleanup are implemented in [test/computer-use-agent.mjs](test/computer-use-agent.mjs).
 - Known limitations: A live test requires Node.js 22 or newer, a permitted, billed OpenAI application API key, and an interactive terminal. The repository check does not make a live API call.

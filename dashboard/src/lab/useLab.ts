@@ -3,6 +3,7 @@ import { CAST } from "@swarm/shared/cast";
 import type { BotId, Approval } from "@swarm/shared/types";
 import type { EventData, EventType, SwarmEvent } from "@swarm/shared/events";
 import { resetDirector } from "../director/director";
+import { stopAudio } from "../effects/sound";
 import { consumeEvent } from "../ingest";
 import { useDashboard } from "../store";
 import { fakeRun, makeEvent, ROLES, type TemplateId } from "./fakeRun";
@@ -91,6 +92,7 @@ export function useLab(reduced: boolean, speed: number) {
       mobile: boolean,
       bench = false,
     ) => {
+      stopAudio("workflow");
       active.current = false;
       manualQueue.current = [];
       useDashboard.getState().reset();
@@ -114,6 +116,7 @@ export function useLab(reduced: boolean, speed: number) {
     [],
   );
   const stop = useCallback(() => {
+    stopAudio("workflow");
     active.current = false;
     queue.current = [];
     manualQueue.current = [];
@@ -125,6 +128,7 @@ export function useLab(reduced: boolean, speed: number) {
     fire("run.status", { status: "cancelled" });
   }, [fire]);
   const reset = useCallback(() => {
+    stopAudio("workflow");
     active.current = false;
     queue.current = [];
     manualQueue.current = [];

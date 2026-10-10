@@ -9,7 +9,7 @@ import { useCharacterLife } from "./useCharacterLife";
 import type { LifeCue } from "./life";
 import { Icon } from "./icons";
 import { EMOTES, type Bubble } from "../mood/emotes";
-import { sound } from "../effects/sound";
+import { playUi, playVoice, useAudio } from "../effects/sound";
 export interface CharacterProps {
   id: BotId;
   mood: Mood;
@@ -65,6 +65,7 @@ function CharacterRig({
 }: CharacterProps & { actor: Actor }) {
   const cast = castFor(id),
     dna = PERSONALITY[id];
+  const speaking = useAudio((s) => s.speaking?.id === id);
   const [displayMood, setDisplayMood] = useState(mood),
     [booped, setBooped] = useState(0);
   const root = useRef<HTMLDivElement>(null),
@@ -128,6 +129,7 @@ function CharacterRig({
         } as CSSProperties
       }
       data-character={id}
+      data-speaking={speaking || undefined}
       data-life={
         reduced
           ? "reduced"
@@ -160,6 +162,12 @@ function CharacterRig({
         className="character-seat"
         style={{ left: pointer ? 10 : 0, top: pointer ? 10 : 0 }}
       >
+        {speaking && (
+          <span
+            className={`speaking-halo ${reduced ? "speaking-still" : ""}`}
+            aria-hidden="true"
+          />
+        )}
         <svg
           viewBox="0 0 64 68"
           width={size}
@@ -286,6 +294,7 @@ function CharacterRig({
         {interactive && !paused && (
           <button
             className="boop-target"
+            data-audio="off"
             aria-label={`Boop ${cast.name}`}
             title={`${cast.name} · Press and release for a little love`}
             onPointerDown={(e) => {
@@ -301,7 +310,13 @@ function CharacterRig({
               lastBoop.current = performance.now();
               setBooped(performance.now());
               perform("love");
-              sound(id, "click", speed);
+              playUi("boop", {
+                botId: id,
+                scope: pointer ? "workflow" : "preview",
+              });
+              playVoice(id, "affection", {
+                scope: pointer ? "workflow" : "preview",
+              });
             }}
           />
         )}

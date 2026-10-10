@@ -6,7 +6,6 @@ import type { Point } from "../mood/attention";
 import { center } from "./geometry";
 import { burst } from "../effects/EffectsCanvas";
 import { fly, clearFlights } from "../effects/Flights";
-import { sound } from "../effects/sound";
 import { PERSONALITY, hash } from "../characters/personality";
 import { useDashboard } from "../store";
 import { currentMood } from "../mood/engine";
@@ -213,7 +212,6 @@ export function direct(event: SwarmEvent, reduced: boolean, speed: number) {
       break;
     case "cursor.click":
       actor.click(map(event.data));
-      sound(id, "click", speed);
       break;
     case "cursor.type":
       actor.flourish("type");
@@ -230,11 +228,9 @@ export function direct(event: SwarmEvent, reduced: boolean, speed: number) {
     case "board.posted":
     case "qa.bug":
       actor.flourish("found");
-      sound(id, "found", speed);
       break;
     case "bot.result":
       actor.flourish("finish");
-      sound(id, "finish", speed);
       break;
     case "bot.error":
       actor.flourish("error");
@@ -244,9 +240,6 @@ export function direct(event: SwarmEvent, reduced: boolean, speed: number) {
         useDashboard.getState().state.bots[id]?.emotes.current?.name === "retry"
       )
         actor.flourish("retry");
-      break;
-    case "approval.requested":
-      sound(id, "approval", speed);
       break;
   }
   const from = entry.point(),

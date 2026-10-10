@@ -15,7 +15,10 @@ import { useDashboard } from "./store";
 import { EffectsCanvas } from "./effects/EffectsCanvas";
 import { Flights, fly } from "./effects/Flights";
 import { center } from "./director/geometry";
-import { setSound } from "./effects/sound";
+import { playUi, playVoice, stopAudio } from "./effects/sound";
+import { MOOD_VOICE } from "./effects/audio/catalogue";
+import { useUiSounds } from "./effects/useUiSounds";
+import { SoundControls } from "./components/SoundControls";
 import { Timeline } from "./components/Timeline";
 import { ResultDialog } from "./components/ResultDialog";
 import { LivingStage } from "./components/LivingStage";
@@ -23,6 +26,7 @@ import { PerformanceMeter } from "./components/PerformanceMeter";
 
 type Tab = "studio" | "run" | "faces" | "guide";
 export default function App() {
+  useUiSounds();
   const isLab = import.meta.env.DEV && location.pathname === "/lab";
   const [tab, setTab] = useState<Tab>("studio"),
     [count, setCount] = useState(5),
@@ -31,8 +35,6 @@ export default function App() {
     [seed, setSeed] = useState("little-team"),
     [speed, setSpeed] = useState(1),
     [forceReduced, setForceReduced] = useState(false),
-    [audio, setAudio] = useState(false),
-    [audioError, setAudioError] = useState(""),
     [load, setLoad] = useState(false),
     [mobile, setMobile] = useState(false),
     [bench, setBench] = useState(false),
@@ -94,6 +96,8 @@ export default function App() {
   useEffect(() => () => clearTimeout(handoff.current), []);
   const start = () => {
     if (launching) return;
+    stopAudio("room");
+    stopAudio("preview");
     const begin = () => {
       setLaunching(false);
       setTab("run");
@@ -126,15 +130,10 @@ export default function App() {
     });
     handoff.current = setTimeout(begin, 600);
   };
-  const toggleSound = async () => {
-    try {
-      await setSound(!audio);
-      setAudio(!audio);
-      setAudioError("");
-    } catch {
-      setAudioError("Audio could not start. Try again in this browser.");
-    }
-  };
+  useEffect(() => {
+    stopAudio("room");
+    stopAudio("preview");
+  }, [tab]);
   const botIds = useMemo(
     () => (botKey ? (botKey.split(",") as BotId[]) : []),
     [botKey],
@@ -226,15 +225,7 @@ export default function App() {
               <span className="local-badge">
                 <i /> Local playground
               </span>
-              <button
-                className={`icon-button ${audio ? "is-on" : ""}`}
-                title={audio ? "Turn sound off" : "Turn sound on"}
-                aria-label={audio ? "Turn sound off" : "Turn sound on"}
-                aria-pressed={audio}
-                onClick={toggleSound}
-              >
-                <Icon name={audio ? "volume" : "mute"} size={18} />
-              </button>
+              <SoundControls />
               <button
                 className="motion-toggle"
                 aria-pressed={reduced}
@@ -251,11 +242,6 @@ export default function App() {
               </button>
             </div>
           </header>
-          {audioError && (
-            <p className="error-message" role="alert">
-              {audioError}
-            </p>
-          )}
           <main>
             {tab === "studio" && (
               <div className="studio">
@@ -341,6 +327,7 @@ export default function App() {
                       </div>
                       <button
                         className="primary-button"
+                        data-audio="off"
                         onClick={start}
                         disabled={lab.playing || launching}
                       >
@@ -390,8 +377,14 @@ export default function App() {
                       ).map(([m, icon, label]) => (
                         <button
                           key={m}
+                          data-audio="off"
                           className={previewMood === m ? "active" : ""}
                           onClick={() => {
+                            stopAudio("preview");
+                            playUi("select", { scope: "preview" });
+                            playVoice(selected, MOOD_VOICE[m], {
+                              scope: "preview",
+                            });
                             setPreviewMood(m);
                             setPreviewKey((k) => k + 1);
                           }}
@@ -450,18 +443,27 @@ export default function App() {
                           : "Ready to play"}
                     </span>
                     {lab.playing ? (
-                      <button className="outline-button" onClick={lab.stop}>
+                      <button
+                        className="outline-button"
+                        data-audio="off"
+                        onClick={lab.stop}
+                      >
                         <Icon name="stop" size={14} />
                         Stop sample
                       </button>
                     ) : (
-                      <button className="primary-button" onClick={start}>
+                      <button
+                        className="primary-button"
+                        data-audio="off"
+                        onClick={start}
+                      >
                         <Icon name="play" size={14} />
                         {lab.hasRun ? "Replay sample" : "Play sample run"}
                       </button>
                     )}
                     <button
                       className="icon-button"
+                      data-audio="reset"
                       onClick={lab.reset}
                       aria-label="Reset playground"
                     >
@@ -555,7 +557,11 @@ export default function App() {
                       </div>
                       <h2>Your squad is ready.</h2>
                       <p>Play the sample, or send a character an event.</p>
-                      <button className="primary-button" onClick={start}>
+                      <button
+                        className="primary-button"
+                        data-audio="off"
+                        onClick={start}
+                      >
                         <Icon name="play" size={14} />
                         Let’s see them in action
                       </button>

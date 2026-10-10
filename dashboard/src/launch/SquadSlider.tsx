@@ -1,3 +1,4 @@
+import { playUi, playVoice, stopAudio, scheduleAudio } from "../effects/sound";
 import { useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useIsPresent } from "motion/react";
 import { CAST } from "@swarm/shared/cast";
@@ -68,6 +69,25 @@ export function SquadSlider({
   disabled?: boolean;
   launching?: boolean;
 }) {
+  const changeCount = (next: number) => {
+    if (disabled || next === count) return;
+    stopAudio("preview");
+    const added = next > count,
+      changed = CAST.slice(Math.min(count, next), Math.max(count, next));
+    changed.forEach((bot, i) =>
+      scheduleAudio(
+        () => {
+          playUi(added ? "join" : "leave", { botId: bot.id, scope: "preview" });
+          playVoice(bot.id, added ? "greeting" : "frustration", {
+            scope: "preview",
+          });
+        },
+        i * 700,
+        "preview",
+      ),
+    );
+    onChange(next);
+  };
   const root = useRef<HTMLElement>(null),
     [offsets, setOffsets] = useState<Record<string, { x: number; y: number }>>(
       {},
@@ -155,7 +175,8 @@ export function SquadSlider({
       <div className="slider-row">
         <button
           className="round-button"
-          onClick={() => onChange(Math.max(1, count - 1))}
+          data-audio="off"
+          onClick={() => changeCount(Math.max(1, count - 1))}
           disabled={disabled || count === 1}
           aria-label="Remove a bot"
         >
@@ -173,11 +194,12 @@ export function SquadSlider({
             aria-valuetext={`${count} bots: ${CAST.slice(0, count)
               .map((b) => b.name)
               .join(", ")}`}
-            onChange={(e) => onChange(Number(e.target.value))}
+            data-audio="off"
+            onChange={(e) => changeCount(Number(e.target.value))}
             onKeyDown={(e) => {
               if (e.key === "PageUp" || e.key === "PageDown") {
                 e.preventDefault();
-                onChange(
+                changeCount(
                   Math.max(
                     1,
                     Math.min(5, count + (e.key === "PageUp" ? 1 : -1)),
@@ -195,7 +217,8 @@ export function SquadSlider({
         </div>
         <button
           className="round-button"
-          onClick={() => onChange(Math.min(5, count + 1))}
+          data-audio="off"
+          onClick={() => changeCount(Math.min(5, count + 1))}
           disabled={disabled || count === 5}
           aria-label="Add a bot"
         >

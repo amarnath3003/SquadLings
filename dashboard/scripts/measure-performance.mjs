@@ -9,6 +9,7 @@ const channel =
     ? "chrome"
     : undefined);
 const scene = process.env.PERF_SCENE ?? "run";
+const audio = process.env.PERF_AUDIO === "1";
 let browser;
 try {
   if (!["run", "studio"].includes(scene))
@@ -20,6 +21,14 @@ try {
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
   await page.goto(`${baseURL}/lab`);
+  if (audio) {
+    await page
+      .getByRole("button", { name: "Turn sound on", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "Turn sound off", exact: true })
+      .waitFor();
+  }
   if (scene === "run") {
     await page.getByRole("button", { name: "Squad in action" }).click();
     await page.getByLabel("8 fps load streams").check();
@@ -35,7 +44,8 @@ try {
     const samples = [],
       longTasks = [],
       actions = [];
-    let last = performance.now();
+    let last = performance.now(),
+      speakingFrames = 0;
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) longTasks.push(entry.duration);
     });
@@ -54,6 +64,7 @@ try {
         }
       };
       const frame = (time) => {
+        if (document.querySelector("[data-speaking=true]")) speakingFrames++;
         if (studio) {
           window.dispatchEvent(
             new PointerEvent("pointermove", {
@@ -85,6 +96,7 @@ try {
       samples.reduce((sum, value) => sum + value, 0) / samples.length;
     return {
       actions,
+      speakingFrames,
       durationSeconds: 20,
       frames: samples.length,
       averageFps: Number((1000 / mean).toFixed(1)),
@@ -109,6 +121,7 @@ try {
     timestamp: new Date().toISOString(),
     browser: await browser.version(),
     viewport: { width: 1440, height: 1000 },
+    audioEnabled: audio,
     mode:
       scene === "studio"
         ? "Headless Chrome, 20s living studio with continuous pointer tracking, dance and spark interactions"
@@ -118,13 +131,17 @@ try {
   };
   mkdirSync("artifacts", { recursive: true });
   writeFileSync(
-    scene === "studio"
-      ? "artifacts/performance-studio.json"
-      : "artifacts/performance.json",
+    audio
+      ? `artifacts/performance-${scene}-audio.json`
+      : scene === "studio"
+        ? "artifacts/performance-studio.json"
+        : "artifacts/performance.json",
     `${JSON.stringify(report, null, 2)}\n`,
   );
   console.log(JSON.stringify(report, null, 2));
   if (pageErrors.length) process.exitCode = 1;
+  if (audio && !measurement.speakingFrames)
+    throw new Error("No bot speech was observed during the audio sample");
 } catch (error) {
   console.error(
     `Performance check failed: ${error.message}. Start the local server first; see dashboard/README.md.`,

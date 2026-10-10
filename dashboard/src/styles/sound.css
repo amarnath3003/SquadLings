@@ -1,0 +1,146 @@
+.sound-controls {
+  display: flex;
+  gap: 5px;
+  position: relative;
+  align-items: center;
+}
+.sound-settings {
+  position: absolute;
+  z-index: 90;
+  right: 0;
+  top: calc(100% + 14px);
+  width: min(310px, calc(100vw - 24px));
+  padding: 22px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #deded8);
+  border-radius: 20px;
+  box-shadow: 0 16px 55px #1112;
+}
+.sound-settings-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.sound-settings-title span {
+  font-size: 12px;
+  color: #72746b;
+}
+.sound-settings label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+}
+.sound-settings input[type="range"] {
+  width: 100%;
+  margin: 14px 0 18px;
+  accent-color: #111;
+}
+.sound-switch {
+  padding: 12px 0;
+  border-top: 1px solid #eee;
+}
+.sound-switch input {
+  accent-color: #111;
+  width: 17px;
+  height: 17px;
+}
+.sound-settings p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #72746b;
+  margin: 14px 0;
+}
+.sound-error {
+  position: absolute;
+  right: 0;
+  top: 42px;
+  width: 280px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #fff2e8;
+  color: #82330c;
+  box-shadow: 0 10px 30px #1111;
+  z-index: 95;
+  font-size: 13px;
+}
+.speaking-halo {
+  position: absolute;
+  inset: -5%;
+  border: 2px solid var(--bot-color);
+  border-radius: 50%;
+  opacity: 0.5;
+  pointer-events: none;
+  animation: voice-pulse 0.16s ease-in-out infinite alternate;
+}
+.speaking-still {
+  animation: none;
+  opacity: 0.6;
+}
+.character-pointer .speaking-halo {
+  inset: -2%;
+  border-width: 1px;
+}
+.voice-bank {
+  margin-bottom: 24px;
+}
+.voice-bank p {
+  font-size: 13px;
+  color: #72746b;
+  margin: 12px 0;
+}
+.voice-bank label {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+.voice-bank select {
+  min-width: 160px;
+}
+.voice-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+button.matrix-face {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+}
+button.matrix-face:hover {
+  background: #11100008;
+  border-radius: 12px;
+}
+button.matrix-face:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: -2px;
+  border-radius: 12px;
+}
+@keyframes voice-pulse {
+  from {
+    opacity: 0.24;
+    transform: scale(0.99);
+  }
+  to {
+    opacity: 0.65;
+    transform: scale(1.045);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .speaking-halo {
+    animation: none;
+  }
+}
+@media (max-width: 600px) {
+  .sound-settings {
+    right: -50px;
+  }
+  .sound-error {
+    right: -50px;
+  }
+}

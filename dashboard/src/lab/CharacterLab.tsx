@@ -122,7 +122,7 @@ export function EventControls({
           </option>
         ))}
       </select>
-      <div className="event-button-grid">
+      <div className="event-button-grid" data-audio="off">
         {(
           [
             ["pointer", "Click", () => call("click")],
@@ -232,7 +232,7 @@ export function BoardPanel({ lab }: { lab: LabController }) {
           </div>
           <h4>{a.title}</h4>
           <p>{a.detail}</p>
-          <div className="approval-buttons">
+          <div className="approval-buttons" data-audio="off">
             <button
               className="primary-button"
               onClick={() => lab.resolve(a, "approved")}

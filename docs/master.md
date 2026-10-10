@@ -357,7 +357,7 @@ The run screen plus a timeline scrubber at the bottom:
 
 ### 6.6 Sound (optional, off by default)
 
-Short, quiet sounds: a click blip, a chime when something is found, a ping for approvals, and a short flourish at the finish. There's a toggle in the top bar.
+The character frontend synthesizes forty UI/workflow effects and five original cartoon gibberish voices locally. The toolbar has quick mute and sound settings for volume, effects, voices, and idle chatter. Preferences are saved; each page load starts muted. Voices have thirteen reaction families with three variants each, bounded priority scheduling, and cancellable group sequences. See [sound-design.md](reference/sound-design.md) for coverage, integration, auditions, and review limits.
 
 ### 6.7 Accessibility
 
@@ -498,7 +498,7 @@ export function currentMood(conds: Condition[], now: number): Mood {
 - The Master roster shows fixed assignments, actual event-driven steps, latest reports, and statuses. Report objects travel to their own row; the result preview shows a team lineup.
 - Effects use one shared particle canvas (60 total, 16 per bot) and one shared flight layer (six simultaneous flights). Sound is synthesized and off by default.
 - Reduced motion follows the OS setting or an explicit toggle. It disables float, glides, hops, squish, flights, and particles while retaining faces, bubbles, and text status.
-- This is an implementation checkpoint, not acceptance of every item in the extended brief. The launch handoff, staggered pop-outs, bench row, merge returns, report/board flights, social glances, and team photo are now implemented. Backend transport, recorded replay, snapshot hydration, and real takeover remain integration work. Local checks include 36 logic tests, 14 browser tests, and 20-second synthetic production measurements of 58.9 fps / 16.8 ms p95 for the interactive studio and 60.0 fps / 16.7 ms p95 for five streams, both with zero long tasks over 50 ms; real browser/projector rehearsal remains necessary.
+- This is an implementation checkpoint, not acceptance of every item in the extended brief. The launch handoff, staggered pop-outs, bench row, merge returns, report/board flights, social glances, and team photo are now implemented. Backend transport, recorded replay, snapshot hydration, and real takeover remain integration work. Local checks include 48 logic tests and 21 browser checks, including 235 offline audio renders. Before the expanded sound layer, 20-second synthetic production measurements of 58.9 fps / 16.8 ms p95 for the interactive studio and 60.0 fps / 16.7 ms p95 for five streams, both with zero long tasks over 50 ms. Sound-enabled performance verification and human listening review remain; real browser/projector rehearsal remains necessary.
 
 ### 7.6 Implementation rules
 

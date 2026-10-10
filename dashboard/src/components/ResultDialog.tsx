@@ -5,6 +5,7 @@ import { castFor } from "@swarm/shared/cast";
 import { BotCharacter } from "../characters/BotCharacter";
 import { Icon } from "../characters/icons";
 import { useDashboard } from "../store";
+import { playUi } from "../effects/sound";
 export function ResultDialog({
   ids,
   reduced,
@@ -18,6 +19,10 @@ export function ResultDialog({
 }) {
   const root = useRef<HTMLElement>(null),
     bots = useDashboard((s) => s.state.bots);
+  const close = () => {
+    playUi("close");
+    onClose();
+  };
   useEffect(() => {
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -43,7 +48,7 @@ export function ResultDialog({
         onKeyDown={(event) => {
           if (event.key === "Escape") {
             event.preventDefault();
-            onClose();
+            close();
           }
           if (event.key === "Tab") {
             const buttons = Array.from(
@@ -64,7 +69,8 @@ export function ResultDialog({
         <button
           className="icon-button result-close"
           aria-label="Close sample result"
-          onClick={onClose}
+          data-audio="off"
+          onClick={close}
         >
           <Icon name="x" />
         </button>
@@ -104,7 +110,7 @@ export function ResultDialog({
           <span>{findings} shared findings</span>
           <span>$0 API cost</span>
         </div>
-        <button className="primary-button" onClick={onClose}>
+        <button className="primary-button" data-audio="off" onClick={close}>
           Back to the squad <Icon name="arrow" size={16} />
         </button>
         <small>

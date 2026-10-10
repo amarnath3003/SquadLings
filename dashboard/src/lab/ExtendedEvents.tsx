@@ -145,7 +145,7 @@ export function ExtendedEvents({
           </option>
         ))}
       </select>
-      <button className="outline-button" onClick={emit}>
+      <button className="outline-button" data-audio="off" onClick={emit}>
         Send example event
       </button>
       <label className="field-label" htmlFor="status-preset">

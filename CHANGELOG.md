@@ -4,6 +4,14 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T00:49:22+05:30 — Add sound effects and five character voices
+
+- Changed: Replaced four blips with forty local Web Audio effects and thirteen voice reaction families, each with three variants across five personality-specific voices. Added a bounded priority scheduler, cancellation, separate mix controls, persistent preferences with muted startup, a voice audition bank, and speaking halos. Ordinary controls, squad changes, living-room play, workflow events, approvals/errors, and results now provide appropriate feedback.
+- Why: Make meaningful interactions and workflow stages audible while keeping a five-bot soundscape controlled and independent of backend work. Audio ingestion runs once before reduction and outside actor registration.
+- Validation: Node 24.14.1 TypeScript/build and 48 logic tests passed; all 21 browser checks passed. Offline checks rendered all 195 voice variants plus 40 effects: finite/non-silent samples, peak <=0.220, duration <=0.730 seconds, and silent tails. An ignored audition WAV was produced. Existing pointer accuracy, mobile layout, reduced motion, and render-isolation checks passed.
+- Affected: Audio engine/recipes/policy/event mapping, shared UI feedback, character/studio/workflow controls, sound settings, gallery, browser/unit checks, performance script, and sound-design/setup documentation. No dependencies or backend contracts changed.
+- Limitations: Human listening review and sound-enabled performance samples remain for the next verification milestone. Voices are synthesized cartoon gibberish, not intelligible speech. Browser sound needs user activation; all runs remain simulated.
+
 ## 2026-10-11T00:17:40+05:30 — Fix the terminal's development runtime selection
 
 - Changed: Added a root `.nvmrc` selecting Node 24 and documented `nvm use` and shell initialization in both READMEs.

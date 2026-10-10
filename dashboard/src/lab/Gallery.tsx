@@ -1,3 +1,9 @@
+import { playUi, playVoice, stopAudio } from "../effects/sound";
+import {
+  MOOD_VOICE,
+  REACTIONS,
+  type Reaction,
+} from "../effects/audio/catalogue";
 import { useState } from "react";
 import { CAST } from "@swarm/shared/cast";
 import { BotCharacter } from "../characters/BotCharacter";
@@ -7,6 +13,7 @@ import { Icon, TOOL_META, STATUS_META } from "../characters/icons";
 import { EMOTES } from "../mood/emotes";
 export function Gallery({ reduced }: { reduced: boolean }) {
   const [busy, setBusy] = useState(false);
+  const [reaction, setReaction] = useState<Reaction>("greeting");
   return (
     <div className="gallery">
       <div className="gallery-heading">
@@ -27,6 +34,43 @@ export function Gallery({ reduced }: { reduced: boolean }) {
           {busy ? "Plain background" : "Busy background"}
         </button>
       </div>
+      <section className="voice-bank gallery-panel" aria-label="Voice audition">
+        <div>
+          <div className="section-label">FIVE LITTLE VOICES</div>
+          <p>
+            Choose a feeling, then listen. Enable sound in the toolbar first.
+          </p>
+        </div>
+        <label>
+          Voice reaction{" "}
+          <select
+            aria-label="Voice reaction"
+            value={reaction}
+            onChange={(e) => setReaction(e.target.value as Reaction)}
+          >
+            {REACTIONS.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
+        </label>
+        <div className="voice-buttons">
+          {CAST.map((c) => (
+            <button
+              key={c.id}
+              className="outline-button"
+              data-audio="off"
+              onClick={() => {
+                stopAudio("preview");
+                playVoice(c.id, reaction, { scope: "preview" });
+              }}
+            >
+              Listen to {c.name}
+            </button>
+          ))}
+        </div>
+      </section>
       <section className={`face-matrix ${busy ? "busy-background" : ""}`}>
         <div className="matrix-label" />
         {MOODS.map((m) => (
@@ -41,9 +85,19 @@ export function Gallery({ reduced }: { reduced: boolean }) {
               <span>{c.personality}</span>
             </div>
             {MOODS.map((m) => (
-              <div key={m} className="matrix-face">
+              <button
+                key={m}
+                className="matrix-face"
+                data-audio="off"
+                aria-label={`Hear ${c.name}, ${m}`}
+                onClick={() => {
+                  stopAudio("preview");
+                  playUi("select", { scope: "preview", botId: c.id });
+                  playVoice(c.id, MOOD_VOICE[m], { scope: "preview" });
+                }}
+              >
                 <BotCharacter id={c.id} mood={m} size={48} reduced />
-              </div>
+              </button>
             ))}
           </div>
         ))}
