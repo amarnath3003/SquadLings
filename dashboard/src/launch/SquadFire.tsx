@@ -22,25 +22,27 @@ export function SquadFire({
     const flameColor = getComputedStyle(parent)
       .getPropertyValue("--event-orange")
       .trim();
+    const flameHeight =
+      Number(getComputedStyle(parent).getPropertyValue("--flame-height")) || 3;
     const measure = () => {
       const bounds = element.getBoundingClientRect();
       const dpr = Math.min(devicePixelRatio || 1, 2);
-      width = bounds.width;
-      height = bounds.height;
-      element.width = Math.round(width * dpr);
-      element.height = Math.round(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // Draw in local CSS pixels, even when the film scales the entire stage.
+      width = element.clientWidth;
+      height = element.clientHeight;
+      const zoom = bounds.width / width || 1;
+      const resolution = Math.min(dpr * zoom, 4);
+      element.width = Math.round(width * resolution);
+      element.height = Math.round(height * resolution);
+      ctx.setTransform(resolution, 0, 0, resolution, 0, 0);
       centers = [...parent.querySelectorAll<HTMLElement>(".seat-art")].map(
         (seat) => {
           const body = seat.querySelector<HTMLElement>(".agent-body")!;
-          const style = getComputedStyle(body);
-          const scale = Number(style.getPropertyValue("--agent-scale")) || 0.72;
-          const size = body.offsetWidth * scale;
-          const box = seat.getBoundingClientRect();
+          const box = body.getBoundingClientRect();
           return {
-            x: box.x + box.width / 2 - bounds.x,
-            y: box.y + parseFloat(style.top) + size / 2 - bounds.y,
-            radius: size * 0.47,
+            x: (box.x + box.width / 2 - bounds.x) / zoom,
+            y: (box.y + box.height / 2 - bounds.y) / zoom,
+            radius: (box.width / zoom) * 0.47,
           };
         },
       );
@@ -132,7 +134,7 @@ export function SquadFire({
         const base = y + radius * 0.96;
         const tall =
           radius *
-          (3.0 + Math.sin(t * 3.2 + phase) * 0.45) *
+          (flameHeight + Math.sin(t * 3.2 + phase) * 0.45) *
           (0.4 + ignition * 0.6);
         ctx.fillStyle = flameColor;
         plume(x, base, radius * 1.08, tall, t, phase);
@@ -154,15 +156,18 @@ export function SquadFire({
       });
       if (!reduced) frame = requestAnimationFrame(draw);
     };
-    const observer = new ResizeObserver(() => {
+    const refresh = () => {
       measure();
       if (reduced) draw(performance.now());
-    });
+    };
+    const observer = new ResizeObserver(refresh);
     observer.observe(parent);
+    addEventListener("resize", refresh);
     measure();
     draw(performance.now());
     return () => {
       observer.disconnect();
+      removeEventListener("resize", refresh);
       cancelAnimationFrame(frame);
       ctx.clearRect(0, 0, width, height);
     };

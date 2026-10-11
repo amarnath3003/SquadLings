@@ -37,9 +37,9 @@ Browser pages and findings are synthetic and labelled **SIMULATED**. The estimat
 
 ## Launch film
 
-Open **/film** for the 48-second SquadLink launch film. Click Play film to start with subtle synthesized effects; Sound can be disabled. The timeline starts paused, scales to a 16:9 letterboxed stage, and has restart/scrub controls. `?capture` hides controls. The characters, selector, flames, and audio recipes are shared with the studio; task data is scripted. Onyx has an optional sleeping face for the ending. Pause/scrubbing stops the timeline while ambient character motion remains live.
+Open **/film** for the 52-second SquadLings launch film. Click Play film to start with subtle synthesized effects; Sound can be disabled. The timeline starts paused, scales to a 16:9 letterboxed stage, and has restart/scrub controls. `?capture` hides controls. The characters, selector, flames, and audio recipes are shared with the studio; task data is scripted. The camera reveals five browser pages; free-floating charms carry updates to Onyx, who reviews all five contributions and sends an animated report. The same characters glide home with distinct faces and staggered sleep. Film flames are larger; their shared renderer uses local coordinates to stay aligned under stage scaling. Pause/scrubbing stops the timeline while ambient character motion remains live.
 
-The [storyboard](../docs/video/storyboard.md) documents the user's DevDay motion reference, all scenes, and recording setup. `npm run film:record` from the root records the running site as a 1920 × 1080, 30 fps H.264/AAC MP4 using Chrome and FFmpeg. It defaults to port 5173; set `FILM_URL` for a production preview and `FFMPEG_PATH` if needed. The [export](../docs/video/squadlink-intro.mp4) is separate from the interactive demo and does not show live backend execution.
+The [storyboard](../docs/video/storyboard.md) documents the user's DevDay motion reference, all scenes, and recording setup. `npm run film:record` from the root records the running site as a 1920 × 1080, 30 fps H.264/AAC MP4 using Chrome and FFmpeg. It defaults to port 5173; set `FILM_URL` for a production preview and `FFMPEG_PATH` if needed. The [export](../docs/video/squadlings-intro.mp4) is separate from the interactive demo and does not show live backend execution.
 
 ## Commands
 

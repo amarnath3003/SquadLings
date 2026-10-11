@@ -7,7 +7,7 @@ import { once } from "node:events";
 const baseURL = process.env.FILM_URL ?? "http://127.0.0.1:5173";
 const ffmpeg = process.env.FFMPEG_PATH ?? "ffmpeg";
 const output = resolve(
-  process.env.FILM_OUTPUT ?? "artifacts/video/squadlink-film.mp4",
+  process.env.FILM_OUTPUT ?? "artifacts/video/squadlings-film.mp4",
 );
 const width = 1920,
   height = 1080,

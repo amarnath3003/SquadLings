@@ -72,14 +72,8 @@ export function ColdOpen({ time }: { time: number }) {
 }
 
 // Match-cut scale changes, crossing arcs and a field of small circles give the
-// transitions a graphic rhythm. These are new paths, not copied video frames.
-export function CircleSequence({
-  elapsed,
-  returning,
-}: {
-  elapsed: number;
-  returning: boolean;
-}) {
+// launch a graphic rhythm. These are new paths, not copied video frames.
+export function CircleSequence({ elapsed }: { elapsed: number }) {
   const p = elapsed;
   const gather = ease(p / 0.55);
   const rush = ease((p - 0.55) / 1.45);
@@ -154,22 +148,9 @@ export function CircleSequence({
           width: black * 2300 * (1 - reveal),
           height: black * 2300 * (1 - reveal),
           left: 800,
-          top: returning ? 450 + reveal * 130 : 450,
+          top: 450,
         }}
       />
-      {returning &&
-        reveal > 0 &&
-        CAST.map((_, i) => (
-          <Circle
-            key={i}
-            x={lerp(positions[i][0], 612 + i * 129, reveal)}
-            y={lerp(positions[i][1], 605, reveal)}
-            size={lerp(210, 98, reveal)}
-            index={i}
-            rotate={(1 - reveal) * 80 * (i % 2 ? 1 : -1)}
-            opacity={1 - ease((reveal - 0.7) / 0.3)}
-          />
-        ))}
     </div>
   );
 }

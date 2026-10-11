@@ -67,6 +67,13 @@ test("keyboard activation, greetings, rapid changes and reduced motion", async (
   await chooseSquad(page, 5);
   await expect(panel.locator(".squad-energy")).toHaveAttribute("data-fire", "still");
   await expect(panel.locator(".squad-stack")).toHaveCSS("transition-duration", "0s");
+  // Resizing must redraw the static reduced-motion flame after its canvas resets.
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await expect.poll(() => panel.locator(".squad-energy").evaluate((element) => {
+    const canvas = element as HTMLCanvasElement;
+    const pixels = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height).data;
+    return pixels.some((value, index) => index % 4 === 3 && value > 0);
+  })).toBe(true);
   await chooseSquad(page, 0);
   await expect(panel.locator("[data-agent]")).toHaveCount(0);
 });

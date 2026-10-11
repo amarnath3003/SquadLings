@@ -1,4 +1,4 @@
-![SquadLink — One squad. Many minds.](docs/assets/squadlink-github-banner.png)
+![SquadLings — One squad. Many minds.](docs/assets/squadlings-github-banner.png)
 
 # DevDay Exchange Community Hackathon: Kochi
 
@@ -58,7 +58,7 @@ Activity previews in **Squad in action** now include separate **Output** and tex
 
 ## Launch film
 
-The [SquadLink launch film](docs/video/squadlink-intro.mp4) tells the scripted task-to-sleep story in 48 seconds with character close-ups, full-screen circle transitions, coordinated work, results, and subtle sound effects. Open **http://127.0.0.1:5173/film** after `npm run dev` to play the web animation. See the [storyboard and recording instructions](docs/video/storyboard.md) for timing, references, `npm run film:record`, and simulation/recording limits.
+The [SquadLings launch film](docs/video/squadlings-intro.mp4) tells the scripted task-to-sleep story in 52 seconds with a circle intro, browser-page work, floating report charms, Onyx’s review and delivery, a continuous return to sleep, and subtle sound effects. Open **http://127.0.0.1:5173/film** after `npm run dev` to play the web animation. See the [storyboard and recording instructions](docs/video/storyboard.md) for timing, references, `npm run film:record`, and simulation/recording limits.
 
 ## Current status
 

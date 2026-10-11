@@ -4,6 +4,17 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T05:35:23+05:30 — Refine the film and correct the SquadLings brand
+
+- Changed: Preserved the approved cold open and native squad-selection motion; simplified the task bar into a pill with agent dots and a circular send arrow. Corrected fire coordinates/resolution under scaled layouts and gave the film taller flames with clear spacing above the agents.
+- Story: Replaced task cards/close-ups with a camera move from one browser page to five working pages. Reused native reading, scrolling, typing, discovery, and completion gestures. Free-floating charms carry reports and follow-ups without drawn connection lines. Onyx inspects all five contributions with a moving magnifier and individual checks, then sends an opening report. The same six character instances glide into the ending and fall asleep in sequence, with distinct faces beforehand; removed the second swarm.
+- Branding: User approved the animation and corrected the name to **SquadLings**. Updated the video wordmark, recording default, media filenames, and README links. Used the built-in imagegen skill/tool to edit the existing GitHub banner's wordmark while retaining the composition/tagline; saved the 2172 × 724 result and exact prompt. Historical prompts and earlier development log entries retain their original spelling.
+- Affected: `dashboard/src/film/`, `launch/SquadFire.tsx`, film/selector browser checks, the recorder's default output path, READMEs, brand-source/prompt documentation, and `docs/assets/` / `docs/video/` deliverables.
+- Validation: Final TypeScript/production build passed; 48 logic tests passed. All 10 film/selector browser checks passed, with focused reruns after flame spacing/resolution changes, static-fire resize correction, and brand-name correction. Checks cover page containment, floating follow-ups, sequential review before delivery, persistent character nodes, distinct faces, staggered sleep, full-HD/phone layouts, playback, audio bounds/silent tail, and visible flames clear of the task bar. Documentation links and diff whitespace passed.
+- Export: Re-recorded `docs/video/squadlings-intro.mp4`: 5,307,799 bytes, 52 seconds, 1920 × 1080, 30 fps, all 1,560 frames, H.264/AAC, zero page errors. Full FFmpeg decode passed; peak audio −25.5 dBFS. Near-black intervals occur only during the small-circle opening and launch cover, with none during the ending. Inspected the exported storyboard and corrected closing frame; banner spelling/aspect ratio inspected.
+- Limitations: Browser pages and itinerary remain scripted and labeled simulated. Human review of the final name correction/listening remains pending; the user approved the preceding animation. Ambient motion may vary between exports. No remote push or deployment performed.
+
+
 ## 2026-10-11T05:09:56+05:30 — Create the cinematic SquadLink launch film
 
 - Changed: Added `/film`, a 48-second landscape story from typed task and animated squad selection through circle swarms, character close-ups, parallel tasks, Onyx coordination, assembled results, and a sleeping six-character lineup. Reused the existing selector/flames, SVG actors, activity gestures, and sound recipes; added an optional resting pose to Onyx.

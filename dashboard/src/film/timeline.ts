@@ -1,6 +1,6 @@
 import type { ActivityName } from "../characters/useBotActor";
 
-export const DURATION = 48;
+export const DURATION = 52;
 export const TASK = "Plan a weekend in Kochi for our team.";
 export const clamp = (n: number) => Math.max(0, Math.min(1, n));
 export const ease = (n: number) => {
@@ -16,8 +16,8 @@ export const workers = [
       "Space for the whole team",
       "Three stays compared",
     ],
-    x: 85,
-    y: 250,
+    x: 80,
+    y: 150,
     report: 19,
     done: 25,
   },
@@ -29,8 +29,8 @@ export const workers = [
       "A sunset by the sea",
       "Rainy-day backup added",
     ],
-    x: 1165,
-    y: 250,
+    x: 1120,
+    y: 150,
     report: 20.5,
     done: 29,
   },
@@ -42,8 +42,8 @@ export const workers = [
       "Vegetarian options checked",
       "A shared dinner spot",
     ],
-    x: 85,
-    y: 565,
+    x: 80,
+    y: 540,
     report: 22,
     done: 26.5,
   },
@@ -55,8 +55,8 @@ export const workers = [
       "Stops grouped by area",
       "Less travel. More time.",
     ],
-    x: 1165,
-    y: 565,
+    x: 1120,
+    y: 540,
     report: 23,
     done: 30,
   },
@@ -68,8 +68,8 @@ export const workers = [
       "Time to explore & unwind",
       "Everyone on the same page",
     ],
-    x: 625,
-    y: 675,
+    x: 600,
+    y: 590,
     report: 24,
     done: 30.5,
   },
@@ -79,9 +79,11 @@ export function sceneAt(t: number) {
   if (t < 6) return "task";
   if (t < 10) return "squad";
   if (t < 14) return "launch";
-  if (t < 31.5) return "work";
-  if (t < 38) return "results";
-  if (t < 42) return "return";
+  if (t < 31) return "work";
+  if (t < 36) return "review";
+  if (t < 37) return "deliver";
+  if (t < 42) return "results";
+  if (t < 47) return "return";
   return "sleep";
 }
 

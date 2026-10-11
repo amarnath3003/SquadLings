@@ -35,11 +35,16 @@ export const soundCues = (
       kind: "finish" as const,
       pitch: 370 + i * 28,
     })),
-    { at: 31, kind: "merge", pitch: 300 },
-    { at: 32, kind: "complete", pitch: 390 },
-    { at: 38.2, kind: "leave", pitch: 360 },
-    { at: 40, kind: "close", pitch: 280 },
-    { at: 43.7, kind: "sleep", pitch: 270 },
+    ...workers.map((_, i) => ({
+      at: 32.4 + i * 0.7,
+      kind: "deliver" as const,
+      pitch: 320 + i * 25,
+    })),
+    { at: 35.4, kind: "merge", pitch: 300 },
+    { at: 37.2, kind: "complete", pitch: 390 },
+    { at: 42.3, kind: "leave", pitch: 360 },
+    { at: 45, kind: "close", pitch: 280 },
+    { at: 47.7, kind: "sleep", pitch: 270 },
   ] satisfies SoundCue[]
 ).sort((a, b) => a.at - b.at);
 
