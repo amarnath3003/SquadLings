@@ -11,8 +11,10 @@ for (const mode of ["all", "none"]) {
     const server = createBuggyMart(mode);
     await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
     t.after(() => { server.closeAllConnections(); server.close(); });
-    const baseURL = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
-    const browser = await chromium.launch({ headless: true });
+    const baseURL = process.env.BUGGYMART_TEST_URL
+      ? process.env.BUGGYMART_TEST_URL.replace(/\/$/, "") + (mode === "none" ? "/fixed" : "")
+      : `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+    const browser = await chromium.launch({ headless: true, executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH });
     t.after(() => browser.close());
     const broken = mode === "all";
     const check = async (name: string, fn: (page: Page) => Promise<void>) => t.test(name, async () => {
@@ -24,13 +26,13 @@ for (const mode of ["all", "none"]) {
       finally { await context.close(); }
     });
     const addMug = async (page: Page) => {
-      await page.goto("/");
+      await page.goto(baseURL + "/");
       await page.getByRole("button", { name: "Add Nimbus Mug to cart" }).click();
       await page.getByRole("link", { name: /^Cart \(/ }).click();
       await page.getByRole("heading", { name: "Your cart", exact: true }).waitFor();
     };
     await check("BM-01: price sorting", async page => {
-      await page.goto("/");
+      await page.goto(baseURL + "/");
       await page.getByLabel("Sort by", { exact: true }).selectOption("low");
       await page.waitForURL("**/search?sort=low");
       await page.locator(".product").first().waitFor();
@@ -45,7 +47,7 @@ for (const mode of ["all", "none"]) {
       assert.equal(await page.locator("#total").textContent(), broken ? "−$23.00" : "$19.00");
     });
     await check("BM-03: Large variant", async page => {
-      await page.goto("/product/aurora-lamp");
+      await page.goto(baseURL + "/product/aurora-lamp");
       await page.getByLabel("Size", { exact: true }).selectOption("Large");
       assert.equal(await page.locator("#product-price").textContent(), broken ? "$NaN" : "$69.00");
       assert.equal((await page.locator("#description").textContent()) === "undefined", broken);
@@ -64,7 +66,7 @@ for (const mode of ["all", "none"]) {
       assert.equal(await page.getByLabel("Quantity for Nimbus Mug").inputValue(), broken ? "2" : "1");
     });
     await check("BM-06: empty checkout", async page => {
-      await page.goto("/cart");
+      await page.goto(baseURL + "/cart");
       await page.getByRole("link", { name: "Checkout →" }).click();
       if (!broken) {
         await page.getByRole("heading", { name: "Your cart is empty" }).waitFor();
@@ -82,7 +84,7 @@ for (const mode of ["all", "none"]) {
       assert.match(await page.locator("main").innerText(), /Order total\s+\$0.00/);
     });
     await check("BM-07: category filter", async page => {
-      await page.goto("/");
+      await page.goto(baseURL + "/");
       await page.getByLabel("Category", { exact: true }).selectOption("Audio");
       await page.waitForURL("**/search?category=Audio");
       await page.locator(".product").first().waitFor();
@@ -91,7 +93,7 @@ for (const mode of ["all", "none"]) {
     });
     await check("BM-08: special-character search", async page => {
       for (const query of ["50%", "🍕"]) {
-        await page.goto("/");
+        await page.goto(baseURL + "/");
         await page.getByRole("searchbox", { name: "Search products" }).fill(query);
         await page.getByRole("button", { name: "Search", exact: true }).click();
         await page.waitForURL("**/search?q=*");
@@ -110,7 +112,7 @@ for (const mode of ["all", "none"]) {
       assert.equal(await page.locator("#total").textContent(), broken ? "$20.40" : "$17.60");
     });
     await check("BM-10: mug image loads", async page => {
-      await page.goto("/");
+      await page.goto(baseURL + "/");
       await page.locator(".product").first().waitFor();
       const image = page.locator(".art-mug img");
       assert.equal(await image.count(), broken ? 1 : 0);
@@ -118,19 +120,19 @@ for (const mode of ["all", "none"]) {
       else assert.equal(await page.locator(".art-mug .emoji").textContent(), "☕");
     });
     await check("normal search, reset, tab isolation, and mobile layout", async page => {
-      await page.goto("/search?q=FERN");
+      await page.goto(baseURL + "/search?q=FERN");
       await page.locator(".product").waitFor();
       assert.equal(await page.locator(".product h3").textContent(), "Fern Notebook");
       await addMug(page);
       const other = await page.context().newPage();
-      await other.goto("/cart");
+      await other.goto(baseURL + "/cart");
       await other.getByRole("heading", { name: "Your cart is empty" }).waitFor();
       await page.setViewportSize({ width: 390, height: 844 });
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
       await page.getByRole("button", { name: "Reset demo" }).click();
       await page.waitForURL(baseURL + "/");
       await page.getByRole("link", { name: "Cart (0)", exact: true }).waitFor();
-      await page.goto("/cart");
+      await page.goto(baseURL + "/cart");
       await page.getByRole("heading", { name: "Your cart is empty" }).waitFor();
     });
     await check("valid checkout works and required fields block empty submission", async page => {

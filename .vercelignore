@@ -5,8 +5,7 @@
 **/node_modules/
 **/dist/
 docs/
-scripts/
-targets/
+/scripts/
 ui/
 scrap_tests/
 spikes/

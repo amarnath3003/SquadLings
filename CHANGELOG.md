@@ -4,6 +4,13 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T08:49:35+05:30 — Animate Onyx delegation and publish BuggyMart paths
+
+- Changed: Replaced the landing task-picker/browser-card preview with a looping Onyx-to-squad story in `SquadStory.tsx`, reusing the existing character actor/activity animations for reading, typing, scrolling, discovery and completion. Added pause/replay, offscreen/hidden-tab pausing and reduced-motion behavior. Finished Onyx/finale contrast adjustments. The browser-QA use case opens BuggyMart.
+- Hosting: `web/export-buggymart.mjs` exports only public shop assets at `/buggymart/` (all bugs) and `/buggymart/fixed/` (bugs off). Made shop URLs/base paths and per-tab storage work at either prefix, retained local-server behavior, and configured real 404 responses for unknown shop paths. Updated deployment inclusion, setup and asset documentation.
+- Validation: Hosted TypeScript/build passed. All 29 existing BuggyMart browser/server checks passed using system Chrome, including every planted failure with bugs on and off, checkout, reset, tab isolation, mobile fit and private-file rejection. Animation dispatch, existing activity props, pause/resume, final report, mobile layout and reduced motion passed local browser checks, with zero page errors. Corrected character selectors to size the five mobile agents at 50px. Vercel production deployment is READY; both public configurations, private-file/missing-image 404s and fixed-shop navigation/cart/coupon/product checks passed.
+- Corrections/limits: First Vercel attempt excluded the BuggyMart exporter; corrected deployment inclusion and retried. Illustrative animation and simulated shop only; no real agent/model requests or payments.
+
 ## 2026-10-11T08:32:10+05:30 — Build the animated SquadLings landing page
 
 - Changed: Added `web/src/landing/` with a character-led hero, pointer response, orbit routes, moving typography, scroll reveals, four interactive scripted task previews, clickable character profiles, browser-control explanation, use cases, setup clipboard, film dialog and animated finale. Added locally hosted licensed fonts, existing project film, social metadata and lazy page loading. The hosted homepage now presents the project; the dashboard remains at `/app`, and `scripts/share-ui.ts` generates links there. Updated README, submission demo instructions and asset credits.

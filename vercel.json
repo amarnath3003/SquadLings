@@ -4,13 +4,35 @@
   "installCommand": "npm --prefix web ci",
   "buildCommand": "VITE_REMOTE_BACKEND=true npm --prefix web run build",
   "outputDirectory": "web/dist",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
-  "headers": [{
-    "source": "/(.*)",
-    "headers": [
-      { "key": "Referrer-Policy", "value": "no-referrer" },
-      { "key": "X-Content-Type-Options", "value": "nosniff" },
-      { "key": "X-Frame-Options", "value": "DENY" }
-    ]
-  }]
+  "routes": [
+    {
+      "src": "/(.*)",
+      "headers": {
+        "Referrer-Policy": "no-referrer",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY"
+      },
+      "continue": true
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/buggymart/fixed(?:/(?:search|cart|checkout|order|product/[a-z-]+))?/?",
+      "dest": "/buggymart/fixed/index.html"
+    },
+    {
+      "src": "/buggymart(?:/(?:search|cart|checkout|order|product/[a-z-]+))?/?",
+      "dest": "/buggymart/index.html"
+    },
+    {
+      "src": "/buggymart/(.*)",
+      "status": 404,
+      "dest": "/buggymart/404.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
 }

@@ -15,8 +15,9 @@ import {
 import { CAST } from "@swarm/shared/cast";
 import { BotCharacter } from "../characters/BotCharacter";
 import { MasterCharacter } from "../characters/MasterCharacter";
-import type { BotId, Mood } from "@swarm/shared/types";
+import type { BotId } from "@swarm/shared/types";
 import "./landing.css";
+import { SquadStory } from "./SquadStory";
 
 const REPO = "https://github.com/amarnath3003/SquadLings";
 const COLORS = ["#924FF7", "#04B84C", "#FF8549", "#006AFF", "#A6D8F5"];
@@ -82,13 +83,6 @@ const TASKS = [
     icon: "bug",
   },
 ] as const;
-const PHASES = [
-  "Ready when you are",
-  "Onyx makes a plan",
-  "Five browsers. Five little missions.",
-  "Sharing the good stuff",
-  "One answer, all together.",
-];
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return (
@@ -321,243 +315,6 @@ function HeroScene({ reduced }: { reduced: boolean }) {
   );
 }
 
-function Playground({
-  task,
-  setTask,
-  reduced,
-}: {
-  task: number;
-  setTask: (value: number) => void;
-  reduced: boolean;
-}) {
-  const [step, setStep] = useState(0);
-  const [round, setRound] = useState(0);
-  const running = step > 0 && step < 4;
-  useEffect(() => {
-    setStep(0);
-  }, [task]);
-  useEffect(() => {
-    if (!round) return;
-    setStep(1);
-    const timers = [2, 3, 4].map((phase, i) =>
-      setTimeout(() => setStep(phase), (i + 1) * 2300),
-    );
-    return () => timers.forEach(clearTimeout);
-  }, [round, task]);
-  const current = TASKS[task];
-  return (
-    <section className="sl-playground" id="playground">
-      <div className="sl-container">
-        <Reveal className="sl-section-head">
-          <div>
-            <span className="sl-eyebrow">A LITTLE SHOW, A LOT OF TELL</span>
-            <h2>
-              Big ask?
-              <br />
-              They’re <span className="sl-italic">on it.</span>
-            </h2>
-          </div>
-          <p>
-            One prompt kicks off a whole team.
-            <br />
-            Take the squad for a little spin.
-          </p>
-        </Reveal>
-        <Reveal>
-          <div
-            className="sl-preview-tabs"
-            role="tablist"
-            aria-label="Choose a preview task"
-            onKeyDown={(event) => {
-              if (
-                !["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)
-              )
-                return;
-              event.preventDefault();
-              const next =
-                event.key === "Home"
-                  ? 0
-                  : event.key === "End"
-                    ? TASKS.length - 1
-                    : (task +
-                        (event.key === "ArrowRight" ? 1 : -1) +
-                        TASKS.length) %
-                      TASKS.length;
-              setTask(next);
-              setRound(0);
-              setStep(0);
-              event.currentTarget
-                .querySelectorAll<HTMLButtonElement>("[role=tab]")
-                [next]?.focus();
-            }}
-          >
-            {TASKS.map((item, i) => (
-              <button
-                role="tab"
-                tabIndex={task === i ? 0 : -1}
-                aria-selected={task === i}
-                aria-controls="squad-preview"
-                id={`preview-tab-${i}`}
-                key={item.label}
-                onClick={() => {
-                  setTask(i);
-                  setRound(0);
-                  setStep(0);
-                }}
-              >
-                <TaskIcon name={item.icon} />
-                {item.label}
-              </button>
-            ))}
-          </div>
-          <div
-            className="sl-demo-board"
-            id="squad-preview"
-            role="tabpanel"
-            aria-labelledby={`preview-tab-${task}`}
-          >
-            <div className="sl-demo-chrome">
-              <div className="sl-window-dots">
-                <i />
-                <i />
-                <i />
-              </div>
-              <span>squadlings / a little preview</span>
-              <span className="sl-demo-label">SCRIPTED · NO API CALLS</span>
-            </div>
-            <div className="sl-demo-prompt">
-              <span className="sl-prompt-spark">✦</span>
-              <p>{current.prompt}</p>
-              <button
-                onClick={() => setRound((n) => n + 1)}
-                disabled={running}
-                aria-label={
-                  step === 4
-                    ? "Replay the squad preview"
-                    : "Run the squad preview"
-                }
-              >
-                {step === 4 ? <span>↻</span> : <Arrow />}
-              </button>
-            </div>
-            <div className="sl-demo-coordinator">
-              <MasterCharacter
-                size={64}
-                state={
-                  step === 0
-                    ? "idle"
-                    : step === 1
-                      ? "planning"
-                      : step === 4
-                        ? "done"
-                        : "monitoring"
-                }
-                reduced={reduced}
-                tick={round}
-              />
-              <div>
-                <span className="sl-demo-onyx-name">
-                  ONYX <span>THE CALM CONDUCTOR</span>
-                </span>
-                <h3 aria-live="polite">{PHASES[step]}</h3>
-              </div>
-              <span
-                className={`sl-preview-status ${running ? "is-running" : ""}`}
-              >
-                {step === 0
-                  ? "Hit send to start"
-                  : step === 4
-                    ? "That’s teamwork."
-                    : "Little minds at work"}
-              </span>
-            </div>
-            <div className="sl-demo-browsers">
-              {CAST.map((bot, i) => {
-                const mood: Mood =
-                  step === 4
-                    ? "found"
-                    : step === 2
-                      ? "focused"
-                      : step === 3
-                        ? "happy"
-                        : "curious";
-                return (
-                  <div
-                    className={`sl-demo-browser ${running && step > 1 ? "is-working" : ""} ${step === 4 ? "is-done" : ""}`}
-                    key={bot.id}
-                    style={
-                      {
-                        "--bot-color": bot.color,
-                        "--work-delay": `${i * -0.55}s`,
-                      } as CSSProperties
-                    }
-                  >
-                    <div className="sl-demo-browser-title">
-                      <span style={{ background: bot.color }} />
-                      {bot.name}
-                      <span className="sl-browser-maximize">↗</span>
-                    </div>
-                    <div className="sl-demo-page">
-                      <div className="sl-demo-url">
-                        <span />a small part of the big picture
-                      </div>
-                      <div className="sl-skeleton-title" />
-                      <div className="sl-skeleton-line" />
-                      <div className="sl-skeleton-line half" />
-                      <div className="sl-skeleton-photo">
-                        <TaskIcon name={current.icon} />
-                      </div>
-                      <div className="sl-skeleton-line" />
-                      <div className="sl-skeleton-line half" />
-                      <div className="sl-scan-line" />
-                      <span className="sl-demo-cursor">↖</span>
-                    </div>
-                    <div className="sl-demo-job">
-                      <span>
-                        {step === 4 ? "✓ Findings shared" : current.jobs[i]}
-                      </span>
-                      <BotCharacter
-                        id={bot.id}
-                        mood={mood}
-                        size={48}
-                        reduced={reduced}
-                        seed="landing-preview"
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <div
-              className={`sl-demo-result ${step === 4 ? "is-visible" : ""}`}
-              aria-live="polite"
-            >
-              <span className="sl-result-check">✓</span>
-              <p>
-                {step === 4
-                  ? current.result
-                  : "Different paths. Shared discoveries. One place to bring it all together."}
-              </p>
-              <span>
-                {step === 4 ? "SQUAD COMPLETE" : "ONE SQUAD. MANY MINDS."}
-              </span>
-            </div>
-            <div className="sl-demo-steps">
-              {["Plan", "Explore", "Share", "Deliver"].map((name, i) => (
-                <div className={step > i ? "is-active" : ""} key={name}>
-                  <span>{step > i + 1 ? "✓" : `0${i + 1}`}</span>
-                  {name}
-                  <i />
-                </div>
-              ))}
-            </div>
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
 function Film({ onClose }: { onClose: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -604,7 +361,6 @@ export default function LandingPage() {
   const reduced = Boolean(useReducedMotion());
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-  const [task, setTask] = useState(0);
   const [film, setFilm] = useState(false);
   const [selectedBot, setSelectedBot] = useState<BotId>("bot1");
   const [copied, setCopied] = useState(false);
@@ -756,7 +512,7 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-        <Playground task={task} setTask={setTask} reduced={reduced} />
+        <SquadStory reduced={reduced} />
         <section className="sl-how sl-container" id="how-it-works">
           <Reveal className="sl-how-intro">
             <span className="sl-eyebrow">THE BEAUTIFULLY SIMPLE BIT</span>
@@ -1028,12 +784,17 @@ export default function LandingPage() {
                 <button
                   className={`sl-use-card sl-use-card-${i}`}
                   onClick={() => {
-                    setTask(i);
-                    document
-                      .getElementById("playground")
-                      ?.scrollIntoView({
-                        behavior: reduced ? "instant" : "smooth",
-                      });
+                    if (i === 3) {
+                      window.open(
+                        "/buggymart",
+                        "_blank",
+                        "noopener,noreferrer",
+                      );
+                      return;
+                    }
+                    document.getElementById("playground")?.scrollIntoView({
+                      behavior: reduced ? "instant" : "smooth",
+                    });
                   }}
                 >
                   <div className="sl-use-card-top">
@@ -1044,7 +805,8 @@ export default function LandingPage() {
                   <p>“{item.prompt}”</p>
                   <div className="sl-use-bottom">
                     <span>
-                      TAKE THIS ONE FOR A SPIN <Arrow />
+                      {i === 3 ? "OPEN BUGGYMART" : "WATCH THE SQUAD WORK"}{" "}
+                      <Arrow />
                     </span>
                     <TaskIcon name={item.icon} />
                   </div>

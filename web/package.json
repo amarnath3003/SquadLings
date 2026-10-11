@@ -6,7 +6,7 @@
   "description": "The SquadLings dashboard: our chat flow on the character studio's React components (from github.com/amarnath3003/squadlings, dashboard/ at 45f625f).",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build && node export-buggymart.mjs",
     "bundle": "vite build --logLevel warn",
     "check": "tsc --noEmit"
   },

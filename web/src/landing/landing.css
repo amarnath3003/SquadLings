@@ -34,6 +34,9 @@ body:has(.sl-page) {
   overflow: clip;
   font-synthesis: style;
 }
+.sl-page .master-character {
+  color: #f3f0e8;
+}
 .sl-page * {
   box-sizing: border-box;
 }
@@ -1059,7 +1062,7 @@ body:has(.sl-page) {
   line-height: 1.4;
   flex: 1;
 }
-.sl-demo-job .bot-character {
+.sl-demo-job .character {
   flex-shrink: 0;
 }
 .sl-demo-result {
@@ -1912,6 +1915,10 @@ body:has(.sl-page) {
   margin-top: 65px;
   height: 120px;
 }
+.sl-finale-cast .character {
+  border: 1px solid #ffffff55;
+  border-radius: 50%;
+}
 .sl-finale-cast > .master-character {
   margin-right: 6px;
 }
@@ -2253,7 +2260,7 @@ body:has(.sl-page) {
   .sl-cast-portrait {
     height: 145px;
   }
-  .sl-cast-portrait .bot-character {
+  .sl-cast-portrait .character {
     transform: scale(0.85);
   }
   .sl-cast-card {
@@ -2481,7 +2488,7 @@ body:has(.sl-page) {
   .sl-cast-portrait {
     height: 150px;
   }
-  .sl-cast-portrait .bot-character {
+  .sl-cast-portrait .character {
     transform: none;
   }
   .sl-cast-card h3 {
@@ -2527,7 +2534,7 @@ body:has(.sl-page) {
     right: 12px;
     bottom: 25px;
   }
-  .sl-control-bot .bot-character {
+  .sl-control-bot .character {
     transform: scale(0.8);
   }
   .sl-control-sticker {
@@ -2990,7 +2997,7 @@ body:has(.sl-page) {
   .sl-cast-portrait {
     height: 140px;
   }
-  .sl-cast-portrait .bot-character {
+  .sl-cast-portrait .character {
     transform: scale(0.9);
   }
   .sl-cast-card h3 {
@@ -3074,7 +3081,7 @@ body:has(.sl-page) {
     right: 20px;
     bottom: 32px;
   }
-  .sl-control-bot .bot-character {
+  .sl-control-bot .character {
     transform: none;
   }
   .sl-control-sticker {
@@ -3201,7 +3208,7 @@ body:has(.sl-page) {
     height: 72px !important;
     margin-right: 0;
   }
-  .sl-finale-cast .bot-character {
+  .sl-finale-cast .character {
     width: 55px !important;
     height: 55px !important;
   }
@@ -3302,7 +3309,7 @@ body:has(.sl-page) {
   .sl-how h2 {
     font-size: 39px;
   }
-  .sl-cast-portrait .bot-character {
+  .sl-cast-portrait .character {
     transform: scale(0.78);
   }
   .sl-cast-portrait {
@@ -3320,7 +3327,7 @@ body:has(.sl-page) {
   .sl-demo-label {
     font-size: 4px;
   }
-  .sl-finale-cast .bot-character {
+  .sl-finale-cast .character {
     width: 45px !important;
     height: 45px !important;
   }

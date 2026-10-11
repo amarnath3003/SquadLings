@@ -1,6 +1,6 @@
 # BuggyMart
 
-A deliberately broken, local shop for SquadLings agents to explore. Plain HTML, CSS and JavaScript with a small Node server; no build, new dependencies, API key, external assets, or network services required.
+A deliberately broken demo shop for SquadLings agents to explore. Plain HTML, CSS and JavaScript with a small Node server; no build, new dependencies, API key, external assets, or network services required.
 
 ```sh
 npm run buggymart
@@ -11,6 +11,17 @@ Open **http://127.0.0.1:3001**. Run the SquadLings dashboard separately with `np
 The store has six products, search, category filtering, price sorting, a product variant, cart quantities, a promo code, and simulated checkout. Prices are USD with tax included, plus $5 shipping. `SAVE10` should deduct 10% from the merchandise subtotal.
 
 Use five agents to cover catalog/search, product details, cart operations, pricing/coupons, and checkout. Ask for reproducible steps, expected versus actual behavior, and severity. All bugs can be reached from the UI; no login, special browser size, source inspection, or real payment is needed. Keep the answer key out of agent prompts.
+
+## Hosted versions
+
+- All ten planted bugs: **https://squadlings.vercel.app/buggymart/**
+- All ten bugs disabled: **https://squadlings.vercel.app/buggymart/fixed/**
+
+Paste either URL into SquadLings as the target. Both are static exports of this same shop, with separate per-tab cart state. Use the fixed URL for regression checks, and Reset demo before repeating a run. The fixed version does not imply that the agent has edited the deployed code; it is the existing bugs-off reference behavior. No laptop shop server is required.
+
+`npm --prefix web run build` exports both versions after building the landing page. Vercel routes known shop pages to their matching index and returns HTTP 404 for unknown shop resources, including the intentional broken image.
+
+To run these same browser checks against a deployed shop, set `BUGGYMART_TEST_URL=https://squadlings.vercel.app/buggymart npm run test:buggymart`. Optionally set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to an installed Chrome executable.
 
 ## Repeat a run
 

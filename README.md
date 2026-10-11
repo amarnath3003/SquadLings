@@ -220,9 +220,15 @@ Type a task, pick your squad, and press send.
 > [!TIP]
 > **Try it for free first.** `node scripts/dev-mock-ui.ts --port 8796 --mcp-port 8795` runs the real server with a scripted mock Onyx and bots. Any task plays the same run, and nothing reaches OpenAI.
 
+### Public BuggyMart test site
+
+Give the app **https://squadlings.vercel.app/buggymart/** to test the shop with all ten planted bugs enabled. Use **https://squadlings.vercel.app/buggymart/fixed/** for the same shop with all ten bugs disabled, to verify the expected behavior. Both work without a laptop server. Each version keeps its own cart in the current tab; use **Reset demo** before another run. Checkout is simulated.
+
+The production build exports the existing `targets/buggymart/public/` files into two static shop folders. Product, search, cart and checkout URLs stay within their shop prefix. Only public assets and configuration are published; the answer key is not served. Full instructions: [BuggyMart](targets/buggymart/README.md).
+
 ### Animated landing page and hosted dashboard
 
-**https://squadlings.vercel.app** is the public animated landing page: meet the cast, explore four scripted task previews, watch the 52-second project film, read the architecture story and copy setup commands. It works without a backend or API key. Previews are illustrations, not live agent runs. It supports keyboard navigation, mobile layouts and reduced motion.
+**https://squadlings.vercel.app** is the public animated landing page: meet the cast, watch Onyx assign five missions and the squad animate their work, watch the 52-second project film, read the architecture story and copy setup commands. It works without a backend or API key. The animation is illustrative, not a live agent run. It supports keyboard navigation, mobile layouts and reduced motion.
 
 The React dashboard from `web/` (the app normally served by `npm run web` on port **5173**) remains at **https://squadlings.vercel.app/app**. Agents, browser profiles, run history and the OpenAI key stay on the laptop running `npm run ui`.
 
