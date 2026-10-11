@@ -1,8 +1,9 @@
 // Actions shared by the chat and the wall (ported from ui/app.js focusBot, takeover, setHover, showHint).
 import { S, notify, touchLayout } from "./store";
+import { backendFetch } from "../backend";
 
 export async function post<T = unknown>(path: string, body?: unknown): Promise<T> {
-  const res = await fetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body ?? {}) });
+  const res = await backendFetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body ?? {}) });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw Object.assign(new Error(json.error ?? `HTTP ${res.status}`), { status: res.status });
   return json as T;

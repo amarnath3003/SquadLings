@@ -9,6 +9,7 @@ auth/*.json
 
 # Common dependencies, build output, caches, and local tooling.
 node_modules/
+.vercel/
 .next/
 dist/
 build/

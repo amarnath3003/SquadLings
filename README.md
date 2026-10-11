@@ -213,12 +213,41 @@ npm run ui               # builds web/ and opens http://127.0.0.1:8787
 
 Type a task, pick your squad, and press send.
 
-**Local import verification (11 October 2026):** The downloaded export builds with Node 24.14.1: server typecheck and the React production build passed, as did 15 unit tests and five mock API scenarios. The default shell on the importing Mac uses Node 18; select Node 22.18+ first (for example, `nvm use 24`). Browser tests are blocked on this Mac: the bundled Playwright cannot install Chromium on macOS 12. Use an OS supported by that Playwright version for browser tests and agent runs. The import remains uncommitted pending review.
+**Local import verification (11 October 2026):** The downloaded export builds with Node 24.14.1: server typecheck and the React production build passed, as did 15 unit tests and five mock API scenarios. The default shell on the importing Mac uses Node 18; select Node 22.18+ first (for example, `nvm use 24`). Browser tests are blocked on this Mac: the bundled Playwright cannot install Chromium on macOS 12. Use an OS supported by that Playwright version for browser tests and agent runs. The import was subsequently committed and pushed as `89f3c14`.
 
 **Local QA target:** `npm run buggymart` starts [BuggyMart](targets/buggymart/README.md) at **http://127.0.0.1:3001**: a small shop with 10 deliberately easy bugs for the agents to find. Give Onyx that URL and your testing task. Use **Reset demo** in the shop footer for a fresh run, or start with `-- --bugs none` to compare against working behavior. The shop needs no API key; agent runs use the normal dashboard configuration.
 
 > [!TIP]
 > **Try it for free first.** `node scripts/dev-mock-ui.ts --port 8796 --mcp-port 8795` runs the real server with a scripted mock Onyx and bots. Any task plays the same run, and nothing reaches OpenAI.
+
+### Hosted frontend with your laptop's backend
+
+The React frontend from `web/` (the same app served by `npm run web` on port **5173**) is deployed at **https://squadlings.vercel.app**. Agents, browser profiles, run history and the OpenAI key stay on the laptop running `npm run ui`.
+
+On that laptop, leave the existing dashboard running. In a second terminal, update the clone and start sharing (Node 22.18+ and `cloudflared` are required):
+
+```sh
+git pull --ff-only
+npm ci                       # only if this clone's dependencies are not already installed
+npm run share
+```
+
+`share` checks the dashboard at `http://127.0.0.1:8787`, opens a separate authenticated bridge on port 8790, and tunnels it through Cloudflare. It opens the hosted site with a private connection link, also saved to the ignored, owner-only `spikes/out/share-ui/connect.txt`. Open that link on the computer where you want to use the dashboard. Treat the link as a password: anyone with it can send tasks and control this squad. The key is removed from the address bar and held in this browser tab's session storage; it is never built into the frontend.
+
+Keep the backend, sharing terminal and laptop awake. `Ctrl+C` in the sharing terminal revokes that connection without stopping the local agents. Restarting sharing generates a new key and tunnel address; open the new private link to reconnect. This dashboard tunnel is separate from the MCP tunnel on port 8788. No backend restart or incoming firewall port is needed.
+
+For a non-default dashboard port, use `npm run share -- --target http://127.0.0.1:8796`. For another hosted frontend, add `--frontend https://your-site.example` (only that exact origin is allowed). Running against the scripted mock dashboard is supported; only an existing real backend can perform real agent tasks.
+
+To deploy updates from the repository root:
+
+```sh
+npx vercel link --yes --project squadlings
+npx vercel deploy --prod
+```
+
+[`vercel.json`](vercel.json) installs/builds only `web/`, with `VITE_REMOTE_BACKEND=true`. Normal local builds keep using the same-origin API and Vite proxy. REST calls and the live WebSocket go directly from the hosted browser to the authenticated laptop bridge, using HTTPS/WSS. API keys stay on the laptop; Vercel serves static assets. The deployment excludes local environment files, run data and backend code via [`.vercelignore`](.vercelignore).
+
+Deployment references: [Vercel CLI](https://vercel.com/docs/cli/deploy), [Vite on Vercel](https://vercel.com/docs/frameworks/frontend/vite), [Cloudflare Tunnel](https://developers.cloudflare.com/tunnel/get-started/).
 
 <details>
 <summary><b>All commands</b></summary>
@@ -233,6 +262,7 @@ Type a task, pick your squad, and press send.
 | `npm run web` | Vite dev server for `web/` with hot reload (proxies `/api` and `/ws` to `SQUADLINGS_API`) |
 | `npm run squad -- "task"` | The same squad in the terminal, with visible tiled browser windows |
 | `npm run prewarm` | Keeps one cloudflared quick tunnel open on port 8788 for reuse |
+| `npm run share` | Connects the hosted frontend to an existing dashboard on this laptop through an authenticated tunnel |
 | `npm run spike:mcp` | One agent driving our browser over MCP (the S1 spike) |
 | `npm run spike:cu` | One agent on OpenAI's hosted computer use (the Phase −1 spike) |
 | `npm test` | Unit tests, mock Agents API, browser/MCP, squad and dashboard self-tests, all offline |
@@ -278,6 +308,8 @@ Type a task, pick your squad, and press send.
 ```text
 SquadLings/
 ├── README.md              this file
+├── vercel.json            hosted frontend build and routing
+├── .vercelignore          excludes backend and private runtime data from deployment
 ├── master.md              the full product + architecture spec
 ├── HANDOFF.md             where the dashboard port stands right now
 ├── RULES.md · AGENTS.md   hackathon rules and the agent working guide (from the event template)
@@ -289,6 +321,7 @@ SquadLings/
 │   ├── squad.ts           npm run squad: the terminal version
 │   ├── dev-mock-ui.ts     zero-cost mock server for UI work
 │   ├── prewarm.ts         npm run prewarm: keep a tunnel open
+│   ├── share-ui.ts        connect the hosted site to a running laptop backend
 │   ├── eval-agent.ts      TestTown agent eval
 │   ├── spike-*.ts         the Phase −1 and S1 single-agent spikes
 │   ├── lib/               orchestrator, Agents API sessions, MCP browser server,
@@ -314,7 +347,7 @@ Ignored and regenerated at runtime: `spikes/out/` and `runs/` (run logs), `spike
 | 🚧 **In progress** | Moving the live run screen onto the character studio (Onyx's coordinator card, flights, moods, emotes) |
 | ✅ **QA target** | BuggyMart: local shop with 10 easy planted bugs, reset, bugs-off mode, and offline checks |
 | 🔭 **Planned** | Templates (Trip Planner, QA Swarm scorecard) · cost cap · approval cards for risky actions · GPT-Live-1 voice |
-| ⚠️ **Known limitations** | Runs locally only (no hosted demo) · needs Agents API access and a cloudflared quick tunnel; Cloudflare rate-limits many tunnels started in a few minutes (HTTP 429), so use `npm run prewarm` · Google blocks automated browsers, so bots search with Bing · bots never solve CAPTCHAs: you take over · no cost cap yet |
+| ⚠️ **Known limitations** | Hosted frontend needs a private connection link and an awake laptop backend · needs Agents API access and a cloudflared quick tunnel; Cloudflare rate-limits many tunnels started in a few minutes (HTTP 429), so use `npm run prewarm` · Google blocks automated browsers, so bots search with Bing · bots never solve CAPTCHAs: you take over · no cost cap yet |
 
 <br>
 

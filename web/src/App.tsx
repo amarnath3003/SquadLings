@@ -13,6 +13,7 @@ import { MasterCharacter } from "./characters/MasterCharacter";
 import { StudioFx } from "./studio/StudioFx";
 import { MasterCard } from "./studio/components/MasterCard";
 import { RoamLayer } from "./roam/RoamLayer";
+import { backendFetch } from "./backend";
 
 // Our dashboard (ui/) on the character studio's React components, with the same markup and stylesheet
 // (styles/classic.css) so it looks the same as :8787. Three layouts on one set of elements (home /
@@ -131,7 +132,7 @@ export default function App() {
     // ?run=<id>: open a chat from disk, read-only.
     const id = new URLSearchParams(location.search).get("run");
     if (id)
-      void fetch(`/api/runs/${encodeURIComponent(id)}`)
+      void backendFetch(`/api/runs/${encodeURIComponent(id)}`)
         .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
         .then((data) => loadRun(data.run, data.events, true))
         .catch((err) => console.error("Couldn't open that chat", err));

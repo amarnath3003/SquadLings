@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import { BackendGate } from "./BackendGate";
 import { DEVDAY_COLORS } from "@swarm/shared/cast";
 import "./styles/tokens.css";
 import "./styles/theme.css";
@@ -18,6 +18,6 @@ for (const [name, color] of Object.entries(DEVDAY_COLORS)) {
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <BackendGate />
   </React.StrictMode>,
 );

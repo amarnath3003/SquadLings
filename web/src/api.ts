@@ -1,4 +1,5 @@
 // The dashboard server's REST API (scripts/lib/ui-server.ts; master.md §19.8).
+import { backendFetch } from "./backend";
 
 export type Tunnel = { state: "starting" | "ready" | "failed"; url?: string; source?: string; error?: string };
 export type Config = {
@@ -25,7 +26,7 @@ export type Settings = {
 };
 
 async function call<T>(path: string, body?: unknown): Promise<T> {
-  const res = await fetch(path, body === undefined ? undefined : { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+  const res = await backendFetch(path, body === undefined ? undefined : { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw Object.assign(new Error(json.error ?? `HTTP ${res.status}`), { status: res.status });
   return json as T;

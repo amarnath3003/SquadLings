@@ -2,6 +2,7 @@
 import { S, effects, goHome, loadRun, notify, runActive, touchLayout } from "./store";
 import { post, showHint } from "./actions";
 import { listRuns } from "../api";
+import { backendFetch } from "../backend";
 
 export async function loadHistory() {
   try {
@@ -27,7 +28,7 @@ export async function openChat(id: string) {
     return void touchLayout();
   }
   try {
-    const res = await fetch(`/api/runs/${encodeURIComponent(id)}`);
+    const res = await backendFetch(`/api/runs/${encodeURIComponent(id)}`);
     if (!res.ok) throw new Error((await res.json()).error ?? `HTTP ${res.status}`);
     const data = await res.json();
     loadRun(data.run, data.events, id !== S.liveId);

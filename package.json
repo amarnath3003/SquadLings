@@ -17,6 +17,7 @@
     "buggymart": "node targets/buggymart/server.ts",
     "test:buggymart": "node --test targets/buggymart/buggymart.test.ts",
     "prewarm": "node scripts/prewarm.ts",
+    "share": "node scripts/share-ui.ts",
     "test": "npm run -s test:unit && npm run -s test:cu && npm run -s test:browser && npm run -s test:squad && npm run -s test:ui",
     "test:unit": "node --test scripts/tests/*.test.ts",
     "test:cu": "node scripts/tests/mock-agents-api.ts",

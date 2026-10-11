@@ -3,6 +3,7 @@
 import { S, apply, loadRun, notify, touchLayout, touchTop, type ServerEvent } from "./store";
 import { loadHistory } from "./history";
 import { onFrame } from "../wall/frames";
+import { backendSocket } from "../backend";
 
 let ws: WebSocket | null = null;
 let retry = 0;
@@ -15,7 +16,7 @@ export function send(msg: unknown) {
 
 export function connect() {
   if (ws && ws.readyState <= WebSocket.OPEN) return; // one socket (React's dev double-mount calls this twice)
-  ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws`);
+  ws = backendSocket();
   ws.binaryType = "arraybuffer";
   ws.onopen = () => {
     retry = 0;

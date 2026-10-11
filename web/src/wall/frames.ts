@@ -9,6 +9,7 @@
 // (/api/runs/:id/frames/<name>.jpg).
 
 import { S, touchBot } from "../live/store";
+import { backendFetch } from "../backend";
 
 type Slot = { buf: ArrayBuffer | null; bmp: ImageBitmap | null; decoding: boolean };
 type Sink = { canvas: HTMLCanvasElement; onPaint: () => void };
@@ -100,7 +101,7 @@ function keyframe(id: string) {
   const runId = run.id;
   void (async () => {
     try {
-      const res = await fetch(`/api/runs/${encodeURIComponent(runId)}/frames/${encodeURIComponent(name)}.jpg`);
+      const res = await backendFetch(`/api/runs/${encodeURIComponent(runId)}/frames/${encodeURIComponent(name)}.jpg`);
       if (!res.ok) return;
       const bmp = await createImageBitmap(await res.blob());
       if (keysFor !== runId) return void bmp.close();

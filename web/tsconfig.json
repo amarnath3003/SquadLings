@@ -9,7 +9,7 @@
     "skipLibCheck": true,
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    "types": ["vite/client"],
+    "types": ["vite/client", "node"],
     "paths": { "@swarm/shared/*": ["./shared/*"] }
   },
   "include": ["src", "shared", "vite.config.ts"]

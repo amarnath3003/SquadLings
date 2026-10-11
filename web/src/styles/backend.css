@@ -1,0 +1,20 @@
+.backend-gate {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.backend-gate form {
+  width: min(100%, 420px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.backend-gate h1 { margin: 8px 0 0; font-size: 30px; }
+.backend-gate p { color: var(--muted); line-height: 1.6; margin: 0 0 12px; }
+.backend-gate label { font-size: 14px; margin-top: 4px; }
+.backend-gate input { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; }
+.backend-gate button { min-height: 46px; margin-top: 8px; background: var(--event-purple); color: #fff; border-radius: 10px; }
+.backend-gate .backend-error { color: var(--event-orange); margin: 0; }
+.backend-gate .backend-help { font-size: 13px; margin-top: 12px; }
+.backend-gate code { color: var(--text); }
