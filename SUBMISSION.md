@@ -18,7 +18,7 @@ Participate solo or in a team of up to 4. Remove unused rows.
 | Participant name | GitHub handle | Contribution |
 | --- | --- | --- |
 | Vijay Anand | @vijayanand1505 | Engine, server and dashboard |
-| TODO | @amarnath3003 | Characters, animation studio, sound, banner and launch film |
+| D Amarnath | @amarnath3003 | Characters, animation studio, sound, banner and launch film |
 
 ## Run and demonstrate
 

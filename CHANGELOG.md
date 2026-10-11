@@ -4,6 +4,13 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T07:55:39+05:30 — Correct contributor identity and team attribution
+
+- Changed: Configured this clone's Git author and committer as D Amarnath with the ID-based GitHub noreply email for `amarnath3003`. Added the confirmed display name to `README.md` and replaced the teammate-name placeholder in `SUBMISSION.md`; updated `AI_USAGE.md`.
+- Why: Previous commits used an email ending in `gmail.co`; GitHub's commit API returned no linked author or committer. The user confirmed the intended account is `amarnath3003` and requested a new commit under that identity.
+- Validation: Matched the account name and numeric ID against GitHub's public user API, confirmed `main` is the default branch of a non-fork repository, and checked the existing commit's missing account attribution. Reviewed team-name consistency, effective Git identity, and diff whitespace before committing. Application tests are unnecessary for these documentation and local Git configuration changes.
+- Limitations: Previous commits retain their original metadata. GitHub contribution graphs may take up to 24 hours to update. Human review of the documentation is pending; server-side linkage of this new commit is checked after pushing.
+
 ## 2026-10-11T07:47:31+05:30 — Import the merged SquadLings export locally
 
 - Changed: Replaced the tracked project tree with the 169 files from `~/Downloads/SquadLings-export.zip` (`SquadLings-export/SquadLings/`); removed 92 former tracked paths absent from the export. The engine is in `scripts/`, the React dashboard in `web/`, and the classic dashboard in `ui/`. Kept `.git`, existing local ignored files, and HEAD `cd568c5c7d36c251689fdf04eda0531026cb755e`. Preserved old dashboard artifact ignores in local `.git/info/exclude`.
