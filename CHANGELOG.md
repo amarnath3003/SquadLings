@@ -4,6 +4,11 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T08:53:53+05:30 — Verify public workflow and shop deployment
+
+- Published: Vercel deployment `dpl_CA1Ct1ktydKqEfFHCm8Bv2LrzgpP` reached READY at https://squadlings.vercel.app. Implementation checkpoint `feaa0f3` is pushed to `main`; its automatic deployment includes the final mobile character sizing correction. Updated submission scope/SHA.
+- Validation: Live browser checks passed for the Onyx animation and both buggy/fixed shop navigation, quantities, SAVE10 totals and direct product routes. Both public configuration files returned HTTP 200 with the expected 10/0 enabled bugs; the answer key and intentional missing image returned HTTP 404. A first browser navigation timed out; the retry passed. No real agent request or payment occurred.
+
 ## 2026-10-11T08:49:35+05:30 — Animate Onyx delegation and publish BuggyMart paths
 
 - Changed: Replaced the landing task-picker/browser-card preview with a looping Onyx-to-squad story in `SquadStory.tsx`, reusing the existing character actor/activity animations for reading, typing, scrolling, discovery and completion. Added pause/replay, offscreen/hidden-tab pausing and reduced-motion behavior. Finished Onyx/finale contrast adjustments. The browser-QA use case opens BuggyMart.
