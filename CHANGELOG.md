@@ -4,6 +4,15 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T08:30:55+05:30 — Reconcile repository history and submission details
+
+- Changed: Added the `amarnath3003/squadlings` repository URL and full snapshot SHA `86a94d50e955c777bcbfcfc60163bcb3d5028c59` to `SUBMISSION.md`; kept the user's “master orchestrator” wording and synchronized `README.md`. Added the Git checkpoint index below and recorded this documentation assistance in `AI_USAGE.md`.
+- Why: Make the current submission traceable to committed code while preserving the older build record and distinguishing unfinished local work.
+- Historical gap: BuggyMart arrived in import commit `89f3c14` (2026-10-11T07:48:00+05:30): six products, ten switchable planted bugs, simulated checkout, tab-local state and reset, a private answer key, and offline checks in `targets/buggymart/`. `HANDOFF.md` records 29 passing checks from its original development; these were not rerun during this documentation update. Its original implementation time is not established by this repository's Git history.
+- Current work in progress, observed at this update: `web/src/landing/`, local fonts/licenses and film media, hosted landing-page versus `/app` routing in `web/src/main.tsx`, social metadata in `web/index.html`, and `/app` connection links in `scripts/share-ui.ts`. These files are uncommitted and excluded from the recorded snapshot and this documentation commit. No completion, deployment or validation claim is made for this work.
+- Validation: Compared local Git history and source diffs with existing build/handoff records; confirmed origin targets the requested repository and read its main-branch reference. Checked the recorded SHA, matching descriptions, checkpoint links and diff whitespace. No application tests were run for this documentation-only update.
+- Limitations: Final test reruns, live demo verification and organizer submission remain pending. Existing historical test results and approximate engine timestamps are preserved as historical evidence, not new verification.
+
 ## 2026-10-11T08:27:40+05:30 — Clarify the short project description
 
 - Changed: Rewrote the short description in `SUBMISSION.md` and matched the project overview in `README.md`.
@@ -275,3 +284,34 @@ Record each meaningful project change during the event, newest first. Update thi
 - Why: Give participants a consistent starting point for event rules, basic coding patterns, documented changes, and regular commits.
 - Validation: Checked local Markdown links, event detail consistency, required documents, and diff whitespace before publishing.
 - Limitations: Documentation scaffolding only; no participant project, application, or working demo is included. GitHub publication and template status are verified separately after creation.
+
+## Git checkpoint index
+
+Reconciled on 2026-10-11T08:30:55+05:30. These are actual commit timestamps with timezone from the current repository, oldest first, through the snapshot recorded above. Earlier engine milestones were reconstructed separately and are not assigned invented commits. Historical entries describe checks at the time; this index does not rerun them.
+
+| Commit | Recorded commit time | Change |
+| --- | --- | --- |
+| [5d8bde5](https://github.com/amarnath3003/squadlings/commit/5d8bde56cc4f2897885f5a38a9fc32b3ff447c00) | 2026-10-10T21:19:56+05:30 | Initial Commit Template |
+| [71cce84](https://github.com/amarnath3003/squadlings/commit/71cce84b1198cecf18e40b80a2e76a077241d8e6) | 2026-10-10T22:06:02+05:30 | feat: add computer use agent test |
+| [9b7dcd2](https://github.com/amarnath3003/squadlings/commit/9b7dcd21562d2ff102f12d30443d67e601881003) | 2026-10-10T22:09:23+05:30 | feat: accept interactive browser tasks |
+| [62d2323](https://github.com/amarnath3003/squadlings/commit/62d232320b2f337a747eefc418d1afc1dad2b8bd) | 2026-10-10T23:14:22+05:30 | feat: build character studio and simulated squad |
+| [e419c3d](https://github.com/amarnath3003/squadlings/commit/e419c3df6d2f2e8c30652e1568e32724fd6cdf82) | 2026-10-10T23:45:37+05:30 | feat: complete and verify character interactions |
+| [f9dbfb8](https://github.com/amarnath3003/squadlings/commit/f9dbfb82c506c4d2c64f844b5b97e921a7a2b334) | 2026-10-11T00:12:33+05:30 | feat: bring the squad to life with ambient motion and play |
+| [67fd137](https://github.com/amarnath3003/squadlings/commit/67fd137d5fd14eeced65f949c969ced90ebe83a8) | 2026-10-11T00:18:05+05:30 | fix: select a compatible Node runtime for development |
+| [0851c7c](https://github.com/amarnath3003/squadlings/commit/0851c7c43e158e21c7a3f68f1f8e40ac18b30715) | 2026-10-11T00:50:23+05:30 | feat: add sound effects and five expressive bot voices |
+| [4d46060](https://github.com/amarnath3003/squadlings/commit/4d460602029624e0b2c0c3d9e3b31c42b43bdb9e) | 2026-10-11T01:02:30+05:30 | perf: tune bot voices and verify audio lifecycle |
+| [56ef644](https://github.com/amarnath3003/squadlings/commit/56ef644aaf5d4a27ad075ed98916dda55142c224) | 2026-10-11T02:49:55+05:30 | animations and UI components |
+| [cdcb9d0](https://github.com/amarnath3003/squadlings/commit/cdcb9d0fbda36129bc4d2e9d42f863f550b14653) | 2026-10-11T02:50:07+05:30 | animation refine |
+| [d290080](https://github.com/amarnath3003/squadlings/commit/d290080eb7742ce50fb83d4ef15a0e86e0b1dd44) | 2026-10-11T02:52:40+05:30 | docs: record circle slider verification |
+| [949f47d](https://github.com/amarnath3003/squadlings/commit/949f47d521a43b39fa2d4757ca0f93bef3b4e99a) | 2026-10-11T02:58:17+05:30 | fix: complete activity animations and verify the squad |
+| [7d0e8b4](https://github.com/amarnath3003/squadlings/commit/7d0e8b4f7a350a2ab01e565be3d2154460ff6617) | 2026-10-11T03:19:29+05:30 | style: match DevDay dark theme and flat colors |
+| [32322fb](https://github.com/amarnath3003/squadlings/commit/32322fbf0e8e86f0d1736656f9304d4fd6729619) | 2026-10-11T03:44:04+05:30 | onyx UI integration |
+| [45f625f](https://github.com/amarnath3003/squadlings/commit/45f625fbc572a5500f7fc3abfc5f9fd1f0bd98f7) | 2026-10-11T03:45:24+05:30 | docs: record Onyx character verification |
+| [e3a32b7](https://github.com/amarnath3003/squadlings/commit/e3a32b7ffdf15b460e75bf2fd416c8fc85b9d976) | 2026-10-11T04:38:34+05:30 | docs: add SquadLink GitHub banner |
+| [f87214b](https://github.com/amarnath3003/squadlings/commit/f87214b73c92676636f583e0197386540353ef06) | 2026-10-11T04:54:33+05:30 | feat: add independent animated effort slider |
+| [720fa6f](https://github.com/amarnath3003/squadlings/commit/720fa6fc56a8f82d6ac9bb1e87ef584b2d9682d5) | 2026-10-11T05:10:31+05:30 | feat: create cinematic SquadLink launch film |
+| [cd568c5](https://github.com/amarnath3003/squadlings/commit/cd568c5c7d36c251689fdf04eda0531026cb755e) | 2026-10-11T05:35:52+05:30 | feat: refine SquadLings film and correct branding |
+| [89f3c14](https://github.com/amarnath3003/squadlings/commit/89f3c14cceeb9e602378ec874e23ac307561c4c9) | 2026-10-11T07:48:00+05:30 | hack prep - 1 |
+| [d921724](https://github.com/amarnath3003/squadlings/commit/d9217241a93dbf6cad8742b29bcc3b46b93a2c70) | 2026-10-11T07:55:44+05:30 | docs: confirm team identity and contributor attribution |
+| [7a2e0e9](https://github.com/amarnath3003/squadlings/commit/7a2e0e9e09c970a6a414ab57fab8ca7fa058358c) | 2026-10-11T08:11:42+05:30 | feat: host React dashboard with authenticated laptop bridge |
+| [86a94d5](https://github.com/amarnath3003/squadlings/commit/86a94d50e955c777bcbfcfc60163bcb3d5028c59) | 2026-10-11T08:27:47+05:30 | docs: sharpen the project short description |

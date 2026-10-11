@@ -358,7 +358,7 @@ Built at the **DevDay Exchange Community Hackathon: Kochi** (10–11 October 202
 | | |
 | --- | --- |
 | **Project name** | SquadLings |
-| **Short description** | SquadLings turns one request into a coordinated team of AI browser agents. Led by Onyx, up to five agents research, compare and test websites in parallel, then bring their findings together in one answer with sources. Watch every browser live, guide the team through chat and take control whenever needed. |
+| **Short description** | SquadLings turns one request into a coordinated team of AI browser agents. Led by a master orchestrator, up to five agents research, compare and test websites in parallel, then bring their findings together in one answer with sources. Watch every browser live, guide the team through chat and take control whenever needed. |
 | **Team** | Vijay Anand ([@vijayanand1505](https://github.com/vijayanand1505)) · D Amarnath ([@amarnath3003](https://github.com/amarnath3003)) |
 | **Working demo** | Local: see [Quick start](#-quick-start). Free scripted demo: `node scripts/dev-mock-ui.ts --port 8796 --mcp-port 8795` |
 | **Technology stack** | Node.js 22.18+ and TypeScript (run directly by Node) · OpenAI Agents API (`gpt-6.1-sol`, `gpt-6-luna`) · Model Context Protocol SDK · Playwright Chromium · cloudflared · `ws` · zod · React 18, Vite, Motion and Zustand for the dashboard |
