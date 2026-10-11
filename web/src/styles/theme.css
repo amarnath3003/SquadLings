@@ -1,0 +1,11 @@
+/* The studio's components draw with its tokens (tokens.css). Point those at our dashboard's palette
+   (classic.css, from ui/app.css; --line and --muted come from there) so the characters' controls match the rest of the page. */
+:root {
+  --paper: #0a0a0b;
+  --surface: #1b1b1e;
+  --soft: #26262a;
+  --surface-hover: #2c2c31;
+  --line-strong: #4a4a52;
+  --ink: #ececf1;
+  font-family: system-ui, -apple-system, "Segoe UI", Inter, sans-serif;
+}

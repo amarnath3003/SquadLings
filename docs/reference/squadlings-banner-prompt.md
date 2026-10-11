@@ -1,5 +1,7 @@
 # SquadLings GitHub banner generation
 
+> Copied from [amarnath3003/SquadLings](https://github.com/amarnath3003/SquadLings) at `cd568c5`. Paths such as `dashboard/` and `packages/shared/` refer to that repository's layout; the matching code here is in `web/src/` and `web/shared/`.
+
 Mode: built-in image generation, refinement, and a subsequent brand-name correction. The initial prompts below record the historical spelling; the final edit corrects the brand to SquadLings. The user-provided image was a visual reference. Final asset: [squadlings-github-banner.png](../assets/squadlings-github-banner.png), 2172 × 724 pixels (3:1).
 
 ## Initial prompt

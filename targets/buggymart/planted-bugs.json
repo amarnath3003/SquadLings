@@ -1,0 +1,17 @@
+{
+  "app": "BuggyMart",
+  "version": 1,
+  "profile": "easy-demo",
+  "bugs": [
+    { "id": "BM-01", "title": "Ascending price sort is reversed", "category": "functional", "severity": "medium", "where": "/", "steps": ["Choose Price: low to high under Sort by."], "expected": "$9, $14, $35, $49, $59, $65.", "actual": "$65, $59, $49, $35, $14, $9." },
+    { "id": "BM-02", "title": "Negative quantities produce negative totals", "category": "data_integrity", "severity": "high", "where": "/cart", "steps": ["Add Nimbus Mug.", "Open Cart.", "Set quantity to -2 and blur the field."], "expected": "Reject negative quantity; preserve the previous valid quantity.", "actual": "Quantity is -2, subtotal is -$28, and total is -$23." },
+    { "id": "BM-03", "title": "Large lamp has missing content and an invalid price", "category": "content", "severity": "medium", "where": "/product/aurora-lamp", "steps": ["Open Aurora Lamp.", "Select Large."], "expected": "Product description remains visible; price is $69.", "actual": "Description becomes undefined and price becomes $NaN." },
+    { "id": "BM-04", "title": "Remove does not remove a cart item", "category": "functional", "severity": "high", "where": "/cart", "steps": ["Add an item.", "Open Cart.", "Click Remove."], "expected": "The item disappears and totals update.", "actual": "A success message appears, but the item and totals remain." },
+    { "id": "BM-05", "title": "Adding once inserts two units", "category": "data_integrity", "severity": "high", "where": "/ and /product/:id", "steps": ["Reset demo.", "Click Add to cart once for any product.", "Open Cart."], "expected": "One unit is added.", "actual": "Two units are added, although the notification says one." },
+    { "id": "BM-06", "title": "Empty checkout creates a successful order", "category": "validation", "severity": "high", "where": "/checkout", "steps": ["Reset demo.", "Open Cart, then Checkout.", "Fill all fields with fictional but valid details.", "Click Place demo order."], "expected": "Checkout is blocked until at least one item is in the cart.", "actual": "Confirmation reports success for an order with zero items and a $0 total." },
+    { "id": "BM-07", "title": "Category filter leaves unrelated products visible", "category": "functional", "severity": "medium", "where": "/search?category=Audio", "steps": ["Open the shop.", "Select Audio in Category."], "expected": "Only Pebble Speaker is listed.", "actual": "All six products remain, including Home and Desk products." },
+    { "id": "BM-08", "title": "Special-character search shows a failure page", "category": "functional", "severity": "high", "where": "/search", "steps": ["Search for 50% or 🍕."], "expected": "A normal results or no-results page.", "actual": "A simulated 500 Search failed page with a URIError stack trace. HTTP status remains 200." },
+    { "id": "BM-09", "title": "SAVE10 adds a surcharge instead of a discount", "category": "data_integrity", "severity": "high", "where": "/cart and /checkout", "steps": ["Add Nimbus Mug.", "Set quantity to 1 in Cart.", "Apply SAVE10."], "expected": "$14 minus $1.40 plus $5 shipping = $17.60.", "actual": "The page labels a $1.40 discount but adds it; total is $20.40." },
+    { "id": "BM-10", "title": "Nimbus Mug image is missing", "category": "visual", "severity": "low", "where": "/ and /product/nimbus-mug", "steps": ["Open the shop or Nimbus Mug details."], "expected": "A product illustration loads.", "actual": "The image request returns 404 and a broken image with alt text is visible." }
+  ]
+}

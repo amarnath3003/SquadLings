@@ -1,0 +1,197 @@
+/* The character studio's page-wide and tile-overlay rules for the live agents (from
+   external/amarnath-squadlings/dashboard/src/styles/app.css at 45f625f, unchanged): the effects canvas,
+   flights, Onyx (.master-character), and the cursor overlay drawn over each agent's frame
+   (.character-overlay, .actor-root, .target-box, .click-ripple, .trail-dot). Imported by studio/StudioFx. */
+html[data-hidden="true"] * {
+  animation-play-state: paused !important;
+}
+.effects-canvas,
+.flights-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+}
+.flight {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  will-change: transform;
+}
+.character-flight {
+  width: 44px;
+  height: 44px;
+  border-radius: 0;
+}
+.flight-count {
+  position: absolute;
+  top: -6px;
+  right: -7px;
+  font-size: 7px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 1px 3px;
+}
+
+/* The cursor overlay over an agent's frame (BotTile). */
+.character-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.actor-root {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+  pointer-events: auto;
+}
+.target-box {
+  position: absolute;
+  border: 1px solid;
+  border-radius: 3px;
+}
+.click-ripple {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 1px solid;
+  border-radius: 50%;
+  transform-origin: center;
+}
+.trail-dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  margin: -2px 0 0 -2px;
+}
+
+/* Onyx, the Master (MasterCharacter). */
+.master-character {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
+}
+.onyx-art {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.onyx-body {
+  transform-origin: 32px 32px;
+}
+.onyx-symbols {
+  transform-origin: 32px 30px;
+}
+.master-character[data-active="true"] .onyx-body {
+  animation: onyx-breathe 6s ease-in-out infinite;
+}
+.master-character[data-active="true"] .onyx-symbols {
+  animation: onyx-blink 6.4s linear infinite;
+}
+.master-character[data-active="true"][data-state="planning"] .onyx-body,
+.master-character[data-active="true"][data-state="classifying"] .onyx-body {
+  animation: onyx-think 4s ease-in-out infinite;
+}
+.master-character[data-active="true"][data-state="monitoring"] .onyx-face {
+  animation: onyx-watch 7s ease-in-out infinite;
+}
+.master-character[data-active="true"][data-state="receiving"] .onyx-body {
+  animation: onyx-nod 0.65s ease-in-out both;
+}
+.master-character[data-active="true"][data-state="needs you"] .onyx-body {
+  animation: onyx-ask 3s ease-in-out infinite;
+}
+.master-character[data-active="true"][data-state="merging"] .onyx-body {
+  animation: onyx-think 2.5s ease-in-out infinite reverse;
+}
+.master-character[data-active="true"][data-state="done"] .onyx-body {
+  animation: onyx-nod 0.8s ease-in-out both;
+}
+.master-character[data-state="failed"] .onyx-body,
+.master-character[data-state="failed"] .onyx-symbols {
+  animation: none;
+}
+@keyframes onyx-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-1px) scale(1.015, 1.025);
+  }
+}
+@keyframes onyx-blink {
+  0%,
+  42%,
+  45%,
+  100% {
+    transform: scaleY(1);
+  }
+  43.5% {
+    transform: scaleY(0.08);
+  }
+}
+@keyframes onyx-think {
+  0%,
+  100% {
+    transform: rotate(-3deg) translateY(0);
+  }
+  50% {
+    transform: rotate(3deg) translateY(-1px);
+  }
+}
+@keyframes onyx-watch {
+  0%,
+  15%,
+  100% {
+    transform: translateX(0);
+  }
+  35%,
+  48% {
+    transform: translateX(-2px);
+  }
+  70%,
+  85% {
+    transform: translateX(2px);
+  }
+}
+@keyframes onyx-nod {
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+  45% {
+    transform: translateY(3px) scaleY(0.96);
+  }
+  70% {
+    transform: translateY(-1px) scaleY(1.02);
+  }
+}
+@keyframes onyx-ask {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  35%,
+  70% {
+    transform: rotate(6deg);
+  }
+}

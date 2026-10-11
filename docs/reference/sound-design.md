@@ -1,5 +1,7 @@
 # SquadLings sound design
 
+> Copied from [amarnath3003/SquadLings](https://github.com/amarnath3003/SquadLings) at `cd568c5`. Paths such as `dashboard/` and `packages/shared/` refer to that repository's layout; the matching code here is in `web/src/` and `web/shared/`.
+
 The demo synthesizes sound locally with Web Audio: no microphone, speech service, downloaded clips, or new library. These are original electronic cartoon voices. Captions carry understandable task information.
 
 ## Controls and defaults

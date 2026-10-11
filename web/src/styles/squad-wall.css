@@ -1,0 +1,429 @@
+/* The agents' browsers in our theme (after studio-run.css, which keeps the studio's structure and the
+   character overlay). Calm cards on the dark wall: the agent's colour is an accent, not a frame. */
+
+#area.studio-area {
+  padding: 16px 18px 24px;
+}
+
+/* ── The grid: the tiles use the whole wall ── */
+
+.studio-area .tile-grid {
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 1500px;
+  margin: 0 auto;
+}
+.studio-area .tile-grid.count-1 {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 1100px;
+}
+/* An odd one out sits centred under the others. */
+.studio-area .tile-grid.count-3:not(.has-focus) > .bot-tile:last-child,
+.studio-area .tile-grid.count-5:not(.has-focus) > .bot-tile:last-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc(50% - 7px);
+}
+@container (min-width: 1400px) {
+  .studio-area .tile-grid.count-3:not(.has-focus),
+  .studio-area .tile-grid.count-5:not(.has-focus) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .studio-area .tile-grid.count-3:not(.has-focus) > .bot-tile,
+  .studio-area .tile-grid.count-5:not(.has-focus) > .bot-tile {
+    grid-column: span 2;
+  }
+  .studio-area .tile-grid.count-5:not(.has-focus) > .bot-tile:nth-child(n + 4) {
+    grid-column: span 3;
+  }
+  .studio-area .tile-grid.count-3:not(.has-focus) > .bot-tile:last-child,
+  .studio-area .tile-grid.count-5:not(.has-focus) > .bot-tile:last-child {
+    width: auto;
+    justify-self: stretch;
+  }
+}
+/* Focused: that browser gets the row; the others wait below as small screens. */
+.studio-area .tile-grid.has-focus {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.studio-area .tile-grid.has-focus > .tile-focused {
+  grid-column: 1 / -1;
+  order: -1;
+}
+.studio-area .tile-grid.has-focus > .bot-tile:not(.tile-focused) .tile-caption,
+.studio-area .tile-grid.has-focus > .bot-tile:not(.tile-focused) .activity-strip {
+  display: none;
+}
+@container (max-width: 700px) {
+  .studio-area .tile-grid,
+  .studio-area .tile-grid.has-focus {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .studio-area .tile-grid > .bot-tile:last-child {
+    width: auto !important;
+  }
+}
+
+/* ── A tile: a little game console per agent ──
+   A rounded body with a soft dotted face (the sticker dots), the agent's avatar in a coloured ring, the
+   browser set in a bezel, and its progress as XP pips in the agent's colour. */
+
+.studio-area .bot-tile {
+  position: relative;
+  border: 1.5px solid color-mix(in srgb, var(--bot-color) 26%, var(--line-2));
+  border-radius: 18px;
+  background:
+    radial-gradient(circle, #ffffff0b 1px, transparent 1.4px) 0 0 / 14px 14px,
+    linear-gradient(180deg, color-mix(in srgb, var(--bot-color) 7%, var(--panel)), var(--panel) 120px);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--bot-color) 22%, #000), 0 14px 34px #0006;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s, box-shadow 0.25s;
+}
+.studio-area .bot-tile::before {
+  content: none;
+}
+.studio-area .bot-tile:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--bot-color) 50%, var(--line-2));
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--bot-color) 30%, #000), 0 20px 44px #0008;
+}
+.studio-area .bot-tile.tile-focused {
+  transform: none;
+  border-color: color-mix(in srgb, var(--bot-color) 65%, var(--line-2));
+}
+.studio-area .status-waiting_user,
+.studio-area .status-paused {
+  border-color: var(--you);
+  animation: tile-call 2.2s ease-in-out infinite;
+}
+@keyframes tile-call {
+  50% {
+    box-shadow: 0 2px 0 var(--you-line), 0 0 0 5px color-mix(in srgb, var(--you) 18%, transparent), 0 14px 34px #0006;
+  }
+}
+.studio-area .status-failed,
+.studio-area .status-stopped {
+  border-color: var(--line-2);
+  box-shadow: 0 2px 0 #000, 0 14px 34px #0006;
+  filter: saturate(0.4);
+}
+.studio-area .status-finished {
+  border-color: color-mix(in srgb, var(--ok) 45%, var(--line-2));
+}
+
+.studio-area .tile-header {
+  height: 52px;
+  gap: 10px;
+  padding: 0 10px 0 10px;
+}
+.studio-area .tile-avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--bot-color) 16%, var(--raised));
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--bot-color) 55%, transparent);
+}
+.studio-area .tile-title {
+  display: grid;
+  gap: 0;
+  line-height: 1.2;
+  font-size: 14px;
+  color: var(--text);
+}
+.studio-area .tile-title strong {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.studio-area .tile-title .tile-role {
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.studio-area .tile-focus {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 10px;
+  color: var(--muted);
+}
+.studio-area .tile-focus:hover {
+  background: var(--raised-2);
+  color: var(--text);
+}
+.studio-area .status-pill {
+  height: 26px;
+  gap: 7px;
+  padding: 0 11px 0 9px;
+  border-radius: 999px;
+  background: var(--raised);
+  border: 1.5px solid var(--line-2);
+  color: #d6d6dc;
+  font-size: 12px;
+  font-weight: 650;
+}
+.studio-area .status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--faint);
+}
+.studio-area .status-working .status-pill,
+.studio-area .status-thinking .status-pill,
+.studio-area .status-starting .status-pill {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--bot-color) 45%, var(--line-2));
+}
+.studio-area .status-working .status-dot,
+.studio-area .status-thinking .status-dot,
+.studio-area .status-starting .status-dot {
+  background: var(--bot-color);
+  animation: status-hop 1.1s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+@keyframes status-hop {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  40% {
+    transform: translateY(-3px) scale(1.15, 0.9);
+  }
+}
+.studio-area .status-finished .status-pill {
+  color: var(--ok);
+  border-color: color-mix(in srgb, var(--ok) 40%, var(--line-2));
+}
+.studio-area .status-finished .status-dot {
+  background: var(--ok);
+}
+.studio-area .status-failed .status-pill {
+  color: var(--err);
+}
+.studio-area .status-failed .status-dot {
+  background: var(--err);
+}
+.studio-area .status-waiting_user .status-pill,
+.studio-area .status-paused .status-pill {
+  color: var(--you);
+  border-color: color-mix(in srgb, var(--you) 45%, var(--line-2));
+}
+.studio-area .status-waiting_user .status-dot,
+.studio-area .status-paused .status-dot {
+  background: var(--you);
+}
+
+/* The browser, set in a bezel. */
+.studio-area .viewport-shell {
+  margin: 0 10px;
+  border: 1.5px solid #000;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--bot-color) 18%, var(--line-2));
+}
+
+.studio-area .tile-caption {
+  padding: 10px 14px 6px;
+}
+.studio-area .tile-caption p {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text);
+}
+.studio-area .tile-caption > div {
+  align-items: center;
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: var(--faint);
+}
+.studio-area .tile-host {
+  font-family: var(--mono);
+  color: var(--muted);
+}
+.studio-area .tile-xp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 11px var(--mono);
+  color: var(--muted);
+}
+.studio-area .xp-pips {
+  display: inline-flex;
+  gap: 2px;
+}
+.studio-area .xp-pips i {
+  width: 6px;
+  height: 9px;
+  border-radius: 2px;
+  background: var(--line-2);
+  transition: background-color 0.3s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.studio-area .xp-pips i.on {
+  background: var(--bot-color);
+}
+.studio-area .xp-pips i.on:last-of-type,
+.studio-area .xp-pips i.on:has(+ i:not(.on)) {
+  transform: scaleY(1.25);
+}
+.studio-area .status-finished .xp-pips i.on {
+  background: var(--ok);
+}
+
+/* What it has done lately, as item slots. */
+.studio-area .activity-strip {
+  height: 34px;
+  padding: 0 10px 0 14px;
+  border-top: 0;
+  font-size: 11.5px;
+  color: var(--faint);
+}
+.studio-area .activity-strip > div span {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--raised);
+  border: 1px solid var(--line-2);
+  color: var(--muted);
+}
+.studio-area .activity-strip > span {
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bot-color) 14%, var(--raised));
+  color: var(--text);
+}
+.studio-area .activity-strip > span:empty {
+  display: none;
+}
+
+/* The character's name tag and bubbles, in our type. */
+.studio-area .name-pill {
+  font-size: 11px;
+  padding: 2px 8px;
+  background: var(--raised);
+  color: var(--text);
+}
+
+/* ── A human check, and you in control ── */
+
+.studio-area .tile-needs {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  z-index: 4;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  max-width: calc(100% - 24px);
+  padding: 6px 6px 6px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--you-line);
+  background: #1a1428f2;
+  color: var(--you-ink);
+  font-size: 12.5px;
+  white-space: nowrap;
+  box-shadow: 0 10px 28px #0009;
+  animation: needs-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.studio-area .tile-needs svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--you);
+}
+.studio-area .tile-needs span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.studio-area .tile-needs b {
+  color: var(--you-strong);
+}
+.studio-area .tile-needs button,
+.studio-area .tile-control button {
+  flex: none;
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--you);
+  color: #160e26;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.studio-area .tile-needs button:hover {
+  background: #cbb0ff;
+}
+@keyframes needs-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px) scale(0.96);
+  }
+}
+.studio-area .tile-control {
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  z-index: 4;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  max-width: calc(100% - 24px);
+  padding: 5px 5px 5px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bot-color) 22%, #0d0d10);
+  border: 1.5px solid var(--bot-color);
+  color: var(--text);
+  font-size: 12.5px;
+  white-space: nowrap;
+  box-shadow: 0 10px 28px #0009;
+}
+.studio-area .tile-control span:not(.tile-control-dot) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.studio-area .tile-control-dot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--bot-color);
+  animation: status-hop 1.1s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+.studio-area .tile-control button {
+  background: var(--text);
+  color: #111;
+}
+.studio-area .bot-tile:has(.tile-control) {
+  border-color: var(--bot-color);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--bot-color) 40%, #000), 0 0 0 4px color-mix(in srgb, var(--bot-color) 18%, transparent);
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-area .bot-tile,
+  .studio-area .status-dot,
+  .studio-area .tile-control-dot,
+  .studio-area .tile-needs {
+    animation: none !important;
+    transition: none;
+  }
+  .studio-area .bot-tile:hover {
+    transform: none;
+  }
+}
+
+/* ── The wall's head ── */
+
+.side #wall .wall-head {
+  height: 48px;
+  padding: 0 18px;
+}
+.side #wall .wall-head .title {
+  font-size: 14px;
+}

@@ -1,5 +1,7 @@
 # Character colours and design sources
 
+> Copied from [amarnath3003/SquadLings](https://github.com/amarnath3003/SquadLings) at `cd568c5`. Paths such as `dashboard/` and `packages/shared/` refer to that repository's layout; the matching code here is in `web/src/` and `web/shared/`.
+
 Originally fetched on **10 October 2026 (IST)**; the live website palette was fetched again and verified on **11 October 2026 (IST)**. The user selected the **current DevDay website** as the colour reference.
 
 | Source | Use |

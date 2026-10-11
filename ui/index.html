@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SquadLings</title>
+  <link rel="icon" href="/favicon.svg">
+  <link rel="stylesheet" href="/app.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+<div id="app" class="home">
+  <!-- The rail: new chat, and the chats you closed (open them again to read). -->
+  <nav id="rail" aria-label="Chats">
+    <button id="rail-home" class="rail-btn logo-btn" type="button" title="SquadLings"><span class="logo" aria-hidden="true"></span></button>
+    <button id="rail-new" class="rail-btn" type="button" title="New chat" aria-label="New chat">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z M13.5 7.5l3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>
+    </button>
+    <button id="rail-chats" class="rail-btn" type="button" title="Chats" aria-label="Chats" aria-expanded="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+    <span class="rail-spacer"></span>
+    <span id="tunnel" class="tunnel-dot" title="Tools: starting"></span>
+  </nav>
+
+  <aside id="history" aria-label="Chats" hidden>
+    <div class="history-head">
+      <b>Chats</b>
+      <button id="history-close" class="icon-btn" type="button" aria-label="Close">✕</button>
+    </div>
+    <button id="history-new" class="history-new" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z M13.5 7.5l3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      New chat
+    </button>
+    <div id="history-list" class="history-list"></div>
+  </aside>
+
+  <div id="shell">
+    <header id="top">
+      <div id="run-title" class="run-title"></div>
+      <div class="top-right">
+        <span id="run-status" class="pill" hidden></span>
+        <span id="run-timer" class="stat mono" hidden title="Time since the chat started"></span>
+        <span id="run-cost" class="stat mono" hidden></span>
+        <span id="tools-label" class="tools-label"></span>
+        <button id="end-chat" class="btn small danger" type="button" hidden title="Stop the agents and close their browsers. The chat stays under Chats.">End chat</button>
+      </div>
+    </header>
+
+    <main id="main">
+      <aside id="chat" aria-label="Chat with the Master">
+        <div class="chat-head">
+          <div class="master-id">
+            <span id="master-mark" class="master-mark" aria-hidden="true"></span>
+            <div><b>Master</b><small id="master-sub">Your one line to the squad</small></div>
+          </div>
+          <button id="hide-chat" class="icon-btn" type="button" title="Hide the chat (the agents get the whole screen)" aria-label="Hide the chat">⟨</button>
+        </div>
+
+        <section id="home" aria-label="New chat">
+          <h1>What should the squad do?</h1>
+          <p class="sub">The Master researches your task and splits it between up to five agents. You watch them work in their own browsers and chat with the Master.</p>
+          <div id="home-slot"></div>
+        </section>
+
+        <div id="thread" class="thread" aria-live="polite"></div>
+        <button id="jump" class="jump" type="button" hidden>New messages ↓</button>
+        <div id="activity" class="activity"></div>
+        <div id="chat-slot"></div>
+        <div id="closed-bar" class="closed-bar" hidden></div>
+        <p id="footnote" class="footnote">Agents browse real sites in their own browsers. They never sign in, pay or solve CAPTCHAs; those steps are left for you.</p>
+
+        <form id="composer" autocomplete="off">
+          <div class="pillbox">
+            <button type="button" id="opts-btn" class="pb-icon" title="More options" aria-label="More options" aria-expanded="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+            <textarea id="input" rows="1" aria-label="Message"></textarea>
+            <div class="pb-chips">
+              <button type="button" id="agents-chip" class="chip" aria-expanded="false" title="How many agents the Master may use">
+                <span class="agent-dots" id="agent-dots" aria-hidden="true"></span><span id="agents-val">5 agents</span>
+              </button>
+              <button type="button" id="effort-chip" class="chip" aria-expanded="false" title="How hard each agent thinks before acting">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 16a7.5 7.5 0 1 1 15 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path id="effort-needle" d="M12 16l3-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                <span id="effort-val">Medium</span>
+              </button>
+            </div>
+            <button id="send" class="send" type="submit" aria-label="Send">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+
+          <div id="agents-pop" class="pop" hidden>
+            <div class="pop-head"><b id="agents-pop-val">5 agents</b><span>the Master uses as many as the task needs</span></div>
+            <input id="o-bots" type="range" min="1" max="5" step="1" aria-label="Agents">
+            <div class="pop-avatars" id="agent-avatars"></div>
+          </div>
+          <div id="effort-pop" class="pop" hidden>
+            <div class="pop-head"><b id="effort-pop-val">Medium</b><span id="effort-desc"></span></div>
+            <input id="o-effort" type="range" min="0" max="4" step="1" aria-label="Agent effort">
+            <div class="pop-scale"><span>Faster, cheaper</span><span>More careful, slower</span></div>
+          </div>
+          <div id="opts" class="pop opts" hidden>
+            <div class="pop-head"><b>More options</b></div>
+            <div class="fields">
+              <label class="field">Master model<select id="o-masterModel"></select></label>
+              <label class="field">Agent model<select id="o-botModel"></select></label>
+              <label class="field">Master effort<select id="o-masterEffort"><option value="">Model default</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+              <label class="field">Actions per agent<input id="o-maxActions" type="number" min="5" max="200" step="5"></label>
+              <label class="field">Time limit (minutes)<input id="o-timeoutMin" type="number" min="1" max="120"></label>
+              <label class="field wide">Sites every agent may open<input id="o-allow" type="text" placeholder="e.g. example.com, docs.example.org (optional)"></label>
+              <label class="check"><input id="o-webSearch" type="checkbox"> Agents can use web search <small>(else they search in the browser)</small></label>
+              <label class="check"><input id="o-allowDirect" type="checkbox"> The Master may answer simple questions itself <small>(no agents)</small></label>
+              <label class="check"><input id="o-fresh" type="checkbox"> Clean browser profiles <small>(forget cookies and solved checks)</small></label>
+            </div>
+          </div>
+          <div class="hint"><span id="hint"></span></div>
+        </form>
+      </aside>
+
+      <button id="chat-rail" class="chat-rail" type="button" hidden title="Show the chat">
+        <span class="master-mark" aria-hidden="true"></span><span>Chat</span><span id="unread" class="unread" hidden></span>
+      </button>
+      <div id="splitter" role="separator" aria-orientation="vertical" aria-label="Resize the chat" tabindex="0"></div>
+
+      <section id="wall" aria-label="The agents' browsers">
+        <div class="wall-head">
+          <span class="title">Squad</span>
+          <span class="counts" id="counts"></span>
+          <span class="spacer"></span>
+          <span id="wall-hint"></span>
+          <button id="to-grid" class="btn small ghost" type="button" hidden>All agents <kbd>Esc</kbd></button>
+        </div>
+        <div id="area">
+          <div id="grid"></div>
+          <div id="stage">
+            <div id="stage-main">
+              <div id="stage-slot"></div>
+              <div id="detail"></div>
+            </div>
+            <div id="strip"></div>
+          </div>
+        </div>
+        <div id="bench"></div>
+      </section>
+    </main>
+  </div>
+  <div id="banner" role="status" hidden></div>
+</div>
+</body>
+</html>

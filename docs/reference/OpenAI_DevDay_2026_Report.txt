@@ -1,0 +1,236 @@
+OPENAI DEVDAY 2026 - FULL REPORT OF ANNOUNCEMENTS
+Compiled: October 10, 2026
+
+EVENT
+Date: Tuesday, September 29, 2026
+Venue: Fort Mason Center, San Francisco
+Keynote: Sam Altman
+OpenAI called it its biggest DevDay yet, with more than 20 announcements across models, the API, Codex and ChatGPT.
+
+Note on sources: openai.com blocked direct page access, so this report is built from OpenAI's developer community announcement thread (which mirrors the official recap) plus press and analyst coverage. All benchmark and speed numbers are OpenAI's own claims. Items with conflicting or weak sourcing are flagged.
+
+
+TOP 8 TAKEAWAYS
+1. GPT-6.1 Sol: near-Astra coding and computer use at one-fifth of Astra's price. API id gpt-6.1-sol.
+2. Ultrafast: new paid speed tier, up to 6x faster in the API and 8x in Codex, at 6x the price. Live for GPT-6 Astra now.
+3. Agents API (public beta): the Codex agent harness as a managed service, now with computer use.
+4. Decisions API: fast classification and routing on GPT-6 Luna. Previewed at DevDay, public beta on Oct 6.
+5. Dots: always-on personal agents, each with its own cloud computer. This was the headline consumer launch.
+6. Codex: Codex Cloud, a refreshed CLI with voice, Code Review, and Codex Security Cloud.
+7. ChatGPT Space, Pages and collaborative slides: shared workspaces where people and agents work together.
+8. New Pro 500 plan ($500/month) and the Pro 200 plan reopened with a smaller allowance for new subscribers.
+
+
+------------------------------------------------------------
+1. MODELS
+------------------------------------------------------------
+
+GPT-6.1 SOL  (NEW - available now)
+- An upgrade to GPT-6 Sol. It comes close to GPT-6 Astra on agentic coding, computer use and professional work.
+- API model id: gpt-6.1-sol
+- Price per 1M tokens: $2 input, $0.10 cached input, $10 output. Cached input is half the GPT-6 Sol rate of $0.20.
+- Batch and Flex price: $1 input, $5 output.
+- These rates apply to prompts up to 272K tokens. Above that, input rates double and output rises 50%.
+- EU data residency adds 10% ($2.20 input, $11 output).
+- Available in the API, ChatGPT Work and Codex on Plus, Pro, Business, Enterprise and Edu. Not yet in regular ChatGPT chat.
+- Benchmarks reported by OpenAI:
+    DeepSWE v1.1, high effort: 75.2% at about $0.65 per task. Astra scores 74.1% at about $4.43 per task.
+    DeepSWE v1.1, low effort: 64.4%, up from 37.2% for GPT-6 Sol at about the same cost.
+    OSWorld 2.0 (offline), max effort: 71.4. GPT-6 Sol scores 64.4 and Astra scores 73.5.
+    Still behind Astra on AutomationBench (-5.3 points) and Terminal-Bench Science (-11.1 points).
+    OpenAI still recommends Astra for the hardest scientific work.
+
+ULTRAFAST  (NEW speed tier)
+- Up to 8x faster token generation in Codex (about 300 tokens/sec) and up to 6x faster in the API.
+- Costs 6x the standard rate. GPT-6 Astra Ultrafast is $60 input and $300 output per 1M tokens.
+- GPT-6 Astra Ultrafast is live now:
+    In the API for all users, at low rate limits (Tiers 1-3: 500K tokens per minute).
+    In ChatGPT Work and Codex on Pro 500 and Enterprise.
+- In ChatGPT and Codex, Ultrafast uses up plan limits 8x faster than standard.
+- GPT-6.1 Sol Ultrafast is "coming soon", with no date or price yet.
+- Not available with EU data residency.
+- Note: the speedups measure token generation, not end-to-end task time.
+
+CURRENT API PRICE LIST (per 1M tokens: input / cached input / output)
+- GPT-6 Astra:   $10 / $1 / $50
+- GPT-6.1 Sol:   $2 / $0.10 / $10
+- GPT-6 Sol:     $2 / $0.20 / $10
+- GPT-6 Luna:    $0.10 / $0.01 / $0.50
+Context: the GPT-6 family launched before DevDay. Astra came out on Sep 3, and Sol and Luna on Sep 22.
+Caching: cache writes cost about 25% more than standard input. Community members report a default 30-minute cache retention window, so long pauses between turns can raise input costs.
+
+
+------------------------------------------------------------
+2. API AND PLATFORM
+------------------------------------------------------------
+
+AGENTS API  (Public beta)
+- OpenAI's Codex agent harness, offered as a managed service. OpenAI handles sessions, orchestration, memory, context compaction and recovery. You supply the tools and choose the execution environment.
+- Agents can run code, edit files, connect to MCP servers, call tools, use tool search and hand work to other agents (multi-agent).
+- NEW AT DEVDAY: computer use. Agents can operate websites and apps through a browser hosted by OpenAI, and developers can follow session events.
+- Also available inside Codex and ChatGPT Work on Pro 500 and Enterprise.
+- No pricing has been published.
+- One report says the beta first opened on Sep 10, and DevDay added computer use and the broader presentation.
+
+DECISIONS API  (Limited preview at DevDay, then PUBLIC BETA on Oct 6, 2026)
+- Real-time classification and routing. You define questions with fixed answers, and it returns one of three output types:
+    Predicates: how likely something is to be true
+    Choices: which predefined option fits best
+    Scores: where the input falls on a numeric range
+- Endpoint: POST /v1/decisions. It runs only on GPT-6 Luna.
+- Input can be text, images or both. Images must be inline base64 data URLs.
+- Price: $0.10 per 1M input tokens. Output and cache tokens are not billed.
+- OpenAI claims it is about 10x faster than the Responses API.
+- Supports Zero Data Retention, is HIPAA eligible, and offers US and EU (EEA/Switzerland) data residency.
+- General availability is expected "in the coming weeks".
+
+BEDROCK MANAGED AGENTS, POWERED BY OPENAI  (with Amazon)
+- OpenAI's agent harness running natively on AWS. Inference runs on Bedrock, data stays in AWS, and agents can use AWS resources.
+
+PRIVATE INTELLIGENCE  (Enterprise, sold through sales)
+- Zero Data Retention with Private Safety Processing: safety reviews are automated and OpenAI staff cannot access the content.
+- Private Inference: confidential computing with verifiable controls. Preview planned for fall 2026.
+
+PERFORMANCE
+- The community recap reports 45% lower API time to first token and 30%+ faster tool calls and workflows. Not independently confirmed.
+
+
+------------------------------------------------------------
+3. CODEX
+------------------------------------------------------------
+
+CODEX CLOUD
+- Run Codex tasks remotely from any device. Tasks keep running after you close your laptop.
+- Teams can reuse environments that carry approved settings and permissions.
+- Plans: Plus, Pro, Business, Edu, Healthcare, Enterprise.
+
+CODEX CLI REFRESH  (All plans)
+- Two-way voice control of tasks.
+- New /agents view for running and managing several tasks at once.
+- Better prompt editing, session resume, worktree workflows and a cleaner UI.
+
+CODE REVIEW  (All plans, in the ChatGPT desktop app)
+- Summaries, diff exploration and questions about changes, for GitHub PRs and GitLab MRs.
+- Optional automatic reviews that run in the cloud.
+
+CODEX SECURITY CLOUD  (Research preview)
+- Scans whole GitHub repos on demand or on a schedule, and watches new commits.
+- Investigates findings, removes duplicates and prepares fixes in the cloud.
+- Includes access to the Daybreak Blue models without a separate Daybreak application.
+- Plans: Pro, Business, Enterprise, Edu. Works on desktop and web.
+
+
+------------------------------------------------------------
+4. DOTS - ALWAYS-ON PERSONAL AGENTS  (headline launch)
+------------------------------------------------------------
+- Persistent agents powered by GPT-6 Astra. Each dot has its own cloud computer and browser.
+- They keep context between conversations, juggle several ongoing projects, and can do background research on their own. That background research uses read-only tools, and any action follows your permission and approval rules.
+- Connect to more than 4,000 apps through plugins.
+- Reachable in ChatGPT (web, mobile, desktop), Slack and Microsoft Teams, including by voice call.
+- Coming later: texting your dot, and teams of dots.
+- Rollout (gradual):
+    Pro: rolling out now, except in the EEA, Switzerland and the UK
+    Business Premium: rolling out now
+    Enterprise, Edu, Healthcare: beta that an admin must turn on (off by default)
+- Cost: your first dot is included. Chatting with it does not count against usage limits, but Work and Codex tasks it runs do use your plan allowance.
+- SPECIALIST DOTS (Enterprise preview): dots given a specific role in an organization, each with its own identity, credentials and system access. Early pilots cover defined workflows. A Microsoft Agent 365 integration is planned for governance and security.
+- Sources disagree on which plans get dots at launch. Check OpenAI's help article for your plan.
+
+
+------------------------------------------------------------
+5. CHATGPT COLLABORATION
+------------------------------------------------------------
+
+CHATGPT SPACE  (Pro, Business, Enterprise)
+- A shared workspace for teammates, ChatGPT and dots, holding files and project context. Dots can organize it for you.
+- Full features on desktop and web. On mobile you can find, read and share now; creating and editing are coming soon.
+
+PAGES  (Pro, Business, Enterprise)
+- A new document type that people and agents edit together. Anything ChatGPT can do works on a Page, including writing, research, charts, images and interactive visualizations.
+
+COLLABORATIVE SLIDES  (Coming in the next few weeks; Pro, Business, Enterprise)
+- Teammates and agents edit at the same time and can comment. Export to PowerPoint or Google Slides.
+
+TEAMS AND TEAM TASKS  (Business, Enterprise)
+- Share pages, slides, plugins and spreadsheets as a team.
+- Recurring tasks can run on a schedule or be triggered by events such as a new email or Slack message.
+
+@CHATGPT IN SLACK AND MICROSOFT TEAMS  (Business, Enterprise)
+- Mention @ChatGPT in a channel, thread or DM. It uses connected tools with your permissions.
+- Teammates without a ChatGPT license can continue the conversation.
+
+MEETINGS PLUGIN  (Beta on macOS for Pro and Business; Enterprise coming soon)
+- Takes meeting notes and saves summaries and action items to Space. Audio is deleted once the notes are ready.
+
+SHAREABLE PROFILES  (Business, Enterprise)
+- A page that collects your Sites and plugins so others can find and reuse them.
+
+
+------------------------------------------------------------
+6. PLUGINS, DISTRIBUTION AND ECOSYSTEM
+------------------------------------------------------------
+- PLUGIN EXTENSIONS: plugins can add sidebar entries, interactive panels and viewers for their file types. Figma and Adobe demoed integrations.
+- PLUGIN CREATOR AND NEW SUBMISSION FLOW: review tracking, clearer feedback, easier updates to published plugins, and better discovery, including recommendations during conversations.
+- SITES CAN HOST PLUGINS: each teammate uses the app with their own data and permissions. Plans: Business, Enterprise, Healthcare, Edu.
+- MCP EVENTS: supports the proposed MCP Events spec, so a connected app can trigger plugin automations.
+- SIGN IN WITH CHATGPT: log in to other products with your ChatGPT account. Plus and Pro users can spend their plan allowance in 16 launch partners and set a limit per tool. Named partners include Devin (Cognition), Notion, Vercel, T3, OpenClaw and Dactyl.
+- OPENAI MARKETPLACE: eligible enterprise customers can put part of their OpenAI spend commitment toward partner software. There are 32 launch partners, including Adobe, Figma, Salesforce, HubSpot, Sierra and Decagon, plus Baseten for open-source models.
+
+
+------------------------------------------------------------
+7. CHATGPT PLANS AND PRICING
+------------------------------------------------------------
+- PRO 500 (NEW): $500/month with 25x the Plus usage allowance. The only Pro tier that includes Ultrafast. Available now.
+- PRO 200 (REOPENED Sep 29, after sign-ups were paused on Sep 10): new subscribers get a smaller allowance. Press reports say 10x Plus, down from 20x, but OpenAI has not confirmed the figure. Existing subscribers keep their old allowance until Oct 29, 2026.
+- Full plan ladder:
+    Plus: $20, 1x
+    Pro 100: $100, 5x
+    Pro 200: $200, reduced for new subscribers
+    Pro 500: $500, 25x
+    Business Premium: $125 per user
+- Pro plans have no annual billing option.
+
+
+------------------------------------------------------------
+8. LOWER-CONFIDENCE ITEMS (reported, not well confirmed)
+------------------------------------------------------------
+- A worldwide usage-limit reset was reportedly announced at the end of the keynote. Only the community thread mentions it.
+- An "OpenClaw enterprise harness" was briefly mentioned, with few details.
+- OpenAI repeated its claim of reaching an "automated research intern" milestone. This is the company's own claim.
+- On the same day, OpenAI published a policy paper, "Towards safety cases for frontier AI training". It is not a product launch.
+
+
+------------------------------------------------------------
+9. WHAT'S COMING NEXT / DATES TO WATCH
+------------------------------------------------------------
+- Oct 16 to Oct 28: DevDay Exchange events in Bengaluru (Oct 16), Tokyo (Oct 20), Seoul (Oct 22), Berlin (Oct 26) and Paris (Oct 28).
+- Oct 29, 2026: existing Pro 200 subscribers lose their old allowance.
+- Coming soon, no date yet:
+    GPT-6.1 Sol Ultrafast
+    Decisions API general availability
+    Collaborative slides
+    Private Inference preview
+    Texting dots, and teams of dots
+    Space editing on mobile
+    Meetings plugin for Enterprise
+
+
+------------------------------------------------------------
+SOURCES
+------------------------------------------------------------
+Official recap (blocked to direct fetch): https://openai.com/index/devday-2026-recap/
+OpenAI Community - DevDay 2026 announcements and developer resources: https://community.openai.com/t/devday-2026-announcements-and-developer-resources/1402006
+Agentpedia - everything announced: https://agentpedia.codes/blog/openai-devday-2026-everything-announced
+RuntimeWire - everything announced at the keynote: https://runtimewire.com/article/everything-openai-announced-at-the-devday-2026-keynote
+Pricing analysis (Szymon Paluch): https://szymonpaluch.com/blog/posts/gpt-6-1-sol-ultrafast
+GPT-6.1 Sol benchmarks (Vellum): https://vellum.ai/blog/gpt-6-1-sol-benchmarks-explained
+GPT-6.1 Sol coverage (AI Catchup): https://aicatchup.com/news/openai-gpt-6-1-sol
+GPT-6.1 Sol coverage (ProPakistani): https://propakistani.pk/2026/09/30/gpt-6-1-sol-brings-astra-level-performance-at-5x-lower-cost/
+Dots coverage (Let's Data Science): https://letsdatascience.com/news/openai-introduces-dots-always-on-ai-agents-at-devday-2026-2ced4872
+Dots coverage (The New Stack): https://thenewstack.io/openai-dots-gpt6-agents/
+Dots coverage (BetaNews): https://betanews.com/article/openai-dots-agents-chatgpt/
+Decisions API public beta (AI Weekly): https://aiweekly.co/alerts/openai-launches-decisions-api-public-beta-on-gpt-6-luna
+Decisions API public beta (Let's Data Science): https://letsdatascience.com/news/openai-opens-decisions-api-public-beta-b69a1e40
+Decisions API (ProPakistani): https://propakistani.pk/2026/10/07/openai-launches-decisions-api-with-up-to-10x-faster-responses/
+Event details (Mac Observer): https://macobserver.com/news/openai-devday-2026-keynote-time-schedule-and-what-developers-should-expect
+DevDay preview and pre-event timeline (Developers Digest): https://www.developersdigest.tech/blog/openai-devday-2026-what-to-expect

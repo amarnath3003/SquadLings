@@ -1,0 +1,761 @@
+/* The studio's run screen ("Squad in action"), copied from external/amarnath-squadlings/dashboard/src/styles/app.css
+   (tile grid, BotTile, Onyx's card, the shared board, the needs-you card), on our tokens (theme.css), plus how it
+   sits in our #wall and our takeover pieces (bottom). */
+.icon-button {
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px;
+  border-radius: 4px;
+}
+
+.icon-button:hover {
+  background: var(--soft);
+}
+
+.section-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  color: var(--ink);
+}
+
+.master-character {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.onyx-art {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.onyx-body {
+  transform-origin: 32px 32px;
+}
+
+.onyx-symbols {
+  transform-origin: 32px 30px;
+}
+
+.master-character[data-active="true"] .onyx-body {
+  animation: onyx-breathe 6s ease-in-out infinite;
+}
+
+.master-character[data-active="true"] .onyx-symbols {
+  animation: onyx-blink 6.4s linear infinite;
+}
+
+.master-character[data-active="true"][data-state="planning"] .onyx-body,
+.master-character[data-active="true"][data-state="classifying"] .onyx-body {
+  animation: onyx-think 4s ease-in-out infinite;
+}
+
+.master-character[data-active="true"][data-state="monitoring"] .onyx-face {
+  animation: onyx-watch 7s ease-in-out infinite;
+}
+
+.master-character[data-active="true"][data-state="receiving"] .onyx-body {
+  animation: onyx-nod 0.65s ease-in-out both;
+}
+
+.master-character[data-active="true"][data-state="needs you"] .onyx-body {
+  animation: onyx-ask 3s ease-in-out infinite;
+}
+
+.master-character[data-active="true"][data-state="merging"] .onyx-body {
+  animation: onyx-think 2.5s ease-in-out infinite reverse;
+}
+
+.master-character[data-active="true"][data-state="done"] .onyx-body {
+  animation: onyx-nod 0.8s ease-in-out both;
+}
+
+.master-character[data-state="failed"] .onyx-body,
+.master-character[data-state="failed"] .onyx-symbols {
+  animation: none;
+}
+
+.onyx-intro {
+  margin: 10px 0 18px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+@keyframes onyx-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-1px) scale(1.015, 1.025);
+  }
+}
+
+@keyframes onyx-blink {
+  0%,
+  42%,
+  45%,
+  100% {
+    transform: scaleY(1);
+  }
+  43.5% {
+    transform: scaleY(0.08);
+  }
+}
+
+@keyframes onyx-think {
+  0%,
+  100% {
+    transform: rotate(-3deg) translateY(0);
+  }
+  50% {
+    transform: rotate(3deg) translateY(-1px);
+  }
+}
+
+@keyframes onyx-watch {
+  0%,
+  15%,
+  100% {
+    transform: translateX(0);
+  }
+  35%,
+  48% {
+    transform: translateX(-2px);
+  }
+  70%,
+  85% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes onyx-nod {
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+  45% {
+    transform: translateY(3px) scaleY(0.96);
+  }
+  70% {
+    transform: translateY(-1px) scaleY(1.02);
+  }
+}
+
+@keyframes onyx-ask {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  35%,
+  70% {
+    transform: rotate(6deg);
+  }
+}
+
+.primary-button,
+.outline-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+  border-radius: 5px;
+}
+
+.primary-button {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.primary-button:hover {
+  background: #cccccc;
+}
+
+.outline-button {
+  background: transparent;
+  border: 1px solid var(--line);
+}
+
+.outline-button:hover {
+  background: var(--surface);
+}
+
+.run-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 20px;
+  align-items: start;
+}
+
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  align-items: start;
+}
+
+.tile-grid.count-1 {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.tile-grid.count-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tile-grid.count-2 > .master-card,
+.tile-grid.count-3 > .master-card {
+  grid-column: 1/-1;
+}
+
+.tile-grid.count-5 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tile-grid.has-focus > .tile-focused {
+  grid-column: 1/-1;
+  order: -1;
+}
+
+.bot-tile {
+  border: 1px solid var(--bot-color);
+  border-radius: 6px;
+  background: var(--surface);
+  overflow: hidden;
+  min-width: 0;
+}
+
+.tile-header {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 10px;
+}
+
+.tile-title {
+  font-size: 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.tile-title strong {
+  font-weight: 500;
+}
+
+.tile-title span {
+  font-size: 8px;
+  color: var(--muted);
+}
+
+.tile-focus {
+  padding: 3px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 7px;
+  white-space: nowrap;
+  color: var(--ink);
+  background: var(--soft);
+  border-radius: 3px;
+  padding: 4px 5px;
+}
+
+.viewport-shell {
+  background: var(--soft);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+
+.tile-viewport {
+  aspect-ratio: 16/10;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  isolation: isolate;
+}
+
+.frame-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.character-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.actor-root {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+  pointer-events: auto;
+}
+
+.target-box {
+  position: absolute;
+  border: 1px solid;
+  border-radius: 3px;
+}
+
+.click-ripple {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 1px solid;
+  border-radius: 50%;
+  transform-origin: center;
+}
+
+.trail-dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  margin: -2px 0 0 -2px;
+}
+
+.tile-caption {
+  padding: 10px;
+}
+
+.tile-caption p {
+  font-size: 9px;
+  line-height: 1.4;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.tile-caption > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  margin-top: 8px;
+  font-size: 7px;
+  color: var(--muted);
+}
+
+.tile-host {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.activity-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 9px;
+  border-top: 1px solid var(--line);
+  height: 25px;
+  font-size: 6px;
+  color: var(--muted);
+}
+
+.activity-strip > div,
+.activity-strip > span {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.status-failed,
+.status-stopped {
+  border-style: dashed;
+  border-color: var(--line);
+}
+
+.failed-veil {
+  position: absolute;
+  inset: 0;
+  background: var(--surface);
+  z-index: -1;
+}
+
+.status-waiting_user {
+  border-width: 2px;
+}
+
+.status-paused {
+  border-width: 3px;
+}
+
+.phone-shell {
+  height: 225px;
+  display: flex;
+  justify-content: center;
+  padding: 7px;
+}
+
+.phone-screen {
+  width: auto;
+  height: 100%;
+  aspect-ratio: 390/844;
+  border: 3px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.master-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 19px;
+  min-width: 0;
+}
+
+.master-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.master-card-top > div:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.master-card-top strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.master-card-top span:not(.micro-tag) {
+  font-size: 8px;
+  color: var(--muted);
+}
+
+.micro-tag {
+  font-size: 6px;
+  letter-spacing: 0.8px;
+  margin-left: auto;
+  color: var(--muted);
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.master-description {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 19px 0 15px;
+}
+
+.master-roster {
+  display: grid;
+  gap: 11px;
+}
+
+.roster-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+}
+
+.roster-row > div:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+
+.roster-row strong {
+  font-size: 9px;
+  font-weight: 500;
+  display: block;
+}
+
+.roster-row strong span {
+  font-size: 8px;
+  color: var(--muted);
+}
+
+.roster-row small {
+  display: block;
+  font-size: 7px;
+  color: var(--muted);
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.roster-progress {
+  height: 2px;
+  background: var(--soft);
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.roster-progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left;
+}
+
+.roster-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+}
+
+.master-bottom {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  margin-top: 16px;
+  padding-top: 12px;
+  font-size: 8px;
+  color: var(--muted);
+}
+
+.master-bottom > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.master-bottom strong {
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.run-sidebar {
+  display: grid;
+  gap: 16px;
+}
+
+.empty-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 25px 0 10px;
+  color: var(--muted);
+}
+
+.empty-board p {
+  text-align: center;
+  font-size: 9px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.board-note {
+  display: flex;
+  align-items: start;
+  gap: 7px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 9px;
+}
+
+.board-note:last-child {
+  border-bottom: 0;
+}
+
+.note-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.board-note strong {
+  display: block;
+  font-size: 9px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.board-note span:not(.note-dot) {
+  display: block;
+  color: var(--muted);
+  font-size: 7px;
+  margin-top: 5px;
+}
+
+.approval-card {
+  background: var(--warm-soft);
+  border: 1px solid var(--line);
+  padding: 16px;
+  border-radius: 6px;
+}
+
+.approval-card > div:first-child {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 10px;
+}
+
+.approval-card h4 {
+  font-size: 12px;
+  font-weight: 500;
+  margin: 14px 0 10px;
+}
+
+.approval-card p {
+  font-size: 9px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.approval-buttons {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.approval-buttons .primary-button {
+  padding: 9px;
+  font-size: 8px;
+}
+
+.quiet-button {
+  background: none;
+  font-size: 9px;
+}
+
+.roster-row {
+  position: relative;
+}
+
+.roster-flash {
+  position: absolute;
+  inset: -4px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.bench-row {
+  padding-top: 14px;
+  margin-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 8px;
+  color: var(--muted);
+}
+
+.bench-row > div {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.bench-row small {
+  display: block;
+  text-align: center;
+  margin-top: 5px;
+}
+
+/* Keep operational copy readable when five tiles share the laptop screen. */
+.tile-title {
+  font-size: 11px;
+}
+
+.tile-title span {
+  font-size: 9px;
+}
+
+.status-pill {
+  font-size: 9px;
+}
+
+.tile-caption p {
+  font-size: 10px;
+}
+
+.tile-caption > div {
+  font-size: 9px;
+}
+
+.activity-strip {
+  font-size: 8px;
+}
+
+.roster-row strong {
+  font-size: 10px;
+}
+
+.roster-row small {
+  font-size: 9px;
+}
+
+.master-bottom {
+  font-size: 9px;
+}
+
+.board-note strong {
+  font-size: 10px;
+}
+
+.board-note span:not(.note-dot) {
+  font-size: 8px;
+}
+
+/* ── In our #wall ── */
+
+.board-panel { border: 1px solid var(--line); border-radius: 6px; padding: 17px; background: var(--surface); }
+
+#area.studio-area { overflow-y: auto; container-type: inline-size; }
+.studio-area .run-layout { align-items: start; }
+.studio-area .run-sidebar { position: sticky; top: 0; }
+.studio-area .bot-tile:focus { outline: none; }
+@container (max-width: 950px) {
+  .tile-grid.count-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container (max-width: 860px) {
+  .studio-area .run-layout { grid-template-columns: minmax(0, 1fr); }
+  .studio-area .run-sidebar { position: static; }
+}
+@container (min-width: 1500px) {
+  .studio-area .run-layout { grid-template-columns: minmax(0, 1fr) 280px; }
+}
+
+/* ── Takeover and human checks on a studio tile (classic.css .control-bar / .needs look) ── */
+
+.bot-tile { --c: var(--bot-color); --on-c: #fff; }
+.bot-tile[data-tile="bot3"], .bot-tile[data-tile="bot5"] { --on-c: #111; }
+.tile-viewport .takeover-capture { position: absolute; inset: 0; z-index: 3; cursor: default; }
+.tile-viewport .control-bar { display: flex; z-index: 4; }
+.tile-viewport .needs { display: flex; z-index: 3; }
+.approval-card { border-color: var(--bot-color, var(--line)); }
+
+/* The studio stretched ".roster-row > div:nth-child(2)" (the text); while a report's flash is the first
+   child, that is the character instead, and the row jumps right. Stretch the text by what it is. */
+.roster-row > .character {
+  flex: none;
+}
+.roster-row > div:has(> strong) {
+  flex: 1;
+  min-width: 0;
+}

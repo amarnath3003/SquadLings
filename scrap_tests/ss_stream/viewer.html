@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Live View</title>
+<style>
+  :root { --bg: #f6f6f4; --panel: #ffffff; --ink: #1d1d1b; --muted: #6b6b66; --line: #e2e1dc; --accent: #2f6fed; --warn: #b5590b; --ok: #1f8a4c; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #141413; --panel: #1e1e1c; --ink: #ecebe6; --muted: #9a9993; --line: #33332f; --accent: #7aa5ff; --warn: #f0a050; --ok: #5fcf8c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 16px; margin: 0; }
+  #status { color: var(--muted); }
+  #status.live::before { content: "● "; color: #d33; }
+  main { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); gap: 16px; padding: 16px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+  .panel h2 { font-size: 13px; margin: 0; padding: 8px 12px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 8px; }
+  .panel h2 span { color: var(--muted); font-weight: 400; }
+  .screen { aspect-ratio: 1348 / 926; background: #000; display: grid; place-items: center; }
+  .screen img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .screen .empty { color: #888; padding: 24px; text-align: center; }
+  .caption { padding: 8px 12px; min-height: 3.2em; border-top: 1px solid var(--line); }
+  .caption .age { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .caption .stale { color: var(--warn); }
+  #controls { display: none; gap: 10px; align-items: center; padding: 0 16px 8px; flex-wrap: wrap; }
+  #controls input[type=range] { flex: 1; min-width: 200px; }
+  button, select { font: inherit; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+  #log { margin: 0 16px 24px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; max-height: 40vh; overflow: auto; }
+  #log div { padding: 2px 0; border-bottom: 1px dashed var(--line); }
+  #log .t { color: var(--muted); font-variant-numeric: tabular-nums; display: inline-block; min-width: 5.5em; }
+  #log .say { color: var(--accent); }
+  #log .answer { color: var(--ok); font-weight: 600; white-space: pre-wrap; }
+  #log .approval, #log .status { color: var(--warn); }
+  .shot { color: var(--ok); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Agent Live View</h1>
+  <span id="status">connecting…</span>
+  <span id="task" style="color: var(--muted)"></span>
+</header>
+<div id="controls">
+  <button id="play">Pause</button>
+  <select id="speed"><option value="1">1×</option><option value="2">2×</option><option value="4" selected>4×</option><option value="8">8×</option></select>
+  <input id="seek" type="range" min="0" max="1000" value="0">
+  <span id="clock" style="font-variant-numeric: tabular-nums"></span>
+</div>
+<main>
+  <section class="panel" data-source="api">
+    <h2>API screenshots <span>computer_use_call.output</span></h2>
+    <div class="screen"><div class="empty">No screenshot yet. The API only sends one when a browser step ends with one.</div></div>
+    <div class="caption"></div>
+  </section>
+  <section class="panel" data-source="sidecar">
+    <h2>Sidecar recorder <span>our capture inside the sandbox</span></h2>
+    <div class="screen"><div class="empty">No sidecar frames yet.</div></div>
+    <div class="caption"></div>
+  </section>
+</main>
+<div id="log"></div>
+<script>
+  const replay = window.SS_TIMELINE ?? null; // set when this page is saved as replay.html
+  let tl = replay ?? { startedAtWall: Date.now(), frames: [], events: [], sidecarMode: "off", task: "" };
+  let liveEnded = false;
+  const $ = (s, el = document) => el.querySelector(s);
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  const fmt = (ms) => `${(ms / 1000).toFixed(1)} s`;
+
+  function lastBefore(list, atMs) {
+    let found = null;
+    for (const x of list) if (x.atMs <= atMs) found = x; else break;
+    return found;
+  }
+
+  function showFrame(source, atMs) {
+    const panel = $(`.panel[data-source="${source}"]`);
+    const frames = tl.frames.filter((f) => f.source === source);
+    panel.style.display = source === "sidecar" && tl.sidecarMode === "off" && !frames.length ? "none" : "";
+    const f = lastBefore(frames, atMs);
+    if (!f) return;
+    const img = $("img", panel);
+    if (!img) $(".screen", panel).innerHTML = `<img alt="${source} frame">`;
+    const el = $("img", panel);
+    if (el.getAttribute("src") !== f.file) el.setAttribute("src", f.file);
+    const n = frames.indexOf(f) + 1;
+    const label = f.stepTitle ?? f.title ?? f.method ?? "";
+    panel.dataset.frameAt = f.atMs;
+    $(".caption", panel).innerHTML =
+      `<b>#${n}</b> of ${frames.length} · at ${fmt(f.atMs)} <span class="age"></span><br>${esc(label)}${f.fromArtifacts ? " <i>(from artifacts)</i>" : ""}`;
+  }
+
+  function showLog(atMs) {
+    const rows = tl.events.filter((e) => e.atMs <= atMs).slice(-300).reverse();
+    $("#log").innerHTML = rows
+      .map((e) => `<div class="${e.kind}"><span class="t">${fmt(e.atMs)}</span> ${e.kind === "step-end" && e.screenshot ? '<span class="shot">[screenshot]</span> ' : ""}${esc(e.text)}</div>`)
+      .join("");
+  }
+
+  function render(atMs) {
+    $("#task").textContent = tl.task ? `Task: ${tl.task}` : "";
+    showFrame("api", atMs);
+    showFrame("sidecar", atMs);
+    showLog(atMs);
+  }
+
+  // Live: how old is the frame on screen? (The API often goes quiet for tens of seconds.)
+  function tickAges(nowMs) {
+    for (const panel of document.querySelectorAll(".panel")) {
+      const age = $(".age", panel);
+      if (!age || panel.dataset.frameAt === undefined) continue;
+      const secs = (nowMs - Number(panel.dataset.frameAt)) / 1000;
+      age.textContent = `· ${secs.toFixed(0)} s old`;
+      age.className = secs > 10 ? "age stale" : "age";
+    }
+  }
+
+  if (replay) {
+    const status = $("#status");
+    status.textContent = `replay · ${tl.frames.length} frames`;
+    $("#controls").style.display = "flex";
+    const end = Math.max(1000, ...tl.frames.map((f) => f.atMs), ...tl.events.map((e) => e.atMs)) + 2000;
+    let at = Math.max(0, (tl.frames[0]?.atMs ?? 0) - 1000);
+    let playing = true;
+    let last = performance.now();
+    const seek = $("#seek");
+    seek.max = String(end);
+    $("#play").onclick = () => { playing = !playing; $("#play").textContent = playing ? "Pause" : "Play"; };
+    seek.oninput = () => { at = Number(seek.value); render(at); };
+    (function frame(now) {
+      if (playing) { at = Math.min(end, at + (now - last) * Number($("#speed").value)); seek.value = String(at); render(at); }
+      last = now;
+      $("#clock").textContent = `${fmt(at)} / ${fmt(end)}`;
+      tickAges(at);
+      requestAnimationFrame(frame);
+    })(last);
+  } else {
+    const status = $("#status");
+    const es = new EventSource("events");
+    es.onmessage = (m) => {
+      const msg = JSON.parse(m.data);
+      if (msg.type === "init") tl = msg.timeline;
+      else if (msg.type === "frame") tl.frames.push(msg.frame);
+      else if (msg.type === "event") tl.events.push(msg.event);
+      else if (msg.type === "end") { liveEnded = true; es.close(); status.className = ""; status.textContent = `run ended (${msg.outcome}) · replay.html and the .webm videos are in the run folder`; }
+      if (!liveEnded) { status.className = "live"; status.textContent = `live · ${tl.frames.length} frames`; }
+      render(Infinity);
+    };
+    es.onerror = () => { if (!liveEnded) { status.className = ""; status.textContent = "disconnected (the run may have ended)"; } };
+    setInterval(() => { if (!liveEnded) tickAges(Date.now() - tl.startedAtWall); }, 500);
+  }
+</script>
+</body>
+</html>

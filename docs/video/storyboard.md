@@ -1,5 +1,7 @@
 # SquadLings — One squad. Many minds.
 
+> Copied from [amarnath3003/SquadLings](https://github.com/amarnath3003/SquadLings) at `cd568c5`. Paths such as `dashboard/` and `packages/shared/` refer to that repository's layout; the matching code here is in `web/src/` and `web/shared/`.
+
 A 52-second, 16:9 launch film with restrained synthesized sound effects. Sample task: “Plan a weekend in Kochi for our team.” The work/result scenes are labeled “Simulated workflow”; findings are illustrative. No live browsing or booking is claimed.
 
 ## Visual direction

@@ -5,6 +5,7 @@
 !.env.*.example
 *.pem
 *.key
+auth/*.json
 
 # Common dependencies, build output, caches, and local tooling.
 node_modules/
@@ -20,8 +21,17 @@ __pycache__/
 .DS_Store
 Thumbs.db
 *.log
-dashboard/artifacts/
-dashboard/test-results/
-dashboard/playwright-report/
 
-# Add entries appropriate to your chosen language or framework.
+# SquadLings: run logs, browser profiles, tunnel state (all regenerated at runtime).
+runs/
+spikes/out/
+spikes/profile/
+spikes/prewarm.json
+scrap_tests/**/out/
+
+# Teammate's character-studio clone (its own git repo; see README credits).
+external/
+
+# Personal Claude Code settings and third-party skills.
+.claude/settings.local.json
+.claude/skills/

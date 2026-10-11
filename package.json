@@ -1,22 +1,41 @@
 {
   "name": "squadlings",
-  "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "dashboard",
-    "packages/shared"
-  ],
-  "scripts": {
-    "dev": "npm run dev --workspace dashboard",
-    "build": "npm run build --workspace dashboard",
-    "check": "npm run check --workspace dashboard",
-    "test": "npm run test --workspace dashboard",
-    "test:browser": "npm run test:browser --workspace dashboard",
-    "perf": "npm run perf --workspace dashboard",
-    "film:record": "npm run film:record --workspace dashboard",
-    "preview": "npm run preview --workspace dashboard"
-  },
+  "version": "0.0.0",
+  "type": "module",
+  "description": "SquadLings: a team of AI browser agents you can watch work. The spec is master.md.",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "spike:cu": "node scripts/spike-computer-use.ts",
+    "spike:mcp": "node scripts/spike-agents-mcp.ts",
+    "squad": "node scripts/squad.ts",
+    "ui": "npm --prefix web run -s bundle || echo 'The web build failed: serving the last build (or the old dashboard).'; node scripts/ui.ts",
+    "web": "npm --prefix web run dev",
+    "web:build": "npm --prefix web run build",
+    "buggymart": "node targets/buggymart/server.ts",
+    "test:buggymart": "node --test targets/buggymart/buggymart.test.ts",
+    "prewarm": "node scripts/prewarm.ts",
+    "test": "npm run -s test:unit && npm run -s test:cu && npm run -s test:browser && npm run -s test:squad && npm run -s test:ui",
+    "test:unit": "node --test scripts/tests/*.test.ts",
+    "test:cu": "node scripts/tests/mock-agents-api.ts",
+    "test:browser": "node scripts/tests/browser-mcp.selftest.ts",
+    "test:squad": "node scripts/tests/squad.selftest.ts",
+    "test:ui": "node scripts/tests/ui.selftest.ts",
+    "bench": "node scripts/tests/bench-browser.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "scrap:ss": "node scrap_tests/ss_stream/ss-stream.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/ws": "^8.18.2",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "playwright": "^1.64.0",
+    "ws": "^8.22.0",
+    "zod": "^4.6.5"
   }
 }

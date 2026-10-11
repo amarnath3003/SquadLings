@@ -5,11 +5,11 @@ Complete this file during the hackathon and use it to prepare your submission th
 ## Project
 
 - **Project name:** SquadLings
-- **Short description:** Five expressive browser-agent characters with distinct motion, an accessible squad builder, live-event-ready overlays, a shared board, and Onyx, a charcoal coordinator with its own personality. The current demo is a zero-cost simulated Character Studio; the team is developing the backend separately.
-- **Code repository URL:** https://github.com/amarnath3003/SquadLings
-- **Final submitted implementation commit SHA:** TODO — select after backend integration and the final rehearsal; the frontend checkpoint is not a final submission.
-- **Working demo URL or local demo steps:** With Node 22.12+, run `npm ci && npm run dev` from the root and open http://127.0.0.1:5173/. Follow [dashboard/README.md](dashboard/README.md).
-- **Demo access requirements:** Node 22.12 or newer and a modern browser. The character demo needs no API key and performs no real browsing. The independent API spike in `test/` has separate key/access requirements.
+- **Short description:** Research, price comparison, trip planning and QA often mean juggling dozens of browser tabs. SquadLings hands one typed task to a coordinator agent (Onyx) that splits it among up to five browser agents. They browse real sites in parallel while you watch each browser live, chat mid-run and take over for human checks, and Onyx merges the findings into one answer with sources.
+- **Code repository URL:** TODO
+- **Final submitted implementation commit SHA:** TODO
+- **Working demo URL or local demo steps:** Local. See [README Quick start](README.md#-quick-start): `npm install`, `npx playwright install chromium`, `npm --prefix web install`, put `OPENAI_API_KEY` in `.env`, optionally `npm run prewarm`, then `npm run ui` and open http://127.0.0.1:8787. No-cost scripted demo: `node scripts/dev-mock-ui.ts --port 8796 --mcp-port 8795`.
+- **Demo access requirements:** An OpenAI API key with Agents API access (not included), `cloudflared` installed, and network access for the quick tunnel. The mock demo needs no key.
 
 ## Participants
 
@@ -17,18 +17,19 @@ Participate solo or in a team of up to 4. Remove unused rows.
 
 | Participant name | GitHub handle | Contribution |
 | --- | --- | --- |
-| TODO | TODO | TODO |
+| Vijay Anand | @vijayanand1505 | Engine, server and dashboard |
+| TODO | @amarnath3003 | Characters, animation studio, sound, banner and launch film |
 
 ## Run and demonstrate
 
-- **Prerequisites and versions:** Node.js 22.12+; validation used Node 24.14.1 and Chrome 150.
-- **Install command:** `nvm use` (or select compatible Node), then `npm ci` from the repository root.
-- **Required environment variable names:** None for the frontend. `PREVIEW_URL` and `PLAYWRIGHT_CHANNEL` optionally configure browser verification; `PERF_AUDIO=1` and `PERF_SCENE=studio|run` select sound-enabled performance scenes. The separate API spike uses `OPENAI_API_KEY` (never commit it).
-- **Start command:** `npm run dev`; production preview: `npm run build && npm run preview`.
-- **Demo walkthrough:** Enable the speaker, adjust Sound settings, and audition the five original voices in Face gallery. Meet the breathing/blinking cast, move the pointer, try group play and naps, drag a character, then drag across the initially grey circle slider to wake a team. At five, show the individual flames and motivated faces. Choose a scenario, preview expressions, and play a sample run with at least one agent; observe shared findings and reports, inspect all faces, and try reduced motion, a mobile tile, or manual events.
-- **Checks performed and results:** The slider checkpoint passed TypeScript/build, 48 Vitest tests, all seven slider browser checks, and 235 offline audio renders. The broader run passed 30 of 31 checks; the remaining living-room audio check passed in an isolated slider snapshot. Desktop/mobile slider screenshots were inspected. Earlier audio-checkpoint production samples measured 55.9 fps in the studio and 58.7 fps with five streams; performance with the redesigned fire and ongoing activity edits still needs rehearsal.
-- **Known limitations or incomplete features:** The current demo is simulated; backend transport, real browser frames/actions, persisted replay, snapshot hydration, real approvals/takeover, and final projector rehearsal are separate integration work. The performance measurement does not certify live sessions or actual audio hardware. Human listening review of the synthesized voices remains pending. Participant details and final submitted SHA remain to be filled by the team. No hosted deployment or final submission is claimed.
-- **Libraries, APIs, and public datasets used:** React, Vite, Motion, Zustand, TypeScript, Vitest, Playwright, SVG/Canvas, and Web Audio. Four colour tokens come from the official OpenAI DevDay website; Onyx is original SVG artwork inspired by the supplied reference. See the [source record](docs/reference/brand-sources.md). The separate API spike uses the official `openai` SDK. No datasets are used.
+- **Prerequisites and versions:** Node.js 22.18+ (developed on Node 26.7.0), `cloudflared`, Playwright Chromium, a modern browser.
+- **Install command:** `npm install && npx playwright install chromium && npm --prefix web install`
+- **Required environment variable names:** `OPENAI_API_KEY` (required); optional `MODEL_MASTER`, `MODEL_BOT`, `MODEL_VISION`, `MODEL_DECISIONS`, `OPENAI_BASE_URL`. See [.env.example](.env.example).
+- **Start command:** `npm run ui` (dashboard) or `npm run squad -- "task"` (terminal)
+- **Demo walkthrough:** Type a task in the centre bar, pick the number of agents and effort, press send. Onyx plans with web search, the agents' live browsers appear on the right, the team card shows progress, you can type a follow-up mid-run or take over a tile, and Onyx returns one answer with sources. Closed chats reopen from Chats.
+- **Checks performed and results:** `npm test` (unit, mock Agents API, browser/MCP, squad and UI self-tests, offline) and `npm run bench` passed during the build; TestTown eval 13/13; live runs recorded in [CHANGELOG.md](CHANGELOG.md). TODO: rerun `npm test` and `npm run typecheck` on the final commit and record the result here.
+- **Known limitations or incomplete features:** Local only; the React live-run screen is still being ported (see [HANDOFF.md](HANDOFF.md)); no cost cap; Cloudflare may rate-limit quick tunnels (HTTP 429); Bing used for search; agents never solve CAPTCHAs, the user takes over.
+- **Libraries, APIs, and public datasets used:** OpenAI Agents API, Model Context Protocol SDK, Playwright, cloudflared, ws, zod, TypeScript, React, Vite, Motion, Zustand. Character studio components from [amarnath3003/SquadLings](https://github.com/amarnath3003/SquadLings). Colours follow the DevDay event website. No datasets.
 - **AI usage record:** [AI_USAGE.md](AI_USAGE.md)
 - **Development change log:** [CHANGELOG.md](CHANGELOG.md)
 

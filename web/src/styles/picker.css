@@ -1,0 +1,126 @@
+/* The studio's squad and effort pickers, scaled to fit our 320px popovers (#agents-pop, #effort-pop). */
+.pop:has(.squad-selector) {
+  padding: 12px 14px 10px;
+}
+.pop:has(.squad-powered) {
+  border-color: var(--event-orange);
+}
+.pop .squad-selector {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.pop .squad-selector-heading h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.pop .squad-count strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+.pop .squad-count > span {
+  font-size: 12px;
+}
+.pop .squad-stepper {
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  gap: 8px;
+  min-height: 60px;
+  margin-top: 22px; /* room for the flames above the faces */
+}
+.pop .squad-step {
+  width: 34px;
+  height: 34px;
+}
+.pop .squad-step svg {
+  width: 16px;
+  height: 16px;
+}
+.pop .squad-stack {
+  --stack-size: 44px;
+  --stack-step: 28px;
+}
+.pop .squad-selector .agent-body {
+  --agent-scale: 0.6875; /* 64px characters drawn at 44px */
+}
+.pop .squad-energy {
+  top: -34px;
+  height: 100px;
+}
+.effort-meter {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+.effort-meter i {
+  width: 16px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--line-2);
+  transition: background-color 0.2s;
+}
+.effort-meter i.on {
+  background: var(--text);
+}
+.squad-powered .effort-meter i.on {
+  background: var(--event-orange);
+}
+#root {
+  height: 100%;
+}
+/* The studio's sound toggle, as one of our icon buttons. */
+#top .sound-controls {
+  gap: 2px;
+}
+#top .sound-controls .icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+}
+#top .sound-controls .icon-button:hover,
+#top .sound-controls .icon-button.is-on {
+  background: var(--raised-2);
+  color: var(--text);
+}
+.sound-settings .quiet-button {
+  margin-top: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 12px;
+}
+#rail .brand-ball {
+  color: var(--text);
+}
+/* Onyx, the studio's Master, in the chat head (in place of classic's .master-mark). */
+.onyx-mark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+}
+.onyx-mark.small {
+  width: 20px;
+  height: 20px;
+}
+/* Onyx beside its messages, in place of classic's white circle. */
+.msg.master .who.onyx-who {
+  display: grid;
+  place-items: center;
+  background: none;
+  border-radius: 0;
+}
+.msg.master .who.onyx-who::after {
+  content: none;
+}

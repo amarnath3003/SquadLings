@@ -1,0 +1,87 @@
+/* The character studio's base character rules (from external/amarnath-squadlings/dashboard/src/styles/app.css
+   at 45f625f, .character … @keyframes float). The rest of that file styled the studio's own pages. */
+.character {
+  position: relative;
+  flex-shrink: 0;
+}
+.character-seat {
+  position: absolute;
+  display: block;
+}
+.character svg {
+  overflow: visible;
+  display: block;
+}
+.pointer-tip {
+  position: absolute;
+  left: -2px;
+  top: -2px;
+}
+.character .boop-target {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: 0;
+  border-radius: 50%;
+  background: none;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+.character-seat:has(.boop-target) {
+  width: 100%;
+  height: 100%;
+}
+.speech-bubble {
+  position: absolute;
+  left: -18px;
+  top: -18px;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid;
+  outline: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  z-index: 4;
+  pointer-events: none;
+}
+.bubble-top {
+  left: 100%;
+  top: 6px;
+}
+.bubble-left {
+  left: 100%;
+  top: -16px;
+}
+.bubble-right {
+  left: -30px;
+  top: 10px;
+}
+.name-pill {
+  position: absolute;
+  top: 100%;
+  left: 12px;
+  background: var(--surface);
+  border: 1px solid;
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-size: 9px;
+  white-space: nowrap;
+}
+.idle-float {
+  animation: float var(--period) ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(calc(-1 * var(--float)));
+  }
+}

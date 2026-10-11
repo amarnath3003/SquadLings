@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="BuggyMart — little things for a better everyday. A local demo shop with simulated orders.">
+  <title>BuggyMart · Everyday goods</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <div class="announcement">A little upgrade for your everyday. &nbsp; <strong>10% off with SAVE10</strong></div>
+  <header>
+    <a class="brand" href="/" aria-label="BuggyMart home"><span class="brand-icon" aria-hidden="true">b.</span> BuggyMart<span class="brand-dot">®</span></a>
+    <nav aria-label="Main navigation"><a href="/">Shop all</a><a href="/cart" id="cart-link">Cart (0)</a></nav>
+  </header>
+  <main id="app"><p class="loading">Opening the shop…</p></main>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <footer><span><strong>BuggyMart</strong> &nbsp; / &nbsp; Demo store. No real payments.</span><button id="reset" class="text-button" type="button">Reset demo</button></footer>
+</body>
+</html>

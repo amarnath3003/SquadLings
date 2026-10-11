@@ -1,0 +1,203 @@
+/* The roaming squad (RoamLayer), the thinking row and the dot wave. Colours come from the cast. */
+
+/* ── The layer: fixed, above the chat column, below popovers (20), Chats (25) and the rail (30) ── */
+.roam-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  pointer-events: none;
+  overflow: hidden;
+}
+.roamer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 96px;
+  height: 102px;
+  transform-origin: 48px 48px;
+  will-change: transform, opacity;
+  pointer-events: auto;
+}
+.roamer:not(.roamer-roam) {
+  pointer-events: none;
+}
+.roamer-pop {
+  position: relative;
+  width: 96px;
+  height: 102px;
+  transform-origin: 48px 60px;
+}
+.roamer .character {
+  /* A grounded shadow: offset and soft, so they sit on the page rather than glow. */
+  filter: drop-shadow(0 7px 9px rgb(0 0 0 / 0.42));
+}
+.roamer-handoff .character,
+.roamer-settle .character {
+  filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.4));
+}
+/* The colour disc that covers the face as a character becomes its dot (and uncovers it again). */
+.roamer-cover {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+/* Speech bubbles and names from the rig aren't wanted on the home screen. */
+.roamer .name-pill {
+  display: none;
+}
+
+/* The task note Onyx hands each agent: a tiny card with two lines in the agent's colour. */
+.roam-note {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 16px;
+  height: 12px;
+  border-radius: 3px;
+  background:
+    linear-gradient(var(--c), var(--c)) 3px 3px / 10px 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) 3px 7px / 6px 2px no-repeat,
+    #f4f4f6;
+  box-shadow: 0 3px 8px rgb(0 0 0 / 0.5);
+  will-change: transform, opacity;
+}
+
+/* While a character flies from its dot to its tile, the studio's own copy of it stays out of sight
+   (its spawn flight and the tile cursor); RoamLayer releases each agent as it arrives. */
+html[data-roam-hold] .flights-layer .character-flight {
+  visibility: hidden;
+}
+html[data-roam-hold~="bot1"] [data-actor="bot1"],
+html[data-roam-hold~="bot2"] [data-actor="bot2"],
+html[data-roam-hold~="bot3"] [data-actor="bot3"],
+html[data-roam-hold~="bot4"] [data-actor="bot4"],
+html[data-roam-hold~="bot5"] [data-actor="bot5"] {
+  visibility: hidden;
+}
+
+/* ── The dot wave: the one "thinking" indicator ── */
+.dot-wave {
+  --dw-size: 6px;
+  --dw-gap: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dw-gap);
+  height: calc(var(--dw-size) * 2.2);
+  flex: none;
+  vertical-align: middle;
+}
+.dot-wave i {
+  position: relative;
+  width: var(--dw-size);
+  height: var(--dw-size);
+  border-radius: 50%;
+  background: var(--c);
+  animation: dw-wave 1.3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation-delay: calc(var(--i) * 110ms);
+}
+@keyframes dw-wave {
+  0%, 56%, 100% {
+    transform: translateY(0) scale(0.85);
+    opacity: 0.85;
+  }
+  26% {
+    transform: translateY(calc(var(--dw-size) * -0.75)) scale(1.06);
+    opacity: 1;
+  }
+}
+/* A character just landed in this dot: one ring in its colour. */
+.dot-wave i.landed::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--c);
+  animation: dw-ring 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes dw-ring {
+  from {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+/* The busy line and the research item use small dots. */
+.activity .dot-wave,
+.research summary .dot-wave {
+  margin-right: 2px;
+}
+/* While the thinking row is up, it is the indicator; the line under it keeps just the words. */
+#chat:has(#thinking-row) #activity .dot-wave {
+  display: none;
+}
+
+/* ── The thinking row (before the first plan) ── */
+.thinking-row {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 14px 12px;
+  animation: tr-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.center .thinking-row {
+  padding-inline: max(16px, calc((100% - var(--col)) / 2));
+}
+.home .thinking-row {
+  display: none;
+}
+.thinking-onyx {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+}
+.thinking-dots {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--raised, #1b1b1e);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.35);
+  height: auto;
+  min-height: 30px;
+}
+@keyframes tr-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot-wave i {
+    animation: dw-pulse 1.8s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 180ms);
+  }
+  .dot-wave i.landed::after {
+    animation: none;
+    display: none;
+  }
+  .thinking-row {
+    animation: none;
+  }
+}
+@keyframes dw-pulse {
+  0%, 100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+#chat:has(#thinking-row) .research .dot-wave {
+  display: none;
+}
