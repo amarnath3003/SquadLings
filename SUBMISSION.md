@@ -5,7 +5,7 @@ Complete this file during the hackathon and use it to prepare your submission th
 ## Project
 
 - **Project name:** SquadLings
-- **Short description:** Research, price comparison, trip planning and QA often mean juggling dozens of browser tabs. SquadLings hands one typed task to a coordinator agent (Onyx) that splits it among up to five browser agents. They browse real sites in parallel while you watch each browser live, chat mid-run and take over for human checks, and Onyx merges the findings into one answer with sources.
+- **Short description:** SquadLings turns one request into a coordinated team of AI browser agents. Led by Onyx, up to five agents research, compare and test websites in parallel, then bring their findings together in one answer with sources. Watch every browser live, guide the team through chat and take control whenever needed.
 - **Code repository URL:** TODO
 - **Final submitted implementation commit SHA:** TODO
 - **Working demo URL or local demo steps:** Frontend: https://squadlings.vercel.app (requires a private connection link from the laptop running `npm run ui` plus `npm run share`; see README). Local: See [README Quick start](README.md#-quick-start): `npm install`, `npx playwright install chromium`, `npm --prefix web install`, put `OPENAI_API_KEY` in `.env`, optionally `npm run prewarm`, then `npm run ui` and open http://127.0.0.1:8787. No-cost scripted demo: `node scripts/dev-mock-ui.ts --port 8796 --mcp-port 8795`.

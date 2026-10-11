@@ -4,6 +4,13 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T08:27:40+05:30 — Clarify the short project description
+
+- Changed: Rewrote the short description in `SUBMISSION.md` and matched the project overview in `README.md`.
+- Why: Lead with the coordinated browser team and explain parallel work, sourced results and user control in plain language.
+- Validation: Checked both descriptions match and their claims agree with existing feature documentation; reviewed the documentation diff and whitespace. No links changed; application tests are not needed for copy-only edits.
+- Limitations: Human wording review pending; no new runtime verification.
+
 ## 2026-10-11T08:11:22+05:30 — Publish the React frontend and add a laptop sharing bridge
 
 - Changed: Published the `web/` React app (the UI from port 5173) at https://squadlings.vercel.app with repository-root `vercel.json` and `.vercelignore`. Added `web/src/backend.ts`, a connection screen and styles; routed REST, history, saved frames and live WebSocket connections through the selected HTTPS laptop address. Local builds retain their original same-origin connection.
