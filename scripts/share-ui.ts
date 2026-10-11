@@ -55,6 +55,7 @@ try {
     onExit: () => { console.error("The sharing tunnel closed. Run npm run share again to reconnect."); stop(); process.exitCode = 1; },
   });
   const link = new URL(options.frontend);
+  link.pathname = "/app";
   link.hash = new URLSearchParams({ backend: tunnel.url, key: token }).toString();
   const inviteFile = join(output, "connect.txt");
   writeFileSync(inviteFile, `${link.href}\n`, { mode: 0o600 });

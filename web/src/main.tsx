@@ -1,6 +1,5 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import { BackendGate } from "./BackendGate";
 import { DEVDAY_COLORS } from "@swarm/shared/cast";
 import "./styles/tokens.css";
 import "./styles/theme.css";
@@ -16,8 +15,22 @@ for (const [name, color] of Object.entries(DEVDAY_COLORS)) {
   document.documentElement.style.setProperty(`--event-${name}`, color);
 }
 
+const LandingPage = lazy(() => import("./landing/LandingPage"));
+const BackendGate = lazy(() =>
+  import("./BackendGate").then((module) => ({ default: module.BackendGate })),
+);
+const landing =
+  import.meta.env.VITE_REMOTE_BACKEND === "true" &&
+  location.pathname !== "/app";
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BackendGate />
+    <Suspense
+      fallback={
+        <div style={{ padding: 32 }}>Getting the little team together…</div>
+      }
+    >
+      {landing ? <LandingPage /> : <BackendGate />}
+    </Suspense>
   </React.StrictMode>,
 );

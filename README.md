@@ -220,9 +220,13 @@ Type a task, pick your squad, and press send.
 > [!TIP]
 > **Try it for free first.** `node scripts/dev-mock-ui.ts --port 8796 --mcp-port 8795` runs the real server with a scripted mock Onyx and bots. Any task plays the same run, and nothing reaches OpenAI.
 
-### Hosted frontend with your laptop's backend
+### Animated landing page and hosted dashboard
 
-The React frontend from `web/` (the same app served by `npm run web` on port **5173**) is deployed at **https://squadlings.vercel.app**. Agents, browser profiles, run history and the OpenAI key stay on the laptop running `npm run ui`.
+**https://squadlings.vercel.app** is the public animated landing page: meet the cast, explore four scripted task previews, watch the 52-second project film, read the architecture story and copy setup commands. It works without a backend or API key. Previews are illustrations, not live agent runs. It supports keyboard navigation, mobile layouts and reduced motion.
+
+The React dashboard from `web/` (the app normally served by `npm run web` on port **5173**) remains at **https://squadlings.vercel.app/app**. Agents, browser profiles, run history and the OpenAI key stay on the laptop running `npm run ui`.
+
+To preview the landing page locally, run `VITE_REMOTE_BACKEND=true npm run web` and open http://127.0.0.1:5173. `/app` shows the hosted dashboard connection screen. Without that flag, local dashboard behavior stays unchanged. The landing page and dashboard load in separate JavaScript chunks; the film loads only when opened. [Asset sources and font licenses](docs/landing-assets.md).
 
 On that laptop, leave the existing dashboard running. In a second terminal, update the clone and start sharing (Node 22.18+ and `cloudflared` are required):
 
@@ -232,7 +236,7 @@ npm ci                       # only if this clone's dependencies are not already
 npm run share
 ```
 
-`share` checks the dashboard at `http://127.0.0.1:8787`, opens a separate authenticated bridge on port 8790, and tunnels it through Cloudflare. It opens the hosted site with a private connection link, also saved to the ignored, owner-only `spikes/out/share-ui/connect.txt`. Open that link on the computer where you want to use the dashboard. Treat the link as a password: anyone with it can send tasks and control this squad. The key is removed from the address bar and held in this browser tab's session storage; it is never built into the frontend.
+`share` checks the dashboard at `http://127.0.0.1:8787`, opens a separate authenticated bridge on port 8790, and tunnels it through Cloudflare. It opens the hosted dashboard at `/app` with a private connection link, also saved to the ignored, owner-only `spikes/out/share-ui/connect.txt`. Open that link on the computer where you want to use the dashboard. Treat the link as a password: anyone with it can send tasks and control this squad. The key is removed from the address bar and held in this browser tab's session storage; it is never built into the frontend.
 
 Keep the backend, sharing terminal and laptop awake. `Ctrl+C` in the sharing terminal revokes that connection without stopping the local agents. Restarting sharing generates a new key and tunnel address; open the new private link to reconnect. This dashboard tunnel is separate from the MCP tunnel on port 8788. No backend restart or incoming firewall port is needed.
 
@@ -347,7 +351,7 @@ Ignored and regenerated at runtime: `spikes/out/` and `runs/` (run logs), `spike
 | 🚧 **In progress** | Moving the live run screen onto the character studio (Onyx's coordinator card, flights, moods, emotes) |
 | ✅ **QA target** | BuggyMart: local shop with 10 easy planted bugs, reset, bugs-off mode, and offline checks |
 | 🔭 **Planned** | Templates (Trip Planner, QA Swarm scorecard) · cost cap · approval cards for risky actions · GPT-Live-1 voice |
-| ⚠️ **Known limitations** | Hosted frontend needs a private connection link and an awake laptop backend · needs Agents API access and a cloudflared quick tunnel; Cloudflare rate-limits many tunnels started in a few minutes (HTTP 429), so use `npm run prewarm` · Google blocks automated browsers, so bots search with Bing · bots never solve CAPTCHAs: you take over · no cost cap yet |
+| ⚠️ **Known limitations** | Hosted dashboard at `/app` needs a private connection link and an awake laptop backend; the landing page works independently · needs Agents API access and a cloudflared quick tunnel; Cloudflare rate-limits many tunnels started in a few minutes (HTTP 429), so use `npm run prewarm` · Google blocks automated browsers, so bots search with Bing · bots never solve CAPTCHAs: you take over · no cost cap yet |
 
 <br>
 
@@ -375,6 +379,7 @@ Built from scratch in one night at the **[OpenAI DevDay Exchange Community Hacka
 
 - **Engine, server and dashboard:** the SquadLings team, in this repo.
 - **Characters, animation studio, sound, banner and launch film:** [amarnath3003/SquadLings](https://github.com/amarnath3003/SquadLings).
+- **Landing page fonts:** Bricolage Grotesque and DM Sans, locally hosted under the SIL Open Font License; see [asset credits](docs/landing-assets.md).
 - **Built with:** [OpenAI Agents API](https://developers.openai.com/), [Model Context Protocol](https://modelcontextprotocol.io/), [cloudflared](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/), [React](https://react.dev/), [Motion](https://motion.dev/), [Zustand](https://zustand.docs.pmnd.rs/) and [Vite](https://vite.dev/).
 
 <sub>Colours follow the DevDay event website's tokens. OpenAI names and artwork belong to OpenAI; no endorsement is implied.</sub>

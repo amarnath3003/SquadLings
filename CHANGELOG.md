@@ -4,6 +4,13 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-11T08:32:10+05:30 — Build the animated SquadLings landing page
+
+- Changed: Added `web/src/landing/` with a character-led hero, pointer response, orbit routes, moving typography, scroll reveals, four interactive scripted task previews, clickable character profiles, browser-control explanation, use cases, setup clipboard, film dialog and animated finale. Added locally hosted licensed fonts, existing project film, social metadata and lazy page loading. The hosted homepage now presents the project; the dashboard remains at `/app`, and `scripts/share-ui.ts` generates links there. Updated README, submission demo instructions and asset credits.
+- Why: User replaced the backend connection task with a request for a colorful, highly animated project landing page that explains the README visually.
+- Validation: Hosted frontend TypeScript/production build and server typecheck passed; 21 unit tests passed. System Chrome passed 25 browser checks covering task completion, all five browser cards, keyboard tabs, character selection, use-case navigation, clipboard, mobile menu, 320/390/768/1440 px widths, reduced motion, lazy film load/52-second duration/Escape, no landing API calls, `/app`, asset loading and zero page errors. Desktop and mobile screenshots inspected. Fixed the inherited dashboard `#main` flex rule by giving the landing landmark its own ID.
+- Limitations: Previews are explicitly scripted; no live agent or paid API run was performed. Human visual review pending. Production publication is verified separately after deployment.
+
 ## 2026-10-11T08:30:55+05:30 — Reconcile repository history and submission details
 
 - Changed: Added the `amarnath3003/squadlings` repository URL and full snapshot SHA `86a94d50e955c777bcbfcfc60163bcb3d5028c59` to `SUBMISSION.md`; kept the user's “master orchestrator” wording and synchronized `README.md`. Added the Git checkpoint index below and recorded this documentation assistance in `AI_USAGE.md`.
