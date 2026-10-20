@@ -195,6 +195,9 @@ flowchart LR
 
 **You need:** Node **22.18+**, [`cloudflared`](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/) (`brew install cloudflared`), and an OpenAI API key with Agents API access.
 
+Run commands from the repository root, not the old `dashboard/` folder. Select the supported runtime with `nvm use` (`.nvmrc` selects Node 24; run `nvm install` once if needed). `npm run dev` starts the complete local dashboard and backend on port 8787. For frontend hot reload on port 5173, run `npm run web` in a second terminal while the backend stays running.
+
+
 ```sh
 # 1 · install
 npm install
@@ -208,7 +211,7 @@ cp .env.example .env
 npm run prewarm          # leave running in its own terminal
 
 # 4 · launch the dashboard
-npm run ui               # builds web/ and opens http://127.0.0.1:8787
+npm run dev              # builds web/ and opens http://127.0.0.1:8787 (alias for npm run ui)
 ```
 
 Type a task, pick your squad, and press send.

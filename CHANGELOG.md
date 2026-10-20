@@ -4,6 +4,13 @@ Record each meaningful project change during the event, newest first. Update thi
 
 ## Event build log
 
+## 2026-10-20T12:51:58+05:30 — Restore a root development startup command
+
+- Changed: Added `npm run dev` as an argument-forwarding alias for `npm run ui`, restored `.nvmrc` selecting installed Node 24, and clarified root-directory/full-dashboard/frontend commands in README.
+- Diagnosis: Recent npm logs show `Missing script: "dev"` at the root and ENOENT for the removed `dashboard/package.json`. The tool shell defaults to unsupported Node 18; the user's recent npm commands used Node 24.
+- Validation: With Node 24, `npm run dev -- --help` builds the frontend and displays the backend help successfully. Real startup reaches the explicit missing `OPENAI_API_KEY` check; `.env` is absent. Existing no-key mock dashboard started and returned HTTP 200 on port 8787; stopped after verification to leave the normal startup ports free. No agent task/API call was made.
+- Limitations: User must create `.env` from `.env.example` and enter their API key locally before real agent startup. Human review pending.
+
 ## 2026-10-11T08:53:53+05:30 — Verify public workflow and shop deployment
 
 - Published: Vercel deployment `dpl_CA1Ct1ktydKqEfFHCm8Bv2LrzgpP` reached READY at https://squadlings.vercel.app. Implementation checkpoint `feaa0f3` is pushed to `main`; its automatic deployment includes the final mobile character sizing correction. Updated submission scope/SHA.

@@ -8,6 +8,7 @@
     "node": ">=22.18"
   },
   "scripts": {
+    "dev": "npm run ui --",
     "spike:cu": "node scripts/spike-computer-use.ts",
     "spike:mcp": "node scripts/spike-agents-mcp.ts",
     "squad": "node scripts/squad.ts",
